@@ -10,6 +10,127 @@ export type LanguageCode = keyof typeof languages;
 export const ui = {
   fr: {
     projectsContent: {
+      parentUp: {
+        title: 'Parent Up - Plateforme de Coparentalité',
+        description:
+          'Application pour parents séparés afin de mieux communiquer et organiser la garde et le quotidien des enfants.',
+        imageAltText: "Aperçu de l'application Parent Up",
+        categoryText: 'Plateforme Coparentalité',
+        dateText: 'Novembre 2025',
+        detailedDescription:
+          "Parent Up est une application Next.js conçue pour aider les parents séparés à coordonner la garde et les activités de leurs enfants. Elle centralise l'information familiale via des Organisations Clerk (famille), facilite la messagerie sécurisée, la gestion d'un cercle de confiance, le suivi des incidents et offre une assistance légale via une IA.",
+        keyFeatures: {
+          authentication: {
+            title: 'Authentification Sécurisée',
+            description:
+              "Gestion de l'authentification et des invitations via Clerk, avec sécurisation des accès par famille.",
+          },
+          organizationManagement: {
+            title: 'Gestion de la Famille (Organisation Clerk)',
+            description:
+              "Chaque famille est une Organisation Clerk. Les enfants appartiennent à la famille et les membres partagent l'accès.",
+          },
+          invitationFlow: {
+            title: 'Invitation du Coparent',
+            description:
+              'Invitation du coparent et des membres du cercle de confiance gérée automatiquement par Clerk.',
+          },
+          sharedCalendar: {
+            title: 'Calendrier Partagé',
+            description:
+              'Calendrier pour les activités scolaires, médicales et extrascolaires, synchronisé au sein de la famille.',
+          },
+          eventManagement: {
+            title: 'Gestion des Événements et Gardes',
+            description:
+              'Planification des gardes, des événements et des routines, avec notifications et rappels.',
+          },
+          childInformation: {
+            title: "Fiches d'Information Enfant",
+            description:
+              'Santé, école, tailles, contacts et documents ; accessibles à tous les membres autorisés.',
+          },
+          incidentReporting: {
+            title: 'Signalement et Journal des Incidents',
+            description:
+              'Création et suivi des incidents (dates, descriptions, pièces jointes) pour conserver un historique partagé.',
+          },
+          secureMessaging: {
+            title: 'Messagerie Sécurisée',
+            description:
+              'Communication entre coparents et membres du cercle de confiance avec notifications et pièces jointes.',
+          },
+          trustedCircle: {
+            title: 'Cercle de Confiance',
+            description:
+              "Gestion des membres élargis (famille, nounous, proches) avec droits d'accès ajustables.",
+          },
+          aiLegalAssistant: {
+            title: 'Assistance Légale IA',
+            description:
+              'Chat IA pour guidance légale et documentation (non substitut au conseil juridique).',
+          },
+          dashboard: {
+            title: 'Tableau de Bord Famille',
+            description:
+              'Vue consolidée des messages, événements, incidents et informations des enfants.',
+          },
+        },
+        galleryImages: {
+          parentUpLanding: {
+            alt: "Page d'accueil de Parent Up",
+            caption: 'Présentation de la plateforme de coparentalité',
+          },
+          parentUpLanding2: {
+            alt: "Deuxième aperçu de la page d'accueil",
+            caption: 'Vue alternative du landing',
+          },
+          parentUpAuth: {
+            alt: "Écran d'authentification Parent Up",
+            caption: "Connexion et gestion de l'accès par famille",
+          },
+          parentUpInvitation: {
+            alt: "Flux d'invitation via Clerk",
+            caption: 'Inviter le coparent et le cercle de confiance',
+          },
+          parentUpDashboard: {
+            alt: 'Tableau de bord familial',
+            caption: 'Vue synthétique: messages, événements, incidents',
+          },
+          parentUpProfileFamily: {
+            alt: 'Profil famille et enfants',
+            caption: 'Informations et membres de la famille',
+          },
+          parentUpTrustedCircle: {
+            alt: 'Gestion du cercle de confiance',
+            caption: 'Famille élargie et intervenants',
+          },
+          parentUpEvents: {
+            alt: 'Calendrier des événements partagés',
+            caption: 'Activités scolaires, médicales, extrascolaires',
+          },
+          parentUpEvent2: {
+            alt: 'Aperçu calendrier – exemple 2',
+            caption: 'Organisation des gardes',
+          },
+          parentUpEvent3: {
+            alt: 'Aperçu calendrier – exemple 3',
+            caption: 'Rappels et notifications',
+          },
+          parentUpMessaging: {
+            alt: 'Messagerie sécurisée',
+            caption: 'Communication entre coparents',
+          },
+          parentUpFeedback: {
+            alt: 'Feedback et rapports',
+            caption: 'Retour et améliorations continues',
+          },
+        },
+        challenges:
+          "Aligner des besoins sensibles (coparentalité) avec une expérience simple et sécurisée, tout en structurant l'accès par famille.",
+        learnings:
+          "Les Organisations Clerk simplifient fortement l'invitation et la gestion des accès ; la centralisation des données par famille clarifie les responsabilités.",
+      },
       codeHaven: {
         title: 'Code Haven',
         description:
@@ -529,6 +650,127 @@ export const ui = {
   },
   en: {
     projectsContent: {
+      parentUp: {
+        title: 'Parent Up - Co-Parenting Platform',
+        description:
+          'App for separated parents to better communicate and organize child custody and daily care.',
+        imageAltText: 'Parent Up application preview',
+        categoryText: 'Co-Parenting Platform',
+        dateText: 'November 2025',
+        detailedDescription:
+          'Parent Up is a Next.js app to help separated parents coordinate child custody schedules, activities, child information, incident reporting, secure messaging, and trusted circle management. Families are modeled as Clerk Organizations, keeping data shared and access consistent.',
+        keyFeatures: {
+          authentication: {
+            title: 'Secure Authentication',
+            description:
+              'Authentication and invitations handled via Clerk with family-scoped access.',
+          },
+          organizationManagement: {
+            title: 'Family Management (Clerk Organization)',
+            description:
+              'Each family is a Clerk Organization. Children belong to the family; members share access.',
+          },
+          invitationFlow: {
+            title: 'Co-parent Invitation Flow',
+            description:
+              'Invite the co-parent and trusted circle members with Clerk-managed invitations.',
+          },
+          sharedCalendar: {
+            title: 'Shared Calendar',
+            description:
+              'Calendar for school, medical, and extracurricular activities synchronized within the family.',
+          },
+          eventManagement: {
+            title: 'Event and Custody Management',
+            description:
+              'Plan custody schedules, events, routines with notifications and reminders.',
+          },
+          childInformation: {
+            title: 'Child Information Sheets',
+            description:
+              'Health, school, sizes, contacts, and documents accessible to authorized members.',
+          },
+          incidentReporting: {
+            title: 'Incident Reporting and Journal',
+            description:
+              'Create and track incidents with dates, descriptions, and attachments for a shared history.',
+          },
+          secureMessaging: {
+            title: 'Secure Messaging',
+            description:
+              'Communication between co-parents and trusted circle with notifications and attachments.',
+          },
+          trustedCircle: {
+            title: 'Trusted Circle Management',
+            description:
+              'Manage extended family and caregivers with adjustable access rights.',
+          },
+          aiLegalAssistant: {
+            title: 'AI Legal Assistance',
+            description:
+              'AI chat for legal guidance and documentation (not a substitute for legal advice).',
+          },
+          dashboard: {
+            title: 'Family Dashboard',
+            description:
+              'Consolidated view of messages, events, incidents, and child info.',
+          },
+        },
+        galleryImages: {
+          parentUpLanding: {
+            alt: 'Parent Up landing page',
+            caption: 'Overview of the co-parenting platform',
+          },
+          parentUpLanding2: {
+            alt: 'Alternate landing preview',
+            caption: 'Secondary landing view',
+          },
+          parentUpAuth: {
+            alt: 'Parent Up authentication screen',
+            caption: 'Family-scoped access control',
+          },
+          parentUpInvitation: {
+            alt: 'Clerk invitation flow',
+            caption: 'Invite co-parent and trusted members',
+          },
+          parentUpDashboard: {
+            alt: 'Family dashboard',
+            caption: 'Messages, events, incidents overview',
+          },
+          parentUpProfileFamily: {
+            alt: 'Family and children profile',
+            caption: 'Family info and members',
+          },
+          parentUpTrustedCircle: {
+            alt: 'Trusted circle management',
+            caption: 'Extended family and caregivers',
+          },
+          parentUpEvents: {
+            alt: 'Shared events calendar',
+            caption: 'School, medical, extracurricular activities',
+          },
+          parentUpEvent2: {
+            alt: 'Calendar preview – example 2',
+            caption: 'Custody organization',
+          },
+          parentUpEvent3: {
+            alt: 'Calendar preview – example 3',
+            caption: 'Reminders and notifications',
+          },
+          parentUpMessaging: {
+            alt: 'Secure messaging',
+            caption: 'Communication between co-parents',
+          },
+          parentUpFeedback: {
+            alt: 'Feedback and reports',
+            caption: 'Continuous improvements and reporting',
+          },
+        },
+        challenges:
+          'Balancing sensitive co-parenting needs with a simple, secure UX while structuring family-scoped data and permissions.',
+        learnings:
+          'Clerk Organizations greatly simplify invitation and access management; centralizing data by family clarifies responsibilities.',
+      },
       codeHaven: {
         title: 'Code Haven',
         description: 'A learning platform for aspiring developers.',
@@ -750,34 +992,98 @@ export const ui = {
       },
       terralhub: {
         title: 'TerralHub - Agricultural Logistics Platform',
-        description: 'TerralHub is an innovative platform designed for Senegalese farmers. It enables them to easily find secure, nearby warehouses to store their harvests post-collection, significantly helping to reduce post-harvest losses. The platform also facilitates connections with reliable transporters to move agricultural products to storage locations. Farmers can make down payments for warehouse and transport bookings via PayDunya, and track available warehouse capacity in real-time.',
+        description:
+          'TerralHub is an innovative platform designed for Senegalese farmers. It enables them to easily find secure, nearby warehouses to store their harvests post-collection, significantly helping to reduce post-harvest losses. The platform also facilitates connections with reliable transporters to move agricultural products to storage locations. Farmers can make down payments for warehouse and transport bookings via PayDunya, and track available warehouse capacity in real-time.',
         imageAltText: 'TerralHub platform preview',
         categoryText: 'Logistics Platform',
         dateText: 'May 2025',
-        detailedDescription: 'TerralHub aims to revolutionize the agricultural supply chain in Senegal by directly connecting farmers to storage and transport solutions. By reducing post-harvest losses and optimizing logistics, the platform helps improve farmer incomes and strengthen food security. It integrates a secure payment system and offers real-time visibility into storage capacities, enabling effective planning.',
+        detailedDescription:
+          'TerralHub aims to revolutionize the agricultural supply chain in Senegal by directly connecting farmers to storage and transport solutions. By reducing post-harvest losses and optimizing logistics, the platform helps improve farmer incomes and strengthen food security. It integrates a secure payment system and offers real-time visibility into storage capacities, enabling effective planning.',
         keyFeatures: {
-          userManagement: { title: 'User Account Management', description: 'Secure accounts for farmers, warehouse owners, and transporters, with personalized profiles.' },
-          roleManagement: { title: 'Role and Permission Management', description: 'Assignment of specific roles (farmer, warehouse, transporter, admin) with tailored access rights.' },
-          warehouseSearchAndBooking: { title: 'Warehouse Search and Booking', description: 'Easy location of available warehouses, consultation of details (capacity, price, services), and online booking.' },
-          transporterSearchAndBooking: { title: 'Transporter Search and Booking', description: 'Connection with verified transporters, quote requests, and booking of transport services.' },
-          realTimeWarehouseMonitoring: { title: 'Real-Time Warehouse Capacity Monitoring', description: 'Live visualization of available storage space in partner warehouses.' },
-          securePaymentGateway: { title: 'Secure Payment Gateway (PayDunya)', description: 'Payment of down payments and services via PayDunya, with transaction tracking.' },
-          inventoryTrackingForFarmers: { title: 'Inventory Tracking and Management', description: 'Tools for farmers to track their stored goods and for warehouses to manage their inventory.' },
-          pwaSupport: { title: 'Progressive Web App (PWA) Support', description: 'Easy access and offline features via an installable PWA on mobile and desktop.' },
-          adminDashboard: { title: 'Admin Dashboard', description: 'Comprehensive interface for platform management, users, transactions, and disputes.' },
+          userManagement: {
+            title: 'User Account Management',
+            description:
+              'Secure accounts for farmers, warehouse owners, and transporters, with personalized profiles.',
+          },
+          roleManagement: {
+            title: 'Role and Permission Management',
+            description:
+              'Assignment of specific roles (farmer, warehouse, transporter, admin) with tailored access rights.',
+          },
+          warehouseSearchAndBooking: {
+            title: 'Warehouse Search and Booking',
+            description:
+              'Easy location of available warehouses, consultation of details (capacity, price, services), and online booking.',
+          },
+          transporterSearchAndBooking: {
+            title: 'Transporter Search and Booking',
+            description:
+              'Connection with verified transporters, quote requests, and booking of transport services.',
+          },
+          realTimeWarehouseMonitoring: {
+            title: 'Real-Time Warehouse Capacity Monitoring',
+            description:
+              'Live visualization of available storage space in partner warehouses.',
+          },
+          securePaymentGateway: {
+            title: 'Secure Payment Gateway (PayDunya)',
+            description:
+              'Payment of down payments and services via PayDunya, with transaction tracking.',
+          },
+          inventoryTrackingForFarmers: {
+            title: 'Inventory Tracking and Management',
+            description:
+              'Tools for farmers to track their stored goods and for warehouses to manage their inventory.',
+          },
+          pwaSupport: {
+            title: 'Progressive Web App (PWA) Support',
+            description:
+              'Easy access and offline features via an installable PWA on mobile and desktop.',
+          },
+          adminDashboard: {
+            title: 'Admin Dashboard',
+            description:
+              'Comprehensive interface for platform management, users, transactions, and disputes.',
+          },
         },
         galleryImages: {
-          terralHubLogin: { alt: 'TerralHub Login Page', caption: 'Secure access to the TerralHub platform' },
-          terralHubLogistics: { alt: 'TerralHub Logistics Interface', caption: 'Management of logistics operations' },
-          terralHubCompaniesList: { alt: 'List of Partner Companies on TerralHub', caption: 'Trusted partners for storage and transport' },
-          terralHubCompanyDetails: { alt: 'Company Details on TerralHub', caption: 'Complete information about partners' },
-          terralHubWarehousesList: { alt: 'List of Available Warehouses on TerralHub', caption: 'Find the ideal warehouse for your harvests' },
-          terralHubWarehouseDetails: { alt: 'Warehouse Details on TerralHub', caption: 'Capacity, services, and rates of warehouses' },
-          terralHubWarehousesListMapInfo: { alt: 'Map of Warehouses on TerralHub', caption: 'Geographical location of warehouses' },
-          terralHubAboutUs: { alt: 'TerralHub About Us Page', caption: 'Our mission for Senegalese agriculture' },
+          terralHubLogin: {
+            alt: 'TerralHub Login Page',
+            caption: 'Secure access to the TerralHub platform',
+          },
+          terralHubLogistics: {
+            alt: 'TerralHub Logistics Interface',
+            caption: 'Management of logistics operations',
+          },
+          terralHubCompaniesList: {
+            alt: 'List of Partner Companies on TerralHub',
+            caption: 'Trusted partners for storage and transport',
+          },
+          terralHubCompanyDetails: {
+            alt: 'Company Details on TerralHub',
+            caption: 'Complete information about partners',
+          },
+          terralHubWarehousesList: {
+            alt: 'List of Available Warehouses on TerralHub',
+            caption: 'Find the ideal warehouse for your harvests',
+          },
+          terralHubWarehouseDetails: {
+            alt: 'Warehouse Details on TerralHub',
+            caption: 'Capacity, services, and rates of warehouses',
+          },
+          terralHubWarehousesListMapInfo: {
+            alt: 'Map of Warehouses on TerralHub',
+            caption: 'Geographical location of warehouses',
+          },
+          terralHubAboutUs: {
+            alt: 'TerralHub About Us Page',
+            caption: 'Our mission for Senegalese agriculture',
+          },
         },
-        challenges: "Developing a robust and accessible solution for users with varying levels of technological proficiency, while ensuring transaction security and the reliability of logistical information.",
-        learnings: "The importance of user-centered design and close collaboration with agricultural sector stakeholders to best meet their specific needs.",
+        challenges:
+          'Developing a robust and accessible solution for users with varying levels of technological proficiency, while ensuring transaction security and the reliability of logistical information.',
+        learnings:
+          'The importance of user-centered design and close collaboration with agricultural sector stakeholders to best meet their specific needs.',
       },
     },
     skillsContent: {

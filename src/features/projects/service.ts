@@ -1,8 +1,16 @@
 import {
+  afrikaZonAdmin,
+  afrikaZonCart,
+  afrikaZonFavorites,
+  afrikaZonHomePage,
+  afrikaZonLogin,
+  afrikaZonSearch,
+} from '@/assets/projects/afrikazon';
+import {
   afrikaZonPreviewImage,
+  cmsPreviewImage,
   codeHavenPreviewImage,
   samouraStorePreviewImage,
-  cmsPreviewImage,
   terralHubPreviewImage,
 } from '@/assets/projects/all-previews';
 import {
@@ -16,26 +24,32 @@ import {
   codeHavenTeacherDashboard,
 } from '@/assets/projects/codehaven';
 import {
+  parentUpAuth,
+  parentUpDashboard,
+  parentUpEvent2,
+  parentUpEvent3,
+  parentUpEvents,
+  parentUpFeedback,
+  parentUpInvitation,
+  parentUpLanding,
+  parentUpLanding2,
+  parentUpMessaging,
+  parentUpProfileFamily,
+  parentUpTrustedCircle,
+} from '@/assets/projects/parentup';
+import {
   terralHubAboutUs,
   terralHubCompaniesList,
   terralHubCompanyDetails,
   terralHubLogin,
   terralHubLogistics,
-  terralHubWarehousesList,
   terralHubWarehouseDetails,
+  terralHubWarehousesList,
   terralHubWarehousesListMapInfo,
 } from '@/assets/projects/terralHub';
-import {
-  afrikaZonHomePage,
-  afrikaZonSearch,
-  afrikaZonCart,
-  afrikaZonFavorites,
-  afrikaZonLogin,
-  afrikaZonAdmin,
-} from '@/assets/projects/afrikazon';
 
 // Import i18n utilities
-import { ui, defaultLanguage, type LanguageCode } from '@/i18n/ui';
+import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
 import type {
   ProjectData,
   SkillData,
@@ -44,6 +58,73 @@ import type {
 } from './type';
 
 const projectsListUnsorted: Array<ProjectData> = [
+  {
+    id: 'parentUp',
+    slug: 'parent-up',
+    imageUrl: parentUpLanding,
+    projectUrl: '',
+    codeUrl: '',
+    tags: [
+      'Next.js',
+      'TypeScript',
+      'TailwindCSS',
+      'shadcn/ui',
+      'zod',
+      'resend',
+      'Turborepo',
+      'convex',
+      'openAI',
+      'AI SDK',
+      'RAG',
+      'clerk',
+    ],
+    category: 'Co-Parenting Platform',
+    date: '2025-11-01',
+    galleryImages: [
+      { id: 'parentUpLanding', src: parentUpLanding },
+      { id: 'parentUpLanding2', src: parentUpLanding2 },
+      { id: 'parentUpAuth', src: parentUpAuth },
+      { id: 'parentUpInvitation', src: parentUpInvitation },
+      { id: 'parentUpDashboard', src: parentUpDashboard },
+      { id: 'parentUpProfileFamily', src: parentUpProfileFamily },
+      { id: 'parentUpTrustedCircle', src: parentUpTrustedCircle },
+      { id: 'parentUpEvents', src: parentUpEvents },
+      { id: 'parentUpEvent2', src: parentUpEvent2 },
+      { id: 'parentUpEvent3', src: parentUpEvent3 },
+      { id: 'parentUpMessaging', src: parentUpMessaging },
+      { id: 'parentUpFeedback', src: parentUpFeedback },
+    ],
+    keyFeatures: [
+      { id: 'authentication' },
+      { id: 'organizationManagement' },
+      { id: 'invitationFlow' },
+      { id: 'sharedCalendar' },
+      { id: 'eventManagement' },
+      { id: 'childInformation' },
+      { id: 'incidentReporting' },
+      { id: 'secureMessaging' },
+      { id: 'trustedCircle' },
+      { id: 'aiLegalAssistant' },
+      { id: 'dashboard' },
+    ],
+    technologiesUsed: [
+      { id: 'nextjs', name: 'Next.js' },
+      { id: 'typescript', name: 'TypeScript' },
+      { id: 'tailwindcss', name: 'TailwindCSS' },
+      { id: 'shadcn-ui', name: 'shadcn/ui' },
+      { id: 'openai', name: 'OpenAI' },
+      { id: 'vercel-ai-sdk', name: 'Vercel AI SDK' },
+      { id: 'turbo-repo', name: 'TurboRepo' },
+      { id: 'jotai', name: 'Jotai' },
+      { id: 'convex', name: 'Convex' },
+      { id: 'clerk', name: 'Clerk' },
+      { id: 'zod', name: 'Zod' },
+      { id: 'vitest', name: 'Vitest' },
+      { id: 'resend', name: 'Resend' },
+      { id: 'next-intl', name: 'Next-Intl' },
+      { id: 'vercel', name: 'Vercel' },
+    ],
+  },
   {
     id: 'codeHaven',
     slug: 'code-haven',
