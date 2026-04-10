@@ -1,13 +1,13 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   PortfolioScreen,
   getTranslatedProjects,
   getTranslatedSkills,
-  type TranslatedSkill,
   type TranslatedProject,
+  type TranslatedSkill,
 } from '@/features/projects';
 import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 
 const lang =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
@@ -35,6 +35,7 @@ const layoutProps = {
   mySkillsTitle: t('mySkillsTitle'),
   mySkillsDescription: t('mySkillsDescription'),
   projectPreviewCtaText: t('projectCardViewProject'),
+  heroIntroduction2: t('heroIntroduction2'),
 };
 ---
 

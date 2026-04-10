@@ -12,68 +12,67 @@ export const ui = {
     projectsContent: {
       parentUp: {
         title: 'Parent Up - Plateforme de Coparentalité',
-        description:
-          'Application pour parents séparés afin de mieux communiquer et organiser la garde et le quotidien des enfants.',
+        description: 'Plateforme de coordination pour parents séparés.',
         imageAltText: "Aperçu de l'application Parent Up",
-        categoryText: 'Plateforme Coparentalité',
+        categoryText: 'SaaS Coparentalité',
         dateText: 'Novembre 2025',
         detailedDescription:
-          "Parent Up est une application Next.js conçue pour aider les parents séparés à coordonner la garde et les activités de leurs enfants. Elle centralise l'information familiale via des Organisations Clerk (famille), facilite la messagerie sécurisée, la gestion d'un cercle de confiance, le suivi des incidents et offre une assistance légale via une IA.",
+          'Application Next.js structurée autour des Organisations Clerk. Elle centralise la messagerie, le calendrier de garde et le suivi des incidents. Inclut une assistance juridique basée sur un moteur RAG.',
         keyFeatures: {
           authentication: {
-            title: 'Authentification Sécurisée',
+            title: 'Accès Sécurisé',
             description:
-              "Gestion de l'authentification et des invitations via Clerk, avec sécurisation des accès par famille.",
+              'Authentification via Clerk avec isolation des données par cellule familiale.',
           },
           organizationManagement: {
-            title: 'Gestion de la Famille (Organisation Clerk)',
+            title: 'Structure Familiale',
             description:
-              "Chaque famille est une Organisation Clerk. Les enfants appartiennent à la famille et les membres partagent l'accès.",
+              'Modélisation des familles via Clerk Organizations. Partage des ressources entre membres autorisés.',
           },
           invitationFlow: {
-            title: 'Invitation du Coparent',
+            title: 'Flux d’Invitation',
             description:
-              'Invitation du coparent et des membres du cercle de confiance gérée automatiquement par Clerk.',
+              'Système automatisé pour inviter le coparent et le cercle de confiance.',
           },
           sharedCalendar: {
-            title: 'Calendrier Partagé',
+            title: 'Calendrier Synchrone',
             description:
-              'Calendrier pour les activités scolaires, médicales et extrascolaires, synchronisé au sein de la famille.',
+              'Suivi des rendez-vous médicaux et scolaires partagé en temps réel.',
           },
           eventManagement: {
-            title: 'Gestion des Événements et Gardes',
+            title: 'Planning de Garde',
             description:
-              'Planification des gardes, des événements et des routines, avec notifications et rappels.',
+              'Configuration des routines et alternances avec rappels automatiques.',
           },
           childInformation: {
-            title: "Fiches d'Information Enfant",
+            title: 'Dossiers Enfants',
             description:
-              'Santé, école, tailles, contacts et documents ; accessibles à tous les membres autorisés.',
+              'Centralisation des documents santé, scolarité et contacts d’urgence.',
           },
           incidentReporting: {
-            title: 'Signalement et Journal des Incidents',
+            title: 'Registre des Incidents',
             description:
-              'Création et suivi des incidents (dates, descriptions, pièces jointes) pour conserver un historique partagé.',
+              'Journal de suivi horodaté avec stockage de pièces jointes pour historique légal.',
           },
           secureMessaging: {
-            title: 'Messagerie Sécurisée',
+            title: 'Messagerie Interne',
             description:
-              'Communication entre coparents et membres du cercle de confiance avec notifications et pièces jointes.',
+              'Canal de communication chiffré avec notifications push.',
           },
           trustedCircle: {
             title: 'Cercle de Confiance',
             description:
-              "Gestion des membres élargis (famille, nounous, proches) avec droits d'accès ajustables.",
+              'Gestion fine des permissions pour les proches et les intervenants.',
           },
           aiLegalAssistant: {
-            title: 'Assistance Légale IA',
+            title: 'Assistance IA',
             description:
-              'Chat IA pour guidance légale et documentation (non substitut au conseil juridique).',
+              'Interface de chat pour l’analyse documentaire et l’aide à la décision.',
           },
           dashboard: {
-            title: 'Tableau de Bord Famille',
+            title: 'Vue Consolidée',
             description:
-              'Vue consolidée des messages, événements, incidents et informations des enfants.',
+              'Tableau de bord regroupant les urgences, messages et événements du jour.',
           },
         },
         galleryImages: {
@@ -127,9 +126,9 @@ export const ui = {
           },
         },
         challenges:
-          "Aligner des besoins sensibles (coparentalité) avec une expérience simple et sécurisée, tout en structurant l'accès par famille.",
+          'Structurer un modèle de données multi-tenants (par famille) tout en maintenant une UX fluide pour des utilisateurs sous pression.',
         learnings:
-          "Les Organisations Clerk simplifient fortement l'invitation et la gestion des accès ; la centralisation des données par famille clarifie les responsabilités.",
+          "L'utilisation des organisations Clerk réduit la complexité du middleware de sécurité et clarifie l'ownership des données.",
       },
       codeHaven: {
         title: 'Code Haven',
@@ -460,39 +459,38 @@ export const ui = {
       },
       avionics: {
         title: 'Avionics',
-        description:
-          "Plateforme de réservation de vols critique (zero-downtime) conçue avec l'Architecture Hexagonale et Effect-TS.",
+        description: 'Moteur de réservation de vols à haute disponibilité.',
         detailedDescription:
-          "Avionics est un moteur de réservation pensé pour survivre au chaos des pics de trafic et garantir une fiabilité absolue. Bâti au sein d'un monorepo Turborepo, l'architecture sépare strictement le domaine métier (pur et déterministe) de l'infrastructure (réseau, DBs, paiements). Résultat : un système distribué sécurisé du composant React jusqu'à la base de données, sans throw ni exceptions imprévisibles.",
-        categoryText: 'Réservation Critique',
+          "Système critique conçu en architecture hexagonale avec Effect-TS. Sépare strictement le domaine pur de l'infrastructure pour garantir un comportement déterministe sous forte charge.",
+        categoryText: 'Système Distribué',
         dateText: 'Mars 2026',
-        imageAltText: 'Interface de Avionics',
+        imageAltText: "Interface d'Avionics",
         galleryImages: {},
         keyFeatures: {
           monorepoArchitecture: {
-            title: 'Monorepo & pnpm Catalogs',
+            title: 'Monorepo Turborepo',
             description:
-              'Partage total du domaine et des types entre Frontend et Backend via Turborepo. Les versions des dépendances sont garanties identiques (mismatch impossible) grâce aux catalogs pnpm.',
+              'Partage de types et de logique métier entre services via catalogs pnpm.',
+          },
+          effectResilience: {
+            title: 'Résilience via Effect',
+            description:
+              'Gestion déclarative des pannes réseau et encodage des erreurs dans le système de types.',
+          },
+          propertyBasedTesting: {
+            title: 'Property-Based Testing',
+            description:
+              'Validation des invariants via fast-check pour couvrir les cas limites.',
+          },
+          nativeDi: {
+            title: 'Injection de Dépendances',
+            description:
+              'Utilisation du compilateur Effect pour injecter les services sans decorators.',
           },
           frameworkAgnosticUi: {
             title: 'UI "Dumb" & XState',
             description:
               "Les composants React se limitent à l'affichage aveugle. Toute la logique, et le workflows de réservation complexes, sont orchestrés par des machines d'états déterministes (XState).",
-          },
-          effectResilience: {
-            title: 'Résilience via Effect',
-            description:
-              "L'infrastructure absorbe le chaos du réseau. Gestion déclarative des exponentiels backoffs, et les erreurs sont directement encodées dans la signature TS (Timeout | PaymentError).",
-          },
-          propertyBasedTesting: {
-            title: 'Property-Based Testing',
-            description:
-              'Plus de 30 invariants métier validés par des générateurs aléatoires (fast-check) et du shrinking chirurgical des payloads, remplaçant les tests unitaires classiques.',
-          },
-          nativeDi: {
-            title: 'Injection de Dépendances Native',
-            description:
-              "Oubliez NestJS ou Inversify. L'injection se fait via le compilateur Effect. Sans decorators ni magie, le code refuse de compiler si un service manque au démarrage.",
           },
           parseDontValidate: {
             title: 'API Incassable & OpenAPI',
@@ -501,9 +499,9 @@ export const ui = {
           },
         },
         challenges:
-          "Imposer la rigueur de langages comme Rust ou Scala en TypeScript. Il a fallu désapprendre les automatismes classiques (les throw, l'injection orientée objet) pour basculer sur une architecture 100% fonctionnelle, garantissant l'atomicité sur des réservations fortement concurrentielles avec de l'optimistic locking.",
+          "Passer d'une approche orientée objet classique à une architecture 100% fonctionnelle pour garantir l'atomicité des réservations.",
         learnings:
-          "Le ROI sur le niveau d'ingénierie est massif. Ne plus gérer l'échec comme un détail d'implémentation, mais le traiter comme un contrat absolu (Types). Un frontend sans UI logic devient instantanément remplaçable.",
+          "Le traitement de l'échec comme un contrat de type (et non une exception) rend le système prédictible et facile à tester.",
       },
     },
     skillsContent: {
@@ -550,10 +548,10 @@ export const ui = {
       rights: 'Tous droits réservés.',
     },
     experiencePage: {
-      pageTitle: 'Expérience | Bakate - Développeur FullStack',
+      pageTitle: 'Expérience | Bakate Idrissa',
       pageDescription:
         'Parcours professionnel de Bakate : 4 ans chez Bloomflow, puis fondateur de Teranga Pulse à Paris.',
-      pageHeading: 'Expérience Professionnelle',
+      pageHeading: 'Parcours Professionnel',
       presentLabel: 'présent',
       stackLabel: 'Stack utilisée',
       seekingLabel: "À l'écoute de nouvelles opportunités",
@@ -563,9 +561,9 @@ export const ui = {
         role: 'Fondateur & Développeur Full-Stack',
         period: "Novembre 2024 – Aujourd'hui",
         location: 'Paris, France',
-        tagline: 'Solo-préneur · Produit · Tech · Ops',
+        tagline: 'SaaS · Architecture · Ops',
         about:
-          'Société créée pour produire et opérer des plateformes SaaS critiques en mode solo. Ownership total : produit, architecture, développement, déploiement et qualité. Deux produits lancés : Parent Up (coparentalité, Paris) et Terral Hub (logistique agricole, Sénégal).',
+          'Édition de plateformes SaaS critiques en solo. Maîtrise complète du cycle de vie : produit, infrastructure (CI/CD) et qualité logicielle.',
         subRoles: [
           {
             project: 'Parent Up',
@@ -614,10 +612,9 @@ export const ui = {
         role: 'Développeur Full-Stack',
         period: 'Novembre 2020 – Novembre 2024',
         location: 'Paris, France · Hybride',
-        tagline:
-          'Scale-up B2B · SaaS · 4 ans · Clients Bayer, HSBC, Nestlé, Chanel...',
+        tagline: 'Scale-up B2B · SaaS · 4 ans',
         about:
-          "Bloomflow est la plateforme d'open innovation des grands groupes industriels. J'ai travaillé sur les outils qui permettent à Bayer, Unilever, HSBC, Orange, Nestlé ou Chanel de mapper, gérer et monitorer leur écosystème de startups partenaires.",
+          "Développement de l'outil d'open innovation utilisé par les groupes du CAC 40 pour piloter leur écosystème startup.",
         achievements: {
           designSystem: {
             title: 'Industrialisation UI (Design System)',
@@ -660,13 +657,15 @@ export const ui = {
       pageTitle: 'Accueil | Bakate - Développeur FullStack',
       pageDescription:
         "Bienvenue sur le portfolio de Bakate, développeur FullStack passionné par la création d'expériences web innovantes.",
-      heroGreeting: "Salut, c'est Bakate",
+      heroGreeting: "Salut, c'est Bakate Idrissa",
       heroSubtitlePart1: 'Développeur FullStack',
-      heroSubtitlePart2: 'Passionné UI/UX',
+      heroSubtitlePart2: 'Architecture',
       heroIntroduction:
-        "Je suis un Développeur FullStack et mordu de UI/UX basé à Paris. J'adore créer des expériences numériques qui sont à la fois belles, fonctionnelles et centrées sur l'utilisateur. Fort d'une solide expérience en technologies front-end et back-end, je m'efforce de construire des solutions qui ne sont pas seulement techniquement robustes, mais aussi intuitives et engageantes pour les utilisateurs.",
+        'Je développe des applications web de bout en bout. Je conçois des systèmes maintenables avec TypeScript, Angular ou Next.js.',
+      heroIntroduction2:
+        "J'applique l'architecture hexagonale pour isoler la logique métier. J'automatise la qualité via Vitest et GitHub Actions ou CircleCI.",
       heroViewWorkButton: 'Mes réalisations',
-      heroContactButton: 'Me contacter',
+      heroContactButton: 'Travaillons ensemble',
       heroImageAlt:
         'Illustration représentant Bakate ou un concept de développement',
       featuredProjectsTitle: '3 derniers projets',
@@ -807,24 +806,32 @@ export const ui = {
   en: {
     projectsContent: {
       parentUp: {
-        title: 'Parent Up - Co-Parenting Platform',
-        description:
-          'App for separated parents to better communicate and organize child custody and daily care.',
+        title: 'Parent Up',
+        description: 'Coordination platform for separated parents.',
         imageAltText: 'Parent Up application preview',
         categoryText: 'Co-Parenting Platform',
         dateText: 'November 2025',
         detailedDescription:
-          'Parent Up is a Next.js app to help separated parents coordinate child custody schedules, activities, child information, incident reporting, secure messaging, and trusted circle management. Families are modeled as Clerk Organizations, keeping data shared and access consistent.',
+          'Next.js application built on Clerk Organizations. Centralizes messaging, custody schedules, and incident tracking. Features an AI legal assistant powered by RAG.',
         keyFeatures: {
           authentication: {
-            title: 'Secure Authentication',
+            title: 'Secure Access',
             description:
-              'Authentication and invitations handled via Clerk with family-scoped access.',
+              'Clerk-based authentication with family-level data isolation.',
           },
           organizationManagement: {
-            title: 'Family Management (Clerk Organization)',
+            title: 'Family Structure',
             description:
-              'Each family is a Clerk Organization. Children belong to the family; members share access.',
+              'Data modeling using Clerk Organizations for consistent member access.',
+          },
+          incidentReporting: {
+            title: 'Incident Logs',
+            description:
+              'Timestamped tracking with attachments for legal record-keeping.',
+          },
+          aiLegalAssistant: {
+            title: 'AI Assistant',
+            description: 'Document analysis and decision support interface.',
           },
           invitationFlow: {
             title: 'Co-parent Invitation Flow',
@@ -846,11 +853,7 @@ export const ui = {
             description:
               'Health, school, sizes, contacts, and documents accessible to authorized members.',
           },
-          incidentReporting: {
-            title: 'Incident Reporting and Journal',
-            description:
-              'Create and track incidents with dates, descriptions, and attachments for a shared history.',
-          },
+
           secureMessaging: {
             title: 'Secure Messaging',
             description:
@@ -860,11 +863,6 @@ export const ui = {
             title: 'Trusted Circle Management',
             description:
               'Manage extended family and caregivers with adjustable access rights.',
-          },
-          aiLegalAssistant: {
-            title: 'AI Legal Assistance',
-            description:
-              'AI chat for legal guidance and documentation (not a substitute for legal advice).',
           },
           dashboard: {
             title: 'Family Dashboard',
@@ -923,9 +921,9 @@ export const ui = {
           },
         },
         challenges:
-          'Balancing sensitive co-parenting needs with a simple, secure UX while structuring family-scoped data and permissions.',
+          'Architecting a multi-tenant family model while maintaining a seamless UX for users in high-stress situations.',
         learnings:
-          'Clerk Organizations greatly simplify invitation and access management; centralizing data by family clarifies responsibilities.',
+          'Clerk Organizations significantly reduce security middleware complexity and clarify data ownership.',
       },
       codeHaven: {
         title: 'Code Haven',
@@ -1243,15 +1241,24 @@ export const ui = {
       },
       avionics: {
         title: 'Avionics',
-        description:
-          'A zero-downtime mission-critical flight booking platform built around Hexagonal Architecture and Effect-TS.',
+        description: 'High-availability flight booking engine.',
         detailedDescription:
-          'Avionics is a flight booking engine designed to survive the chaos of massive traffic spikes and guarantee absolute reliability. Built within a Turborepo monorepo, its architecture strictly separates the pure, deterministic business domain from the unpredictable infrastructure (network, DBs, payments). The result is a robust distributed system—from the React UI down to the database.',
+          'Mission-critical system built with Hexagonal Architecture and Effect-TS. Strictly decouples domain logic from infrastructure for deterministic behavior.',
         categoryText: 'Critical Booking Platform',
         dateText: 'March 2026',
         imageAltText: 'Avionics Interface',
         galleryImages: {},
         keyFeatures: {
+          effectResilience: {
+            title: 'Effect Resilience',
+            description:
+              'Declarative network failure management and type-level error encoding.',
+          },
+          nativeDi: {
+            title: 'Native DI',
+            description:
+              'Dependency injection handled by the Effect compiler without decorators.',
+          },
           monorepoArchitecture: {
             title: 'Monorepo & pnpm Catalogs',
             description:
@@ -1262,20 +1269,11 @@ export const ui = {
             description:
               "React components are completely 'dumb', acting only as views. Complex reservation workflows and invariants are deterministically orchestrated by XState.",
           },
-          effectResilience: {
-            title: 'Infrastructure Resilience',
-            description:
-              'The infrastructure layer safely absorbs network failures gracefully via declarative exponential backoffs and strict type-level error encoding using Effect.',
-          },
+
           propertyBasedTesting: {
             title: 'Property-Based Testing',
             description:
               'Validation of over 30 business properties via random fuzzing and payload shrinking (fast-check), ensuring survival across edge cases conventional unit tests would miss.',
-          },
-          nativeDi: {
-            title: 'Native Dependency Injection',
-            description:
-              "Eliminating heavy IoC containers and decorators. The TS compiler acts as the container, failing compilation globally if a dependency contract isn't fulfilled.",
           },
           parseDontValidate: {
             title: "Parse, Don't Validate API",
@@ -1348,7 +1346,7 @@ export const ui = {
         location: 'Paris, France',
         tagline: 'Solo-preneur · Product · Tech · Ops',
         about:
-          'Company created to build and operate critical SaaS platforms independently. Full ownership: product, architecture, development, deployment, and quality. Two products shipped: Parent Up (co-parenting platform, Paris) and Terral Hub (agricultural logistics, Senegal).',
+          'Building and operating critical SaaS platforms. Full ownership of product, infrastructure, and software quality.',
         subRoles: [
           {
             project: 'Parent Up',
@@ -1397,10 +1395,9 @@ export const ui = {
         role: 'Full-Stack Developer',
         period: 'November 2020 – November 2024',
         location: 'Paris, France · Hybrid',
-        tagline:
-          'B2B Scale-up · SaaS · 4 years · Bayer, HSBC, Nestlé, Chanel...',
+        tagline: 'B2B Scale-up · SaaS · 4 years',
         about:
-          'Bloomflow is the open innovation platform for industrial giants. I built the tools that help Bayer, Unilever, HSBC, Orange, Nestlé, and Chanel map, manage, and monitor their startup partner ecosystems.',
+          'Developed open innovation tools for Fortune 500 companies to manage their startup ecosystems.',
         achievements: {
           designSystem: {
             title: 'UI Industrialization (Design System)',
@@ -1444,13 +1441,15 @@ export const ui = {
       pageTitle: 'Home | Bakate - FullStack Developer',
       pageDescription:
         'Welcome to the portfolio of Bakate, a FullStack developer passionate about creating innovative web experiences.',
-      heroGreeting: "Hi, I'm Bakate",
+      heroGreeting: "Hi, I'm Bakate Idrissa",
       heroSubtitlePart1: 'Full Stack Developer',
-      heroSubtitlePart2: 'UI/UX Enthusiast',
+      heroSubtitlePart2: 'Architecture',
       heroIntroduction:
-        "I'm a passionate Full Stack Developer and UI/UX enthusiast based in Paris. I love creating beautiful, functional, and user-centered digital experiences. With a strong foundation in both front-end and back-end technologies, I strive to build solutions that are not only technically sound but also intuitive and engaging for users.",
+        'I build end-to-end web applications. I design maintainable systems using TypeScript, Angular, or Next.js.',
+      heroIntroduction2:
+        'I use hexagonal architecture to isolate business logic and automate quality via Vitest and GitHub Actions/CircleCI.',
       heroViewWorkButton: 'View My Work',
-      heroContactButton: 'Get In Touch',
+      heroContactButton: "Let's work together",
       heroImageAlt: 'Illustration representing Bakate or a development concept',
       featuredProjectsTitle: '3 latest projects',
       featuredProjectsDescription:

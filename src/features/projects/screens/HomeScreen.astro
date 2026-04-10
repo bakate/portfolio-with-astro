@@ -19,6 +19,7 @@ export type Props = {
   heroSubtitlePart1: string;
   heroSubtitlePart2: string;
   heroIntroduction: string;
+  heroIntroduction2: string;
   heroViewWorkButton: string;
   heroContactButton: string;
   imageNotAvailable: string;
@@ -35,6 +36,7 @@ const {
   skills,
   heroGreeting,
   heroSubtitlePart1,
+  heroIntroduction2,
   heroSubtitlePart2,
   heroIntroduction,
   heroViewWorkButton,
@@ -58,7 +60,7 @@ const {
     {/* Hero Text Column */}
     <div class="text-center md:text-left">
       <h1
-        class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
+        class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
       >
         {heroGreeting}
       </h1>
@@ -68,9 +70,14 @@ const {
         <span class="text-foreground/90">{heroSubtitlePart2}</span>
       </p>
       <p
-        class="text-lg text-muted-foreground/80 mb-10 max-w-2xl mx-auto md:mx-0 leading-relaxed"
+        class="text-lg text-muted-foreground/80 mb-2 max-w-2xl mx-auto md:mx-0 leading-relaxed"
       >
         {heroIntroduction}
+      </p>
+      <p
+        class="text-lg text-muted-foreground/80 mb-10 max-w-2xl mx-auto md:mx-0 leading-relaxed"
+      >
+        {heroIntroduction2}
       </p>
       <div
         class="flex flex-col sm:flex-row gap-5 justify-center md:justify-start"
@@ -159,7 +166,10 @@ const {
 
 {/* Skills Section */}
 <section id="skills" class="py-16 md:py-24 relative overflow-hidden">
-  <div class="absolute bottom-0 left-0 p-40 bg-primary/5 rounded-full blur-[100px] -z-10 mix-blend-multiply dark:mix-blend-screen" />
+  <div
+    class="absolute bottom-0 left-0 p-40 bg-primary/5 rounded-full blur-[100px] -z-10 mix-blend-multiply dark:mix-blend-screen"
+  >
+  </div>
   <div class="container mx-auto px-4 relative z-10">
     <Heading
       title={mySkillsTitle}
