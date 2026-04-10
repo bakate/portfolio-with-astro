@@ -460,8 +460,10 @@ export const ui = {
       },
       avionics: {
         title: 'Avionics',
-        description: "Plateforme de réservation de vols critique (zero-downtime) conçue avec l'Architecture Hexagonale et Effect-TS.",
-        detailedDescription: "Avionics est un moteur de réservation pensé pour survivre au chaos des pics de trafic et garantir une fiabilité absolue. Bâti au sein d'un monorepo Turborepo, l'architecture sépare strictement le domaine métier (pur et déterministe) de l'infrastructure (réseau, DBs, paiements). Résultat : un système distribué sécurisé du composant React jusqu'à la base de données, sans throw ni exceptions imprévisibles.",
+        description:
+          "Plateforme de réservation de vols critique (zero-downtime) conçue avec l'Architecture Hexagonale et Effect-TS.",
+        detailedDescription:
+          "Avionics est un moteur de réservation pensé pour survivre au chaos des pics de trafic et garantir une fiabilité absolue. Bâti au sein d'un monorepo Turborepo, l'architecture sépare strictement le domaine métier (pur et déterministe) de l'infrastructure (réseau, DBs, paiements). Résultat : un système distribué sécurisé du composant React jusqu'à la base de données, sans throw ni exceptions imprévisibles.",
         categoryText: 'Réservation Critique',
         dateText: 'Mars 2026',
         imageAltText: 'Interface de Avionics',
@@ -469,31 +471,39 @@ export const ui = {
         keyFeatures: {
           monorepoArchitecture: {
             title: 'Monorepo & pnpm Catalogs',
-            description: "Partage total du domaine et des types entre Frontend et Backend via Turborepo. Les versions des dépendances sont garanties identiques (mismatch impossible) grâce aux catalogs pnpm."
+            description:
+              'Partage total du domaine et des types entre Frontend et Backend via Turborepo. Les versions des dépendances sont garanties identiques (mismatch impossible) grâce aux catalogs pnpm.',
           },
           frameworkAgnosticUi: {
             title: 'UI "Dumb" & XState',
-            description: "Les composants React se limitent à l'affichage aveugle. Toute la logique, et le workflows de réservation complexes, sont orchestrés par des machines d'états déterministes (XState)."
+            description:
+              "Les composants React se limitent à l'affichage aveugle. Toute la logique, et le workflows de réservation complexes, sont orchestrés par des machines d'états déterministes (XState).",
           },
           effectResilience: {
             title: 'Résilience via Effect',
-            description: "L'infrastructure absorbe le chaos du réseau. Gestion déclarative des exponentiels backoffs, et les erreurs sont directement encodées dans la signature TS (Timeout | PaymentError)."
+            description:
+              "L'infrastructure absorbe le chaos du réseau. Gestion déclarative des exponentiels backoffs, et les erreurs sont directement encodées dans la signature TS (Timeout | PaymentError).",
           },
           propertyBasedTesting: {
             title: 'Property-Based Testing',
-            description: "Plus de 30 invariants métier validés par des générateurs aléatoires (fast-check) et du shrinking chirurgical des payloads, remplaçant les tests unitaires classiques."
+            description:
+              'Plus de 30 invariants métier validés par des générateurs aléatoires (fast-check) et du shrinking chirurgical des payloads, remplaçant les tests unitaires classiques.',
           },
           nativeDi: {
             title: 'Injection de Dépendances Native',
-            description: "Oubliez NestJS ou Inversify. L'injection se fait via le compilateur Effect. Sans decorators ni magie, le code refuse de compiler si un service manque au démarrage."
+            description:
+              "Oubliez NestJS ou Inversify. L'injection se fait via le compilateur Effect. Sans decorators ni magie, le code refuse de compiler si un service manque au démarrage.",
           },
           parseDontValidate: {
             title: 'API Incassable & OpenAPI',
-            description: "Approche \"Parse, don't validate\" propulsée par @effect/platform. Les endpoints ne lâchent aucun throw : chaque erreur métier mappe automatiquement vers les bons statuts HTTP d'une documentation Scalar vivante."
-          }
+            description:
+              'Approche "Parse, don\'t validate" propulsée par @effect/platform. Les endpoints ne lâchent aucun throw : chaque erreur métier mappe automatiquement vers les bons statuts HTTP d\'une documentation Scalar vivante.',
+          },
         },
-        challenges: "Imposer la rigueur de langages comme Rust ou Scala en TypeScript. Il a fallu désapprendre les automatismes classiques (les throw, l'injection orientée objet) pour basculer sur une architecture 100% fonctionnelle, garantissant l'atomicité sur des réservations fortement concurrentielles avec de l'optimistic locking.",
-        learnings: "Le ROI sur le niveau d'ingénierie est massif. Ne plus gérer l'échec comme un détail d'implémentation, mais le traiter comme un contrat absolu (Types). Un frontend sans UI logic devient instantanément remplaçable.",
+        challenges:
+          "Imposer la rigueur de langages comme Rust ou Scala en TypeScript. Il a fallu désapprendre les automatismes classiques (les throw, l'injection orientée objet) pour basculer sur une architecture 100% fonctionnelle, garantissant l'atomicité sur des réservations fortement concurrentielles avec de l'optimistic locking.",
+        learnings:
+          "Le ROI sur le niveau d'ingénierie est massif. Ne plus gérer l'échec comme un détail d'implémentation, mais le traiter comme un contrat absolu (Types). Un frontend sans UI logic devient instantanément remplaçable.",
       },
     },
     skillsContent: {
@@ -534,9 +544,117 @@ export const ui = {
       contact: 'Contact',
       projects: 'Projets',
       tips: 'Astuces',
+      experience: 'Expérience',
     },
     footer: {
       rights: 'Tous droits réservés.',
+    },
+    experiencePage: {
+      pageTitle: 'Expérience | Bakate - Développeur FullStack',
+      pageDescription:
+        'Parcours professionnel de Bakate : 4 ans chez Bloomflow, puis fondateur de Teranga Pulse à Paris.',
+      pageHeading: 'Expérience Professionnelle',
+      presentLabel: 'présent',
+      stackLabel: 'Stack utilisée',
+      seekingLabel: "À l'écoute de nouvelles opportunités",
+      downloadCV: 'Télécharger mon CV',
+      terangaPulse: {
+        company: 'Teranga Pulse',
+        role: 'Fondateur & Développeur Full-Stack',
+        period: "Novembre 2024 – Aujourd'hui",
+        location: 'Paris, France',
+        tagline: 'Solo-préneur · Produit · Tech · Ops',
+        about:
+          'Société créée pour produire et opérer des plateformes SaaS critiques en mode solo. Ownership total : produit, architecture, développement, déploiement et qualité. Deux produits lancés : Parent Up (coparentalité, Paris) et Terral Hub (logistique agricole, Sénégal).',
+        subRoles: [
+          {
+            project: 'Parent Up',
+            role: 'Fondateur & Développeur Full-Stack',
+            period: "Juillet 2025 – Aujourd'hui",
+          },
+          {
+            project: 'Terral Hub',
+            role: 'Fondateur & Développeur Full-Stack',
+            period: 'Novembre 2024 – Juin 2025',
+          },
+        ],
+        achievements: {
+          product: {
+            title: 'Ownership Produit 360°',
+            description:
+              'Roadmap, UX, architecture, sécurité, monitoring (Sentry) et pipeline CI/CD (GitHub Actions) intégralement définis et opérés en solo.',
+          },
+          backend: {
+            title: 'Backend Temps Réel & IA',
+            description:
+              'Messagerie sécurisée, sync Google Calendar, assistant juridique IA par RAG (Vercel AI SDK, OpenAI, embeddings), notifications email via Resend.',
+          },
+          quality: {
+            title: 'Design System & Tests',
+            description:
+              'Librairie UI interne, typage strict, tests Vitest et Convex Test. Auth avancée avec Clerk Organizations.',
+          },
+        },
+        technologies: [
+          'Next.js',
+          'TypeScript',
+          'Convex',
+          'Turborepo',
+          'Clerk',
+          'Vercel AI SDK',
+          'OpenAI',
+          'Resend',
+          'Vitest',
+          'Sentry',
+          'GitHub Actions',
+        ],
+      },
+      bloomflow: {
+        company: 'Bloomflow',
+        role: 'Développeur Full-Stack',
+        period: 'Novembre 2020 – Novembre 2024',
+        location: 'Paris, France · Hybride',
+        tagline:
+          'Scale-up B2B · SaaS · 4 ans · Clients Bayer, HSBC, Nestlé, Chanel...',
+        about:
+          "Bloomflow est la plateforme d'open innovation des grands groupes industriels. J'ai travaillé sur les outils qui permettent à Bayer, Unilever, HSBC, Orange, Nestlé ou Chanel de mapper, gérer et monitorer leur écosystème de startups partenaires.",
+        achievements: {
+          designSystem: {
+            title: 'Industrialisation UI (Design System)',
+            description:
+              "Conception d'une librairie de composants Angular transverse via Storybook pour assurer la convergence visuelle et technique de plusieurs modules.",
+          },
+          migration: {
+            title: 'Migration TypeScript & Qualité',
+            description:
+              "Pilotage de la migration JS → TS d'un back-office Next.js critique. Sécurisation globale via tests unitaires, d'intégration et pipelines CI automatisés.",
+          },
+          automation: {
+            title: 'Impact Opérationnel & SaaS',
+            description:
+              "Création d'un module d'auto-service pour le Customer Success, transformant des workflows manuels complexes de 2 jours en validations instantanées.",
+          },
+          angular: {
+            title: 'Expertise Angular (State Management)',
+            description:
+              "Gestion d'états complexes (NgRx, Signals) et implémentation de formulaires dynamiques sur des processus métier à forts volumes de données.",
+          },
+        },
+        technologies: [
+          'Angular',
+          'Next.js',
+          'React',
+          'TypeScript',
+          'Node',
+          'Express',
+          'MongoDB',
+          'Elastic Search',
+          'PostgreSQL',
+          'SQLite',
+          'Jest',
+          'Docker',
+        ],
+      },
     },
     homePage: {
       pageTitle: 'Accueil | Bakate - Développeur FullStack',
@@ -1125,8 +1243,10 @@ export const ui = {
       },
       avionics: {
         title: 'Avionics',
-        description: 'A zero-downtime mission-critical flight booking platform built around Hexagonal Architecture and Effect-TS.',
-        detailedDescription: 'Avionics is a flight booking engine designed to survive the chaos of massive traffic spikes and guarantee absolute reliability. Built within a Turborepo monorepo, its architecture strictly separates the pure, deterministic business domain from the unpredictable infrastructure (network, DBs, payments). The result is a robust distributed system—from the React UI down to the database.',
+        description:
+          'A zero-downtime mission-critical flight booking platform built around Hexagonal Architecture and Effect-TS.',
+        detailedDescription:
+          'Avionics is a flight booking engine designed to survive the chaos of massive traffic spikes and guarantee absolute reliability. Built within a Turborepo monorepo, its architecture strictly separates the pure, deterministic business domain from the unpredictable infrastructure (network, DBs, payments). The result is a robust distributed system—from the React UI down to the database.',
         categoryText: 'Critical Booking Platform',
         dateText: 'March 2026',
         imageAltText: 'Avionics Interface',
@@ -1134,31 +1254,39 @@ export const ui = {
         keyFeatures: {
           monorepoArchitecture: {
             title: 'Monorepo & pnpm Catalogs',
-            description: "Seamless sharing of domains and types between Frontend and Backend using Turborepo. Dependency versions are strictly harmonized via pnpm catalogs preventing any mismatches."
+            description:
+              'Seamless sharing of domains and types between Frontend and Backend using Turborepo. Dependency versions are strictly harmonized via pnpm catalogs preventing any mismatches.',
           },
           frameworkAgnosticUi: {
             title: 'Framework Agnostic UI',
-            description: "React components are completely 'dumb', acting only as views. Complex reservation workflows and invariants are deterministically orchestrated by XState."
+            description:
+              "React components are completely 'dumb', acting only as views. Complex reservation workflows and invariants are deterministically orchestrated by XState.",
           },
           effectResilience: {
             title: 'Infrastructure Resilience',
-            description: "The infrastructure layer safely absorbs network failures gracefully via declarative exponential backoffs and strict type-level error encoding using Effect."
+            description:
+              'The infrastructure layer safely absorbs network failures gracefully via declarative exponential backoffs and strict type-level error encoding using Effect.',
           },
           propertyBasedTesting: {
             title: 'Property-Based Testing',
-            description: "Validation of over 30 business properties via random fuzzing and payload shrinking (fast-check), ensuring survival across edge cases conventional unit tests would miss."
+            description:
+              'Validation of over 30 business properties via random fuzzing and payload shrinking (fast-check), ensuring survival across edge cases conventional unit tests would miss.',
           },
           nativeDi: {
             title: 'Native Dependency Injection',
-            description: "Eliminating heavy IoC containers and decorators. The TS compiler acts as the container, failing compilation globally if a dependency contract isn't fulfilled."
+            description:
+              "Eliminating heavy IoC containers and decorators. The TS compiler acts as the container, failing compilation globally if a dependency contract isn't fulfilled.",
           },
           parseDontValidate: {
-            title: 'Parse, Don\'t Validate API',
-            description: "Leveraging @effect/platform for strict schemas mapping internal business failures directly to HTTP status codes, powering an interactive, always-truthful Scalar openAPI spec."
-          }
+            title: "Parse, Don't Validate API",
+            description:
+              'Leveraging @effect/platform for strict schemas mapping internal business failures directly to HTTP status codes, powering an interactive, always-truthful Scalar openAPI spec.',
+          },
         },
-        challenges: "Adopting the rigor of functional languages like Rust or Scala within TypeScript. This involved unlearning conventional patterns (try/catch blocks, heavy IoC) to achieve atomic concurrency under massive booking contention using optimistic locking.",
-        learnings: "The engineering ROI of this strictness is immense. Treating failures as a formal mathematical contract rather than an implementation detail results in a bulletproof, decoupled system.",
+        challenges:
+          'Adopting the rigor of functional languages like Rust or Scala within TypeScript. This involved unlearning conventional patterns (try/catch blocks, heavy IoC) to achieve atomic concurrency under massive booking contention using optimistic locking.',
+        learnings:
+          'The engineering ROI of this strictness is immense. Treating failures as a formal mathematical contract rather than an implementation detail results in a bulletproof, decoupled system.',
       },
     },
     skillsContent: {
@@ -1199,10 +1327,119 @@ export const ui = {
       contact: 'Contact',
       projects: 'Projects',
       tips: 'Tips',
+      experience: 'Experience',
     },
     footer: {
       rights: 'All rights reserved.',
     },
+    experiencePage: {
+      pageTitle: 'Experience | Bakate - FullStack Developer',
+      pageDescription:
+        'Professional background of Bakate: 4 years at Bloomflow, then Founder of Teranga Pulse in Paris.',
+      pageHeading: 'Professional Experience',
+      presentLabel: 'present',
+      stackLabel: 'Tech stack',
+      seekingLabel: 'Open to new opportunities',
+      downloadCV: 'Download Resume',
+      terangaPulse: {
+        company: 'Teranga Pulse',
+        role: 'Founder & Full-Stack Developer',
+        period: 'November 2024 – Present',
+        location: 'Paris, France',
+        tagline: 'Solo-preneur · Product · Tech · Ops',
+        about:
+          'Company created to build and operate critical SaaS platforms independently. Full ownership: product, architecture, development, deployment, and quality. Two products shipped: Parent Up (co-parenting platform, Paris) and Terral Hub (agricultural logistics, Senegal).',
+        subRoles: [
+          {
+            project: 'Parent Up',
+            role: 'Founder & Full-Stack Developer',
+            period: 'July 2025 – Present',
+          },
+          {
+            project: 'Terral Hub',
+            role: 'Founder & Full-Stack Developer',
+            period: 'November 2024 – June 2025',
+          },
+        ],
+        achievements: {
+          product: {
+            title: '360° Product Ownership',
+            description:
+              'Roadmap, UX, architecture, security, monitoring (Sentry), and CI/CD pipelines (GitHub Actions) — fully defined and operated solo.',
+          },
+          backend: {
+            title: 'Real-Time Backend & AI',
+            description:
+              'Secure messaging, Google Calendar sync, AI legal assistant via RAG (Vercel AI SDK, OpenAI, embeddings), email notifications via Resend.',
+          },
+          quality: {
+            title: 'Design System & Testing',
+            description:
+              'Internal UI library, strict typing, Vitest and Convex Test coverage. Advanced auth with Clerk Organizations.',
+          },
+        },
+        technologies: [
+          'Next.js',
+          'TypeScript',
+          'Convex',
+          'Turborepo',
+          'Clerk',
+          'Vercel AI SDK',
+          'OpenAI',
+          'Resend',
+          'Vitest',
+          'Sentry',
+          'GitHub Actions',
+        ],
+      },
+      bloomflow: {
+        company: 'Bloomflow',
+        role: 'Full-Stack Developer',
+        period: 'November 2020 – November 2024',
+        location: 'Paris, France · Hybrid',
+        tagline:
+          'B2B Scale-up · SaaS · 4 years · Bayer, HSBC, Nestlé, Chanel...',
+        about:
+          'Bloomflow is the open innovation platform for industrial giants. I built the tools that help Bayer, Unilever, HSBC, Orange, Nestlé, and Chanel map, manage, and monitor their startup partner ecosystems.',
+        achievements: {
+          designSystem: {
+            title: 'UI Industrialization (Design System)',
+            description:
+              'Architected a cross-project Angular component library via Storybook to ensure visual and technical alignment across several modules.',
+          },
+          migration: {
+            title: 'TypeScript Migration & Quality',
+            description:
+              'Led the JS-to-TS migration of a mission-critical Next.js back-office. Secured the codebase with unit/integration tests and automated CI pipelines.',
+          },
+          automation: {
+            title: 'Operational Impact & SaaS',
+            description:
+              'Built a self-service module for Customer Success, slashing complex 2-day manual workflows into instant, one-click validations.',
+          },
+          angular: {
+            title: 'Angular Expertise (State Management)',
+            description:
+              'Managed complex states (NgRx, Signals) and implemented dynamic forms for professional processes with high data volumes.',
+          },
+        },
+        technologies: [
+          'Angular',
+          'Next.js',
+          'React',
+          'TypeScript',
+          'Node',
+          'Express',
+          'MongoDB',
+          'Elastic Search',
+          'PostgreSQL',
+          'SQLite',
+          'Jest',
+          'Docker',
+        ],
+      },
+    },
+
     homePage: {
       pageTitle: 'Home | Bakate - FullStack Developer',
       pageDescription:

@@ -1,0 +1,489 @@
+---
+import Heading from '@/components/Heading.astro';
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
+import type { LanguageCode } from '@/i18n/ui';
+import { cn } from '@/lib/utils';
+import {
+  Building,
+  Calendar,
+  CheckCircle,
+  CpuIcon,
+  ExternalLink,
+  FileDown,
+  MapPin,
+} from 'lucide-react';
+
+export type Achievement = {
+  title: string;
+  description: string;
+};
+
+export type SubRole = {
+  role: string;
+  period: string;
+  project: string;
+};
+
+export type ExperienceEntry = {
+  company: string;
+  companyUrl?: string;
+  role: string;
+  period: string;
+  location: string;
+  tagline: string;
+  about: string;
+  subRoles?: SubRole[];
+  achievements: Achievement[];
+  technologies: string[];
+  isFounder?: boolean;
+};
+
+export type Props = {
+  lang: LanguageCode;
+  pageHeading: string;
+  stackLabel: string;
+  seekingLabel: string;
+  downloadLabel: string;
+  cvUrl: string;
+  experiences: ExperienceEntry[];
+};
+
+const {
+  lang,
+  pageHeading,
+  stackLabel,
+  seekingLabel,
+  downloadLabel,
+  cvUrl,
+  experiences,
+} = Astro.props;
+---
+
+<section class="py-12 md:py-16 relative overflow-hidden">
+  <div class="absolute inset-0 -z-10"></div>
+
+  <div
+    class="container mx-auto px-4 mb-16 flex flex-col items-center text-center"
+  >
+    <div class="max-w-2xl text-center">
+      <Heading title={pageHeading} />
+
+      <div class="mt-8 flex justify-center">
+        <a
+          href={cvUrl}
+          download
+          class={cn(
+            buttonVariants({ variant: 'default', size: 'lg' }),
+            'btn-download group'
+          )}
+        >
+          <div class="btn-download-glow"></div>
+          <FileDown className="size-5 relative z-10" />
+          <span class="relative z-10">{downloadLabel}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {/* Timeline container */}
+  <div class="relative max-w-4xl mx-auto py-12 px-4 sm:px-6">
+    <div class="relative pl-8 md:pl-16">
+      {/* Vertical Rail */}
+      <div class="timeline-rail"></div>
+
+      {
+        experiences.map((exp, index) => (
+          <div
+            class="relative mb-16 last:mb-0 group"
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
+          >
+            {/* Timeline Dot */}
+            <div
+              class={cn(
+                'timeline-dot-container group-hover:scale-125',
+                exp.isFounder ? 'founder' : 'employee'
+              )}
+            >
+              <div class="timeline-dot-inner" />
+            </div>
+
+            {/* Experience Card */}
+            <div class="glass-card group-hover:-translate-y-1 transition-all duration-300">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                  <div class="flex items-center gap-3 mb-2">
+                    {!exp.isFounder && (
+                      <div class="icon-box text-primary">
+                        <Building className="size-5" />
+                      </div>
+                    )}
+                    <h2 class="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                      {exp.company}
+                      {exp.companyUrl && (
+                        <a
+                          href={exp.companyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="link-external"
+                          aria-label={`Visit ${exp.company} website`}
+                        >
+                          <ExternalLink className="size-4" />
+                        </a>
+                      )}
+                    </h2>
+                  </div>
+                  <div class="space-y-1">
+                    <p
+                      class={cn(
+                        'text-lg font-semibold',
+                        exp.isFounder ? 'text-amber-500/90' : 'text-primary'
+                      )}
+                    >
+                      {exp.role}
+                    </p>
+                    <p class="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
+                      {exp.tagline}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col items-start md:items-end gap-2 shrink-0">
+                  <Badge
+                    variant="secondary"
+                    className="badge-period h-auto py-1.5 px-3"
+                  >
+                    <Calendar className="size-4 text-muted-foreground mr-2" />
+                    <span>{exp.period}</span>
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="badge-location h-auto py-1 px-3 border-none bg-muted/30"
+                  >
+                    <MapPin className="size-3.5 mr-1.5" />
+                    <span>{exp.location}</span>
+                  </Badge>
+                </div>
+              </div>
+
+              {/* About */}
+              <div class="relative mb-8">
+                <div class="about-accent" />
+                <p class="text-muted-foreground leading-relaxed italic text-sm md:text-base">
+                  {exp.about}
+                </p>
+              </div>
+
+              {/* Sub-roles */}
+              {exp.subRoles && exp.subRoles.length > 0 && (
+                <div class="mb-8 grid gap-3">
+                  {exp.subRoles.map((sub) => (
+                    <div class="sub-role-item group/sub">
+                      <div class="flex items-center gap-3">
+                        <div class="sub-role-indicator" />
+                        <span class="font-bold text-foreground/90">
+                          {sub.project}
+                        </span>
+                        <span class="text-muted-foreground/60">—</span>
+                        <span class="text-muted-foreground">{sub.role}</span>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className="sub-role-period h-auto py-0.5 px-2 bg-background/50 border-border/30"
+                      >
+                        {sub.period}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Achievements grid */}
+              <div
+                class={`grid gap-4 mb-8 ${exp.achievements.length === 3 ? 'md:grid-cols-3' : 'sm:grid-cols-2'}`}
+              >
+                {exp.achievements.map((achievement) => (
+                  <div class="achievement-card group/item">
+                    <div class="flex items-start gap-3 mb-3">
+                      <div
+                        class={cn(
+                          'achievement-icon',
+                          exp.isFounder ? 'text-amber-500' : 'text-primary'
+                        )}
+                      >
+                        <CheckCircle className="size-4" />
+                      </div>
+                      <h3 class="text-sm font-bold text-foreground leading-snug">
+                        {achievement.title}
+                      </h3>
+                    </div>
+                    <p class="text-xs text-muted-foreground leading-relaxed line-clamp-4">
+                      {achievement.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Stack Tags */}
+              <div class="pt-6 border-t border-border/50">
+                <div class="flex items-center gap-2 mb-3">
+                  <CpuIcon className="size-4 text-muted-foreground" />
+                  <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
+                    {stackLabel}
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  {exp.technologies.map((tech) => (
+                    <Badge
+                      variant="default"
+                      className="tech-tag bg-primary/5 text-primary/80 border-primary/10 hover:bg-primary/10 transition-colors"
+                    >
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+
+      {/* Bottom Terminal Dot (Seeking) */}
+      <div class="relative mt-12 group flex items-center">
+        <div
+          class="absolute left-[-28px] md:left-[-44px] size-6 flex items-center justify-center"
+        >
+          <div
+            class="size-4 rounded-full border-2 border-border bg-background z-10"
+          >
+          </div>
+          <div class="absolute size-4 rounded-full bg-primary/20 animate-ping">
+          </div>
+        </div>
+        <div class="seeking-badge">
+          <div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+          <span class="text-sm font-bold text-muted-foreground tracking-wide">
+            {seekingLabel}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bg-experience-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -10;
+    background: radial-gradient(
+      ellipse at top right,
+      color-mix(in oklch, var(--color-primary), transparent 90%),
+      transparent 70%
+    );
+  }
+
+  .timeline-rail {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    bottom: 1rem;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--color-primary), transparent 50%),
+      var(--color-border),
+      transparent
+    );
+  }
+  @media (min-width: 768px) {
+    .timeline-rail {
+      left: 2rem;
+    }
+  }
+
+  .timeline-dot-container {
+    position: absolute;
+    left: -28px;
+    top: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    border-width: 2px;
+    background-color: var(--color-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.5s ease;
+  }
+  @media (min-width: 768px) {
+    .timeline-dot-container {
+      left: -44px;
+    }
+  }
+  .timeline-dot-container.founder {
+    border-color: #f59e0b; /* amber-500 */
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+  }
+  .timeline-dot-container.employee {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 15px
+      color-mix(in oklch, var(--color-primary), transparent 60%);
+  }
+
+  .timeline-dot-inner {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: currentColor;
+  }
+  .founder .timeline-dot-inner {
+    background-color: #f59e0b;
+  }
+  .employee .timeline-dot-inner {
+    background-color: var(--color-primary);
+  }
+
+  .glass-card {
+    background-color: color-mix(in oklch, var(--color-card), transparent 50%);
+    backdrop-filter: blur(4px);
+    border-radius: 1rem;
+    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+  }
+  @media (min-width: 768px) {
+    .glass-card {
+      padding: 2rem;
+    }
+  }
+  .glass-card:hover {
+    box-shadow: var(--shadow-xl);
+    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+  }
+
+  .icon-box {
+    padding: 0.625rem;
+    border-radius: 0.75rem;
+    background-color: color-mix(in oklch, var(--color-muted), transparent 50%);
+    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
+  }
+
+  .link-external {
+    color: color-mix(in oklch, var(--color-muted-foreground), transparent 60%);
+    transition: color 0.2s ease;
+    outline: none;
+  }
+  .link-external:hover {
+    color: var(--color-primary);
+  }
+
+  .btn-download-glow {
+    position: absolute;
+    inset: 0;
+    background-color: rgb(255 255 255 / 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .btn-download:hover .btn-download-glow {
+    transform: translateX(0);
+  }
+
+  .about-accent {
+    position: absolute;
+    inset-block: 0;
+    left: -1rem;
+    width: 4px;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--color-primary), transparent 70%),
+      transparent
+    );
+    border-radius: 9999px;
+  }
+
+  .sub-role-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    background-color: color-mix(in oklch, var(--color-muted), transparent 80%);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid color-mix(in oklch, var(--color-border), transparent 60%);
+    transition: background-color 0.2s ease;
+  }
+  @media (min-width: 640px) {
+    .sub-role-item {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+  .sub-role-item:hover {
+    background-color: color-mix(in oklch, var(--color-muted), transparent 60%);
+  }
+
+  .sub-role-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: color-mix(
+      in oklch,
+      var(--color-primary),
+      transparent 60%
+    );
+    transition: all 0.2s ease;
+  }
+  .sub-role-item:hover .sub-role-indicator {
+    background-color: var(--color-primary);
+    transform: scale(1.1);
+  }
+
+  .achievement-card {
+    background-color: color-mix(in oklch, var(--color-muted), transparent 90%);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid color-mix(in oklch, var(--color-border), transparent 60%);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .achievement-card:hover {
+    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+    background-color: color-mix(in oklch, var(--color-muted), transparent 70%);
+    box-shadow: var(--shadow-md);
+  }
+
+  .achievement-icon {
+    padding: 0.375rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-background);
+    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
+    transition: border-color 0.2s ease;
+    flex-shrink: 0;
+  }
+  .achievement-card:hover .achievement-icon {
+    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+  }
+
+  .seeking-badge {
+    background-color: color-mix(in oklch, var(--color-muted), transparent 70%);
+    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
+    border-radius: 9999px;
+    padding: 0.5rem 1.5rem;
+    margin-left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease;
+  }
+  .seeking-badge:hover {
+    background-color: color-mix(in oklch, var(--color-muted), transparent 50%);
+  }
+</style>
