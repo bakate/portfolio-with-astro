@@ -48,8 +48,9 @@ const {
 } = Astro.props;
 ---
 
-<section class="py-12 md:py-16">
-  <div class="grid md:grid-cols-2 gap-12 items-center justify-between">
+<section class="py-12 md:py-16 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/15 via-background to-background -z-10" />
+  <div class="grid md:grid-cols-2 gap-12 items-center justify-between relative z-10">
     {/* Hero Text Column */}
     <div class="text-center md:text-left">
       <h1

@@ -33,9 +33,30 @@ function getErrorMessage(
 
   if (params) {
     Object.keys(params).forEach((paramKey) => {
-      message = message.replace(`{${paramKey}}`, String(params[paramKey]));
+      const val = params[paramKey];
+      message = message.replace(`{${paramKey}}`, String(val));
+
+      // Simple pluralization handling for "(s:paramName)" or deprecated global "(s)"
+      if (typeof val === 'number' || !isNaN(Number(val))) {
+        const num = Number(val);
+        const suffix = num <= 1 ? '' : 's';
+        
+        // Parameter-scoped marker replacement
+        message = message.replace(new RegExp(`\\(s:${paramKey}\\)`, 'g'), suffix);
+        
+        // Deprecated global marker replacement
+        if (message.includes('(s)')) {
+          message = message.replace(/\(s\)/g, suffix);
+        }
+      }
     });
   }
+
+  // handle elision in French (ex: "Le email" -> "L'email", "la adresse" -> "l'adresse")
+  if (lang === 'fr') {
+    message = message.replace(/\b([Ll])[ea] ([aeiouyéèêàâîïôû])/gi, "$1'$2");
+  }
+
   return message;
 }
 
@@ -66,16 +87,36 @@ const customErrorMap =
           message = ctx.defaultError;
         }
         break;
-      case z.ZodIssueCode.too_small:
+      case z.ZodIssueCode.too_small: {
+        const fieldPath = issue.path.length > 0 ? String(issue.path[issue.path.length - 1]) : 'champ';
+        const fieldNameKey = fieldPath !== 'champ' ? `${fieldPath}Label` as keyof (typeof ui)[LanguageCode]['contactPage'] : undefined;
+        let rawFieldName = fieldPath;
+        
+        if (fieldNameKey) {
+          rawFieldName =
+            ui[lang]?.contactPage?.[fieldNameKey] ||
+            ui[defaultLanguage]?.contactPage?.[fieldNameKey] ||
+            fieldPath;
+        }
+        const fieldName = String(rawFieldName).toLowerCase();
+
         if (issue.type === 'string') {
-          message = getErrorMessage(lang, 'too_small_string_minimum', {
-            minimum: String(issue.minimum),
-          });
+          if (issue.minimum === 1 && issue.exact === false) {
+            // `.nonempty()` or `.min(1)` translates to a "required" error
+            message = getErrorMessage(lang, 'required_field_custom', {
+              fieldName,
+            });
+          } else {
+            message = getErrorMessage(lang, 'too_small_string_minimum', {
+              minimum: String(issue.minimum),
+              fieldName,
+            });
+          }
         } else {
-          // Handle other types if necessary, e.g., number, array
           message = ctx.defaultError;
         }
         break;
+      }
       case z.ZodIssueCode.too_big:
         if (issue.type === 'string') {
           message = getErrorMessage(lang, 'too_big_string_maximum', {

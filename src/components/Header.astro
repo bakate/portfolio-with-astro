@@ -15,24 +15,45 @@ const { languagesForSelector, navItems } = Astro.props as Props;
 
 const currentLocale =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
+const currentPathname = Astro.url.pathname;
 ---
 
 <header
-  class="py-6 border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+  class="py-4 border-b border-border/50 sticky top-0 z-50 w-full bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
 >
   <nav class="mx-auto px-4 max-w-screen-2xl flex justify-between items-center">
     <Logo />
     <div class="flex items-center gap-x-5">
       {
-        navItems.map((link) => (
-          <a
-            href={getRelativeLocaleUrl(currentLocale, link.href)}
-            class="font-medium text-muted-foreground transition-colors hover:text-foreground relative group"
-          >
-            {link.label}
-            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-          </a>
-        ))
+        navItems.map((link) => {
+          const localizedHref = getRelativeLocaleUrl(currentLocale, link.href);
+          const normalizedHref = localizedHref.replace(/\/$/, '');
+          const normalizedCurrent = currentPathname.replace(/\/$/, '');
+
+          let isActive =
+            normalizedCurrent === normalizedHref ||
+            (normalizedHref === '' && normalizedCurrent === '');
+
+          if (
+            link.href !== '/' &&
+            normalizedHref !== '' &&
+            normalizedCurrent.startsWith(normalizedHref + '/')
+          ) {
+            isActive = true;
+          }
+
+          return (
+            <a
+              href={localizedHref}
+              class={`font-medium transition-colors hover:text-foreground relative group ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}
+            >
+              {link.label}
+              <span
+                class={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}
+              />
+            </a>
+          );
+        })
       }
     </div>
     <div class="flex items-center gap-x-3">

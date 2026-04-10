@@ -55,25 +55,5 @@ const uniqueId = `themeToggle-${crypto.randomUUID().slice(0, 8)}`;
   // Good for re-attaching listeners to elements that might have been re-rendered.
   document.addEventListener('astro:page-load', setupThemeToggleButton);
 
-  // MutationObserver to sync localStorage if the 'dark' class changes by other means (e.g., dev tools).
-  if (
-    typeof localStorage !== 'undefined' &&
-    !document.documentElement.hasAttribute('data-theme-observer-toggle')
-  ) {
-    const observer = new MutationObserver(() => {
-      const isDarkNow = document.documentElement.classList.contains('dark');
-      const storedTheme = localStorage.getItem('theme');
-      if (
-        (isDarkNow && storedTheme !== 'dark') ||
-        (!isDarkNow && storedTheme !== 'light')
-      ) {
-        localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
-      }
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-    document.documentElement.setAttribute('data-theme-observer-toggle', 'true');
-  }
+
 </script>

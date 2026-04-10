@@ -204,7 +204,7 @@ const projectsListUnsorted: Array<ProjectData> = [
     id: 'afrikaZon',
     slug: 'afrikazon',
     imageUrl: afrikaZonPreviewImage,
-    projectUrl: 'https://www.afrikazon.com/',
+    projectUrl: 'https://africazon.vercel.app/',
     codeUrl: '',
     tags: [
       'Next.js',

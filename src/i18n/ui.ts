@@ -638,9 +638,10 @@ export const ui = {
       // Common errors
       invalid_type: 'Type invalide.',
       invalid_type_received_undefined: 'Ce champ est requis.', // For required fields (fallback)
-      required_field_custom: 'Le champ {fieldName} est requis.',
+      required_field_custom: '{fieldName} est requis.',
       // String errors
-      too_small_string_minimum: 'Doit contenir au moins {minimum} caractères.',
+      too_small_string_minimum:
+        '{fieldName} doit contenir au moins {minimum} caractère(s:minimum).',
       too_big_string_maximum: 'Ne doit pas dépasser {maximum} caractères.',
       invalid_string_email: 'Adresse e-mail invalide.',
       invalid_string_url: 'URL invalide.',
@@ -1258,9 +1259,10 @@ export const ui = {
       // Common errors
       invalid_type: 'Invalid type.',
       invalid_type_received_undefined: 'This field is required.', // For required fields (fallback)
-      required_field_custom: 'The {fieldName} field is required.',
+      required_field_custom: '{fieldName} is required.',
       // String errors
-      too_small_string_minimum: 'Must be at least {minimum} characters long.',
+      too_small_string_minimum:
+        '{fieldName} must be at least {minimum} character(s:minimum) long.',
       too_big_string_maximum: 'Must be no more than {maximum} characters long.',
       invalid_string_email: 'Invalid email address.',
       invalid_string_url: 'Invalid URL.',
