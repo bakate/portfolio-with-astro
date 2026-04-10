@@ -522,13 +522,11 @@ export const skillsList: Array<SkillData> = [
     iconName: 'MonitorSmartphone',
     technologies: [
       { id: 'react', name: 'React' },
-      { id: 'angular', name: 'Angular' },
       { id: 'typescript', name: 'TypeScript' },
+      { id: 'xstate', name: 'XState' },
+      { id: 'vite', name: 'Vite' },
       { id: 'astro', name: 'Astro' },
       { id: 'tailwindcss', name: 'Tailwind CSS' },
-      { id: 'html5', name: 'HTML5' },
-      { id: 'css3', name: 'CSS3' },
-      { id: 'javascript', name: 'JavaScript' },
     ],
   },
   {
@@ -536,12 +534,20 @@ export const skillsList: Array<SkillData> = [
     iconName: 'ServerCog',
     technologies: [
       { id: 'nodejs', name: 'Node.js' },
+      { id: 'effect', name: 'Effect (TS)' },
       { id: 'bun', name: 'Bun' },
-      { id: 'deno', name: 'Deno' },
-      { id: 'express', name: 'Express.js' },
-      { id: 'nestjs', name: 'NestJS' },
       { id: 'hono', name: 'Hono' },
-      { id: 'python', name: 'Python' },
+      { id: 'express', name: 'Express.js' },
+    ],
+  },
+  {
+    id: 'softwareArchitecture',
+    iconName: 'Network',
+    technologies: [
+      { id: 'turborepo', name: 'Turborepo' },
+      { id: 'docker', name: 'Docker' },
+      { id: 'amazonservices', name: 'AWS' },
+      { id: 'git', name: 'Git' },
     ],
   },
   {
@@ -549,11 +555,9 @@ export const skillsList: Array<SkillData> = [
     iconName: 'Database',
     technologies: [
       { id: 'postgresql', name: 'PostgreSQL' },
-      { id: 'mysql', name: 'MySQL' },
-      { id: 'mongodb', name: 'MongoDB' },
-      { id: 'sqlite', name: 'SQLite' },
-      { id: 'prisma', name: 'Prisma' },
       { id: 'drizzleorm', name: 'Drizzle ORM' },
+      { id: 'prisma', name: 'Prisma' },
+      { id: 'mongodb', name: 'MongoDB' },
     ],
   },
   {
@@ -562,17 +566,6 @@ export const skillsList: Array<SkillData> = [
     technologies: [
       { id: 'figma', name: 'Figma' },
       { id: 'tailwindcss', name: 'Tailwind CSS' },
-      { id: 'shadcnui', name: 'shadcn/ui' },
-    ],
-  },
-  {
-    id: 'softwareArchitecture',
-    iconName: 'Network',
-    technologies: [
-      { id: 'docker', name: 'Docker' },
-      { id: 'kubernetes', name: 'Kubernetes' },
-      { id: 'git', name: 'Git' },
-      { id: 'amazonservices', name: 'AWS' },
     ],
   },
 ];
