@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { type LanguageCode, defaultLanguage, type ui } from '@/i18n/ui';
 import { Image } from 'astro:assets';
-import { Code, ExternalLink } from 'lucide-react';
+import { Code, ExternalLink, CheckCircle, AlertTriangle, Lightbulb, ArrowLeft } from 'lucide-react';
 import ProjectGallery from '../components/ProjectGallery';
 import type { TranslatedProject } from '../type';
 
@@ -21,9 +21,10 @@ const { project, t, lang } = Astro.props;
   <article class="prose lg:prose-xl max-w-none dark:prose-invert">
     <a
       href={`${lang !== defaultLanguage ? `/${lang}` : ''}/projects`}
-      class={buttonVariants({ variant: 'ghost' }) + ' mb-6 no-underline'}
+      class={buttonVariants({ variant: 'ghost' }) + ' mb-8 no-underline group flex w-fit items-center text-muted-foreground hover:text-foreground'}
     >
-      &larr; {t.projectDetailPage?.backToProjects ?? 'Back to Projects'}
+      <ArrowLeft className="mr-2 size-4 transition-transform group-hover:-translate-x-1" /> 
+      {t.projectDetailPage?.backToProjects ?? 'Back to Projects'}
     </a>
 
     <Heading title={project.title} />
@@ -57,11 +58,11 @@ const { project, t, lang } = Astro.props;
     <!-- Image -->
     {
       project.imageUrl && (
-        <div class="mb-8 aspect-[16/9] overflow-hidden rounded-lg shadow-lg">
+        <div class="mb-12 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border/50 shadow-2xl shadow-primary/20">
           <Image
             src={project.imageUrl}
             alt={project.imageAltText}
-            class="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+            class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
             widths={[400, 800, 1200]}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
@@ -82,15 +83,19 @@ const { project, t, lang } = Astro.props;
     {
       project.keyFeaturesTranslated &&
         project.keyFeaturesTranslated.length > 0 && (
-          <section class="mb-8">
+          <section class="mb-12">
             <h2>{t.projectDetailPage?.keyFeaturesTitle ?? 'Key Features'}</h2>
-            <ul class="pl-5 list-disc">
+            <div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 mt-6">
               {project.keyFeaturesTranslated.map((feature) => (
-                <li>
-                  <strong>{feature.title}:</strong> {feature.description}
-                </li>
+                <div class="flex flex-col gap-2 rounded-xl bg-muted/40 p-5 border border-border/50 hover:bg-muted/60 transition-colors">
+                  <div class="flex items-start gap-3">
+                    <CheckCircle className="size-5 text-primary shrink-0 mt-0.5" />
+                    <span class="font-semibold text-foreground m-0 text-[1.1rem] leading-snug">{feature.title}</span>
+                  </div>
+                  <p class="text-muted-foreground m-0 text-sm leading-relaxed">{feature.description}</p>
+                </div>
               ))}
-            </ul>
+            </div>
           </section>
         )
     }
@@ -114,22 +119,28 @@ const { project, t, lang } = Astro.props;
 
     {
       (project.challenges || project.learnings) && (
-        <div class="grid grid-cols-1 md:gap-8 md:grid-cols-2 md:mb-8 mb-4">
+        <div class="not-prose grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 mt-12">
           {project.challenges && (
-            <section>
-              <h2 class="mt-0">
-                {t.projectDetailPage?.challengesTitle ?? 'Challenges'}
-              </h2>
-              <p>{project.challenges ?? 'Challenges'}</p>
+            <section class="rounded-2xl border border-border/50 bg-secondary/20 p-6 flex flex-col">
+              <div class="flex items-start gap-3 mb-4">
+                <AlertTriangle className="size-6 text-orange-500 shrink-0 mt-0.5" />
+                <span class="m-0 text-xl font-bold tracking-tight">
+                  {t.projectDetailPage?.challengesTitle ?? 'Challenges'}
+                </span>
+              </div>
+              <p class="text-muted-foreground leading-relaxed m-0 text-base flex-1">{project.challenges}</p>
             </section>
           )}
 
           {project.learnings && (
-            <section>
-              <h2 class="mt-0">
-                {t.projectDetailPage?.learningsTitle ?? 'Learnings'}
-              </h2>
-              <p>{project.learnings ?? 'Learnings'}</p>
+            <section class="rounded-2xl border border-border/50 bg-primary/5 p-6 flex flex-col">
+              <div class="flex items-start gap-3 mb-4">
+                <Lightbulb className="size-6 text-primary shrink-0 mt-0.5" />
+                <span class="m-0 text-xl font-bold tracking-tight">
+                  {t.projectDetailPage?.learningsTitle ?? 'Learnings'}
+                </span>
+              </div>
+              <p class="text-muted-foreground leading-relaxed m-0 text-base flex-1">{project.learnings}</p>
             </section>
           )}
         </div>
@@ -137,7 +148,7 @@ const { project, t, lang } = Astro.props;
     }
 
     {/* Project and Code URLs */}
-    <div class="mt-8 flex flex-wrap gap-4">
+    <div class="mt-8 mb-12 flex flex-col sm:flex-row gap-4 justify-start">
       {
         project.projectUrl && (
           <a
@@ -145,10 +156,10 @@ const { project, t, lang } = Astro.props;
             target="_blank"
             rel="noopener noreferrer"
             class={
-              buttonVariants({ variant: 'default' }) + ' flex-1 no-underline'
+              buttonVariants({ variant: 'default', size: 'lg' }) + ' sm:w-auto w-full no-underline shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/30'
             }
           >
-            <ExternalLink className="mr-2 size-4" />
+            <ExternalLink className="mr-2 size-5" />
             {t.projectDetailPage?.visitProjectButton ?? 'Visit Project'}
           </a>
         )
@@ -160,10 +171,10 @@ const { project, t, lang } = Astro.props;
             target="_blank"
             rel="noopener noreferrer"
             class={
-              buttonVariants({ variant: 'secondary' }) + ' flex-1 no-underline'
+              buttonVariants({ variant: 'outline', size: 'lg' }) + ' sm:w-auto w-full no-underline bg-background hover:bg-muted transition-all duration-300 hover:-translate-y-1'
             }
           >
-            <Code className="mr-2 size-4" />
+            <Code className="mr-2 size-5" />
             {t.projectDetailPage?.viewCodeButton ?? 'View Code'}
           </a>
         )

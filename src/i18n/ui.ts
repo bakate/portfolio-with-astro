@@ -458,6 +458,43 @@ export const ui = {
         learnings:
           "L'importance d'une conception centrée sur l'utilisateur et d'une collaboration étroite avec les acteurs du secteur agricole pour répondre au mieux à leurs besoins spécifiques.",
       },
+      avionics: {
+        title: 'Avionics',
+        description: "Plateforme de réservation de vols critique (zero-downtime) conçue avec l'Architecture Hexagonale et Effect-TS.",
+        detailedDescription: "Avionics est un moteur de réservation pensé pour survivre au chaos des pics de trafic et garantir une fiabilité absolue. Bâti au sein d'un monorepo Turborepo, l'architecture sépare strictement le domaine métier (pur et déterministe) de l'infrastructure (réseau, DBs, paiements). Résultat : un système distribué sécurisé du composant React jusqu'à la base de données, sans throw ni exceptions imprévisibles.",
+        categoryText: 'Réservation Critique',
+        dateText: 'Mars 2026',
+        imageAltText: 'Interface de Avionics',
+        galleryImages: {},
+        keyFeatures: {
+          monorepoArchitecture: {
+            title: 'Monorepo & pnpm Catalogs',
+            description: "Partage total du domaine et des types entre Frontend et Backend via Turborepo. Les versions des dépendances sont garanties identiques (mismatch impossible) grâce aux catalogs pnpm."
+          },
+          frameworkAgnosticUi: {
+            title: 'UI "Dumb" & XState',
+            description: "Les composants React se limitent à l'affichage aveugle. Toute la logique, et le workflows de réservation complexes, sont orchestrés par des machines d'états déterministes (XState)."
+          },
+          effectResilience: {
+            title: 'Résilience via Effect',
+            description: "L'infrastructure absorbe le chaos du réseau. Gestion déclarative des exponentiels backoffs, et les erreurs sont directement encodées dans la signature TS (Timeout | PaymentError)."
+          },
+          propertyBasedTesting: {
+            title: 'Property-Based Testing',
+            description: "Plus de 30 invariants métier validés par des générateurs aléatoires (fast-check) et du shrinking chirurgical des payloads, remplaçant les tests unitaires classiques."
+          },
+          nativeDi: {
+            title: 'Injection de Dépendances Native',
+            description: "Oubliez NestJS ou Inversify. L'injection se fait via le compilateur Effect. Sans decorators ni magie, le code refuse de compiler si un service manque au démarrage."
+          },
+          parseDontValidate: {
+            title: 'API Incassable & OpenAPI',
+            description: "Approche \"Parse, don't validate\" propulsée par @effect/platform. Les endpoints ne lâchent aucun throw : chaque erreur métier mappe automatiquement vers les bons statuts HTTP d'une documentation Scalar vivante."
+          }
+        },
+        challenges: "Imposer la rigueur de langages comme Rust ou Scala en TypeScript. Il a fallu désapprendre les automatismes classiques (les throw, l'injection orientée objet) pour basculer sur une architecture 100% fonctionnelle, garantissant l'atomicité sur des réservations fortement concurrentielles avec de l'optimistic locking.",
+        learnings: "Le ROI sur le niveau d'ingénierie est massif. Ne plus gérer l'échec comme un détail d'implémentation, mais le traiter comme un contrat absolu (Types). Un frontend sans UI logic devient instantanément remplaçable.",
+      },
     },
     skillsContent: {
       frontendDevelopment: {
@@ -1085,6 +1122,43 @@ export const ui = {
           'Developing a robust and accessible solution for users with varying levels of technological proficiency, while ensuring transaction security and the reliability of logistical information.',
         learnings:
           'The importance of user-centered design and close collaboration with agricultural sector stakeholders to best meet their specific needs.',
+      },
+      avionics: {
+        title: 'Avionics',
+        description: 'A zero-downtime mission-critical flight booking platform built around Hexagonal Architecture and Effect-TS.',
+        detailedDescription: 'Avionics is a flight booking engine designed to survive the chaos of massive traffic spikes and guarantee absolute reliability. Built within a Turborepo monorepo, its architecture strictly separates the pure, deterministic business domain from the unpredictable infrastructure (network, DBs, payments). The result is a robust distributed system—from the React UI down to the database.',
+        categoryText: 'Critical Booking Platform',
+        dateText: 'March 2026',
+        imageAltText: 'Avionics Interface',
+        galleryImages: {},
+        keyFeatures: {
+          monorepoArchitecture: {
+            title: 'Monorepo & pnpm Catalogs',
+            description: "Seamless sharing of domains and types between Frontend and Backend using Turborepo. Dependency versions are strictly harmonized via pnpm catalogs preventing any mismatches."
+          },
+          frameworkAgnosticUi: {
+            title: 'Framework Agnostic UI',
+            description: "React components are completely 'dumb', acting only as views. Complex reservation workflows and invariants are deterministically orchestrated by XState."
+          },
+          effectResilience: {
+            title: 'Infrastructure Resilience',
+            description: "The infrastructure layer safely absorbs network failures gracefully via declarative exponential backoffs and strict type-level error encoding using Effect."
+          },
+          propertyBasedTesting: {
+            title: 'Property-Based Testing',
+            description: "Validation of over 30 business properties via random fuzzing and payload shrinking (fast-check), ensuring survival across edge cases conventional unit tests would miss."
+          },
+          nativeDi: {
+            title: 'Native Dependency Injection',
+            description: "Eliminating heavy IoC containers and decorators. The TS compiler acts as the container, failing compilation globally if a dependency contract isn't fulfilled."
+          },
+          parseDontValidate: {
+            title: 'Parse, Don\'t Validate API',
+            description: "Leveraging @effect/platform for strict schemas mapping internal business failures directly to HTTP status codes, powering an interactive, always-truthful Scalar openAPI spec."
+          }
+        },
+        challenges: "Adopting the rigor of functional languages like Rust or Scala within TypeScript. This involved unlearning conventional patterns (try/catch blocks, heavy IoC) to achieve atomic concurrency under massive booking contention using optimistic locking.",
+        learnings: "The engineering ROI of this strictness is immense. Treating failures as a formal mathematical contract rather than an implementation detail results in a bulletproof, decoupled system.",
       },
     },
     skillsContent: {

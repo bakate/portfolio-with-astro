@@ -37,9 +37,13 @@ const {
   classNameContent,
   classNameFooter,
 } = Astro.props;
+
+const MAX_TAGS = 4;
+const displayedTags = tags ? tags.slice(0, MAX_TAGS) : [];
+const extraTagsCount = tags ? tags.length - MAX_TAGS : 0;
 ---
 
-<Card className={cn('h-full flex flex-col', className)}>
+<Card className={cn('h-full flex flex-col overflow-hidden', className)}>
   <CardHeader className={cn('pb-4', classNameHeader)}>
     <CardTitle
       className={cn(
@@ -60,28 +64,35 @@ const {
   <CardContent className={cn('space-y-4 flex-grow', classNameContent)}>
     {
       imageUrl && imageAltText && (
-        <Image
-          src={imageUrl}
-          alt={imageAltText}
-          class="mb-4 h-48 w-full rounded-md object-cover"
-          loading="lazy"
-          width={400}
-          height={300}
-          densities={[1, 1.5, 2]}
-          quality="medium"
-        />
+        <div class="mb-4 h-48 w-full shrink-0 overflow-hidden rounded-md border border-border/50">
+          <Image
+            src={imageUrl}
+            alt={imageAltText}
+            class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            loading="lazy"
+            width={400}
+            height={300}
+            densities={[1, 1.5, 2]}
+            quality="medium"
+          />
+        </div>
       )
     }
     <slot />
   </CardContent>
   {
     tags && tags.length > 0 && (
-      <CardFooter className={cn('flex flex-wrap gap-2 pt-4', classNameFooter)}>
-        {tags.map((tag) => (
+      <CardFooter className={cn('flex flex-wrap gap-2 pt-4 mt-auto', classNameFooter)}>
+        {displayedTags.map((tag) => (
           <Badge variant="secondary" key={tag}>
             {tag}
           </Badge>
         ))}
+        {extraTagsCount > 0 && (
+          <Badge variant="outline" className="text-muted-foreground">
+            +{extraTagsCount}
+          </Badge>
+        )}
       </CardFooter>
     )
   }
