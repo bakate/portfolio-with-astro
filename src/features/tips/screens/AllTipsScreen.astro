@@ -1,8 +1,11 @@
 ---
-// src/features/tips/components/AllTipsScreen.astro
-import { EmptyState } from '@/components/empty-state';
+import {
+  FilteredTipsList,
+  type TipDataForFilter,
+} from '@/features/tips/components/FilteredTipsList';
 import Heading from '@/components/Heading.astro';
-import TipCard from '@/features/tips/components/TipCard.astro';
+import { EmptyState } from '@/components/empty-state';
+import TipRow from '@/features/tips/components/TipRow.astro';
 import { useTranslations, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
@@ -14,6 +17,40 @@ interface Props {
 }
 
 const { tips, lang } = Astro.props;
+
+const initialSearchQuery = Astro.url.searchParams.get('q') || '';
+const initialTag = Astro.url.searchParams.get('tag') || '';
+const initialDifficulty = Astro.url.searchParams.get('diff') || '';
+
+const texts = useTranslations(lang, 'tipsPage');
+
+function transformTipForClientFilter(
+  tip: CollectionEntry<'tips'>
+): TipDataForFilter {
+  return {
+    id: tip.id,
+    title: tip.data.title,
+    description: tip.data.description || '',
+    tags: tip.data.tags,
+    body: tip.body ?? '',
+    difficulty: tip.data.difficulty,
+  };
+}
+
+const componentTexts = {
+  searchPlaceholder: texts('searchPlaceholder'),
+  filterByTagButtonLabel: texts('filterByTagButtonLabel'),
+  filterByDifficultyLabel: texts('filterByDifficultyLabel'),
+  noTagFound: texts('noTagFound'),
+  selectTagCommandPlaceholder: texts('selectTagCommandPlaceholder'),
+  allTagsLabel: texts('allTagsLabel'),
+  allDifficultiesLabel: texts('allDifficulties'),
+  difficultyBeginner: texts('difficultyBeginner'),
+  difficultyIntermediate: texts('difficultyIntermediate'),
+  difficultyAdvanced: texts('difficultyAdvanced'),
+  noTipsFound: texts('noTipsFound'),
+};
+
 const t = useTranslations(lang, 'tipsPage');
 const featuredTips = tips.filter((tip) => tip.data.featured);
 const regularTips = tips.filter((tip) => !tip.data.featured);
@@ -23,6 +60,16 @@ const regularTips = tips.filter((tip) => !tip.data.featured);
   <div class="container mx-auto px-4 py-8">
     <Heading title={t('title')} description={t('description')} />
 
+    <FilteredTipsList
+      client:load
+      allTips={tips.map(transformTipForClientFilter)}
+      texts={componentTexts}
+      lang={lang}
+      initialSearchQuery={initialSearchQuery}
+      initialTag={initialTag}
+      initialDifficulty={initialDifficulty}
+    />
+
     {
       tips.length === 0 ? (
         <EmptyState title={t('noTips')} />
@@ -30,32 +77,42 @@ const regularTips = tips.filter((tip) => !tip.data.featured);
         <div class="space-y-12">
           {/* Featured Tips */}
           {featuredTips.length > 0 && (
-            <section>
+            <section id="featured-tips-section">
               <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
                 <span class="text-2xl">⭐</span>
                 {t('featuredTips')}
               </h2>
-              <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-rows-2">
+              <div class="grid gap-4">
                 {featuredTips.map((tip) => (
-                  <TipCard tip={tip} lang={lang} />
+                  <div class="tip-card-wrapper" data-tip-id={tip.id}>
+                    <TipRow tip={tip} lang={lang} />
+                  </div>
                 ))}
               </div>
             </section>
           )}
 
           {/* All Regular Tips */}
-          <section>
+          <section id="all-tips-section">
             {regularTips.length > 0 && (
               <h2 class="text-2xl font-semibold mb-6">{t('allTips')}</h2>
             )}
 
-            {/* Responsive Grid */}
-            <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-rows-2">
+            <div class="grid gap-4">
               {regularTips.map((tip) => (
-                <TipCard tip={tip} lang={lang} />
+                <div class="tip-card-wrapper" data-tip-id={tip.id}>
+                  <TipRow tip={tip} lang={lang} />
+                </div>
               ))}
             </div>
           </section>
+
+          {/* Empty State for filtered results */}
+          <EmptyState
+            title={texts('noTipsFound')}
+            id="no-tips-filtered-message"
+            className="hidden"
+          />
 
           {/* Stats */}
           <div class="text-center pt-8 border-t border-border/30">
@@ -68,4 +125,69 @@ const regularTips = tips.filter((tip) => !tip.data.featured);
       )
     }
   </div>
+
+  <script>
+    import {
+      filteredTipsIdsAtom,
+      tipsFiltersInitializedAtom,
+    } from '../../../stores/tipsFilterStore';
+
+    const noTipsFilteredMessage = document.getElementById(
+      'no-tips-filtered-message'
+    );
+    const allTipCardWrappers = document.querySelectorAll('.tip-card-wrapper');
+    const featuredSection = document.getElementById('featured-tips-section');
+    const allSection = document.getElementById('all-tips-section');
+
+    function updateVisibleTips() {
+      if (!noTipsFilteredMessage) return;
+
+      const currentFilteredIds = filteredTipsIdsAtom.get();
+      const isFiltersInitialized = tipsFiltersInitializedAtom.get();
+      let visibleCount = 0;
+      let visibleFeaturedCount = 0;
+      let visibleRegularCount = 0;
+
+      allTipCardWrappers.forEach((wrapper) => {
+        const tipId = wrapper.getAttribute('data-tip-id');
+        if (tipId && currentFilteredIds.includes(tipId)) {
+          wrapper.classList.remove('hidden');
+          visibleCount++;
+          if (wrapper.closest('#featured-tips-section')) {
+            visibleFeaturedCount++;
+          } else {
+            visibleRegularCount++;
+          }
+        } else {
+          wrapper.classList.add('hidden');
+        }
+      });
+
+      if (isFiltersInitialized) {
+        // Toggle empty state message
+        if (visibleCount === 0) {
+          noTipsFilteredMessage.classList.remove('hidden');
+        } else {
+          noTipsFilteredMessage.classList.add('hidden');
+        }
+
+        // Hide/Show sections if they are empty
+        if (featuredSection) {
+          featuredSection.style.display =
+            visibleFeaturedCount === 0 ? 'none' : 'block';
+        }
+        if (allSection) {
+          allSection.style.display =
+            visibleRegularCount === 0 ? 'none' : 'block';
+        }
+      }
+    }
+
+    filteredTipsIdsAtom.subscribe(updateVisibleTips);
+    tipsFiltersInitializedAtom.subscribe((init) => init && updateVisibleTips());
+
+    if (tipsFiltersInitializedAtom.get()) {
+      updateVisibleTips();
+    }
+  </script>
 </BaseLayout>

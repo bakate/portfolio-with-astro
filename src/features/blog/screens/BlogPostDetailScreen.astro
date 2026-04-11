@@ -11,15 +11,17 @@ import type { CollectionEntry } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { ArrowLeft, Clock, Pencil } from 'lucide-react';
 import BlogPostCard from '../components/BlogPostCard.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
 
 type Props = {
-  post: CollectionEntry<'blog'>['data'];
+  post: CollectionEntry<'blog'>['data'] & { readingTimeMinutes: number };
   lang: LanguageCode;
+  headings: Array<{ depth: number; text: string; slug: string }>;
   relatedPosts: Array<CollectionEntry<'blog'>>;
   filePath: string;
 };
 
-const { post, lang, relatedPosts, filePath } = Astro.props;
+const { post, lang, headings, relatedPosts, filePath } = Astro.props;
 
 // Construct the GitHub edit URL
 const GITHUB_USER = 'bakate';
@@ -37,96 +39,113 @@ const pageDescription = post.description;
 ---
 
 <BaseLayout {pageTitle} {pageDescription}>
-  <article class="container mx-auto px-4 py-8 md:py-12 max-w-3xl">
-    <a
-      href={getRelativeLocaleUrl(lang, '/blog')}
-      class={buttonVariants({ variant: 'ghost' }) + ' mb-6 no-underline'}
-    >
-      <ArrowLeft className="mr-2 size-4" />
-      {t('backToList')}
-    </a>
-
-    <header class="mb-8">
-      <Heading title={post.title} titleClassName="md:text-5xl" />
-      <div
-        class="mt-3 flex items-center justify-between text-sm text-muted-foreground"
-      >
-        <p class="flex items-center gap-1">
-          <b>{t('publishedOn')}</b>
-          <span>{formatDate(pubDate, lang)}</span>
-        </p>
-        <p class="flex items-center gap-1">
-          {
-            updatedDate ? (
-              <>
-                <span class="font-medium">{t('updatedOn')}</span>
-                <span>{formatDate(updatedDate, lang)}</span>
-              </>
-            ) : null
-          }
-        </p>
-
-        <p class="flex items-center">
-          <Clock className="mr-1.5 size-4 flex-shrink-0" />
-          <span>{post.readingTimeMinutes} {t('readingTimeSuffix')}</span>
-        </p>
-      </div>
-
-      {
-        post.heroImage && (
-          <Image
-            src={post.heroImage.url}
-            alt={post.heroImage.alt}
-            class="w-full h-auto object-cover rounded-lg my-6 shadow-lg"
-            width={768}
-            height={432}
-          />
-        )
-      }
-      {
-        post.tags && post.tags.length > 0 && (
-          <div class="mt-4 flex flex-wrap gap-2">
-            {post.tags.map((tag: string) => (
-              <span class="px-3 py-1 text-xs font-medium bg-secondary text-secondary-foreground rounded-full transition-colors hover:bg-primary hover:text-primary-foreground">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )
-      }
-    </header>
-
-    <div class="prose prose-lg dark:prose-invert max-w-none mx-auto">
-      <slot />
-
-      <div class="flex justify-end">
+  <div class="container mx-auto px-4 py-8 md:py-12">
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_min(75ch,_100%)_250px] gap-12">
+      
+      {/* Sidebar Left: Back link & Navigation */}
+      <aside class="hidden xl:flex flex-col gap-6 sticky top-24 self-start">
         <a
-          href={editUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class={buttonVariants({ variant: 'ghost' }) + ' hover:underline'}
+          href={getRelativeLocaleUrl(lang, '/blog')}
+          class={buttonVariants({ variant: 'ghost', size: 'sm' }) + ' justify-start px-2 group'}
         >
-          <Pencil className=" size-4" />
-          {t('editOnGithub') || 'Proposer une modification sur GitHub'}
+          <ArrowLeft className="mr-2 size-4 group-hover:-translate-x-1 transition-transform" />
+          {t('backToList')}
         </a>
-      </div>
-    </div>
+      </aside>
 
-    <!-- Related Posts Section -->
-    {
-      relatedPosts.length > 0 ? (
-        <section class="mt-12 pt-8 border-t border-border">
-          <Heading
-            title={t('relatedPostsTitle')}
-            titleClassName="md:text-2xl font-semibold"
-          />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {relatedPosts.map((relatedPost) => (
-              <BlogPostCard post={relatedPost} lang={lang} />
-            ))}
+      {/* Main Content */}
+      <article>
+        <a
+          href={getRelativeLocaleUrl(lang, '/blog')}
+          class={buttonVariants({ variant: 'ghost', size: 'sm' }) + ' mb-6 xl:hidden group'}
+        >
+          <ArrowLeft className="mr-2 size-4 group-hover:-translate-x-1 transition-transform" />
+          {t('backToList')}
+        </a>
+
+        <header class="mb-12">
+          <Heading title={post.title} titleClassName="md:text-5xl leading-tight" />
+          
+          <div class="mt-6 flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y border-border/50 py-4">
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-foreground/80">{t('publishedOn')}</span>
+              <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
+            </div>
+            
+            {updatedDate && (
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-foreground/80">{t('updatedOn')}</span>
+                <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate, lang)}</time>
+              </div>
+            )}
+
+            <div class="flex items-center gap-1.5">
+              <Clock className="size-4" />
+              <span>{post.readingTimeMinutes} {t('readingTimeSuffix')}</span>
+            </div>
           </div>
-        </section>
-      ) : null
-    }
-  </article>
+
+          {post.heroImage && (
+            <div class="relative group mt-8">
+              <Image
+                src={post.heroImage.url}
+                alt={post.heroImage.alt}
+                class="w-full h-auto object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.01]"
+                width={768}
+                height={432}
+              />
+              <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
+            </div>
+          )}
+
+          {post.tags && post.tags.length > 0 && (
+            <div class="mt-6 flex flex-wrap gap-2">
+              {post.tags.map((tag: string) => (
+                <span class="px-3 py-1 text-[10px] uppercase tracking-wider font-bold bg-primary/5 text-primary border border-primary/10 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <div class="prose-content prose prose-lg dark:prose-invert max-w-none">
+          <slot />
+
+          <div class="mt-16 flex justify-end">
+            <a
+              href={editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={buttonVariants({ variant: 'outline', size: 'sm' }) + ' gap-2 rounded-full border-border/50 hover:border-primary/50 transition-colors'}
+            >
+              <Pencil className="size-3.5" />
+              {t('editOnGithub')}
+            </a>
+          </div>
+        </div>
+
+        {/* Related Posts Section */}
+        {relatedPosts.length > 0 && (
+          <section class="mt-20 pt-12 border-t border-border/50">
+            <Heading
+              title={t('relatedPostsTitle')}
+              titleClassName="md:text-2xl font-bold mb-8"
+            />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {relatedPosts.map((relatedPost) => (
+                <BlogPostCard post={relatedPost} lang={lang} />
+              ))}
+            </div>
+          </section>
+        )}
+      </article>
+
+      {/* Sidebar Right: TOC */}
+      <aside class="hidden xl:block">
+        <TableOfContents headings={headings} lang={lang} />
+      </aside>
+
+    </div>
+  </div>
 </BaseLayout>

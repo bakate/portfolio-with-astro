@@ -39,7 +39,7 @@ const finalRelatedPosts = (
   await Promise.all(enrichedRelatedPostsPromises)
 ).filter((p) => p !== null);
 
-const { Content, remarkPluginFrontmatter } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
 ---
 
 <BlogPostDetailScreen
@@ -48,6 +48,7 @@ const { Content, remarkPluginFrontmatter } = await render(post);
     readingTimeMinutes: remarkPluginFrontmatter.readingTimeMinutes,
   }}
   lang={lang}
+  headings={headings}
   relatedPosts={finalRelatedPosts}
   filePath={post.filePath ? post.filePath : ''}
 >

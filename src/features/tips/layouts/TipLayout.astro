@@ -1,20 +1,20 @@
 ---
-import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { useTranslations } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { formatDate } from '@/lib/utils';
-import { render, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Pencil } from 'lucide-react';
+import { ArrowLeft, Clock, Pencil } from 'lucide-react';
+import Heading from '@/components/Heading.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
 
 interface Props {
   tip: CollectionEntry<'tips'>;
+  headings: Array<{ depth: number; text: string; slug: string }>;
 }
 
-const { tip } = Astro.props;
-const { Content } = await render(tip);
-
+const { tip, headings } = Astro.props;
 const lang = tip.data.lang || 'fr';
 const t = useTranslations(lang, 'tipsPage');
 
@@ -22,58 +22,100 @@ const GITHUB_USER = 'bakate';
 const GITHUB_REPO = 'portfolio';
 const GITHUB_BRANCH = 'main';
 const editUrl = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/edit/${GITHUB_BRANCH}/${tip.filePath}`;
+
+const pubDate = new Date(tip.data.pubDate);
+const updatedDate = tip.data.updatedDate ? new Date(tip.data.updatedDate) : null;
 ---
 
 <BaseLayout pageTitle={tip.data.title} pageDescription={tip.data.description}>
-  <article
-    class="prose lg:prose-xl dark:prose-invert max-w-3xl mx-auto py-8 px-4"
-  >
-    <header class="mb-8">
-      <h1 class="text-4xl font-bold mb-2">{tip.data.title}</h1>
-      <p class="text-sm text-muted-foreground">
-        {formatDate(tip.data.pubDate, lang)}
-        {
-          tip.data.updatedDate && (
-            <span class="italic">
-              {' '}
-              {formatDate(tip.data.updatedDate, lang)})
-            </span>
-          )
-        }
-      </p>
-      {
-        tip.data.tags && tip.data.tags.length > 0 && (
-          <div class="mt-4 flex gap-2">
-            {tip.data.tags.map((tag: string) => (
-              <Badge variant="secondary" className="md:text-lg">
-                #{tag}
-              </Badge>
-            ))}
+  <div class="container mx-auto px-4 py-8 md:py-12">
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_min(75ch,_100%)_250px] gap-12">
+      
+      {/* Sidebar Left: Back link */}
+      <aside class="hidden xl:flex flex-col gap-6 sticky top-24 self-start">
+        <a
+          href={getRelativeLocaleUrl(lang, '/tips')}
+          class={buttonVariants({ variant: 'ghost', size: 'sm' }) + ' justify-start px-2 group'}
+        >
+          <ArrowLeft className="mr-2 size-4 group-hover:-translate-x-1 transition-transform" />
+          {t('backToList')}
+        </a>
+      </aside>
+
+      {/* Main Content */}
+      <article>
+        <a
+          href={getRelativeLocaleUrl(lang, '/tips')}
+          class={buttonVariants({ variant: 'ghost', size: 'sm' }) + ' mb-6 xl:hidden group'}
+        >
+          <ArrowLeft className="mr-2 size-4 group-hover:-translate-x-1 transition-transform" />
+          {t('backToList')}
+        </a>
+
+        <header class="mb-12">
+          <Heading title={tip.data.title} titleClassName="md:text-4xl leading-tight" />
+          
+          <div class="mt-6 flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y border-border/50 py-4">
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-foreground/80">{t('updatedOn')}</span>
+              <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
+            </div>
+            
+            {updatedDate && (
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-foreground/80">{t('updatedOn')}</span>
+                <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate, lang)}</time>
+              </div>
+            )}
+
+            {tip.data.readingTimeMinutes && (
+              <div class="flex items-center gap-1.5">
+                <Clock className="size-4" />
+                <span>{tip.data.readingTimeMinutes} {t('readingTimeSuffix')}</span>
+              </div>
+            )}
+
+            {tip.data.difficulty && (
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-foreground/80">Difficulté :</span>
+                <span class="capitalize">{tip.data.difficulty}</span>
+              </div>
+            )}
           </div>
-        )
-      }
-    </header>
 
-    <Content />
+          {tip.data.tags && tip.data.tags.length > 0 && (
+            <div class="mt-6 flex flex-wrap gap-2">
+              {tip.data.tags.map((tag: string) => (
+                <span class="px-3 py-1 text-[10px] uppercase tracking-wider font-bold bg-primary/5 text-primary border border-primary/10 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
 
-    <footer
-      class="mt-12 pt-8 border-t border-border flex items-center justify-between gap-4"
-    >
-      <a
-        href={getRelativeLocaleUrl(lang, `/tips/`)}
-        class={buttonVariants({ variant: 'ghost' }) + ' no-underline'}
-      >
-        &larr; {t('backToList')}
-      </a>
-      <a
-        href={editUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class={buttonVariants({ variant: 'ghost' }) + ' no-underline'}
-      >
-        <Pencil className="size-4" />
-        {t('editOnGithub')}
-      </a>
-    </footer>
-  </article>
+        <div class="prose-content prose prose-lg dark:prose-invert max-w-none">
+          <slot />
+
+          <div class="mt-16 pt-8 border-t border-border/50 flex justify-end">
+            <a
+              href={editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={buttonVariants({ variant: 'outline', size: 'sm' }) + ' gap-2 rounded-full border-border/50 hover:border-primary/50 transition-colors'}
+            >
+              <Pencil className="size-3.5" />
+              {t('editOnGithub')}
+            </a>
+          </div>
+        </div>
+      </article>
+
+      {/* Sidebar Right: TOC */}
+      <aside class="hidden xl:block">
+        <TableOfContents headings={headings} lang={lang} />
+      </aside>
+
+    </div>
+  </div>
 </BaseLayout>

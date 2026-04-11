@@ -12,7 +12,7 @@ import { formatDate } from '@/lib/utils';
 
 import type { CollectionEntry } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Calendar, ChevronRight } from 'lucide-react';
+import { Calendar, ChevronRight, Clock } from 'lucide-react';
 
 interface Props {
   tip: CollectionEntry<'tips'>;
@@ -49,6 +49,14 @@ const t = useTranslations(lang, 'tipsPage');
           {formatDate(tip.data.pubDate, lang)}
         </time>
       </div>
+      {
+        tip.data.readingTimeMinutes && (
+          <div class="flex items-center gap-1">
+            <Clock className="size-4" />
+            <span>{tip.data.readingTimeMinutes} min</span>
+          </div>
+        )
+      }
       {
         tip.data.tags && tip.data.tags.length > 0 && (
           <>

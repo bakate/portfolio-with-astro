@@ -17,6 +17,10 @@ export default defineConfig({
       remarkPlugins: [remarkReadingTime],
       syntaxHighlight: {
         type: 'shiki',
+        themes: {
+          light: 'github-light',
+          dark: 'github-dark',
+        },
         excludeLangs: ['mermaid'],
       },
     }),

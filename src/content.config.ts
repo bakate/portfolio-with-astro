@@ -9,13 +9,14 @@ const blogCollection = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      description: z.string().optional(),
+      description: z.string(),
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       heroImage: z.object({
         url: image(),
         alt: z.string(),
       }),
+      image: z.string().optional(),
       tags: z.array(z.string()).optional(),
       relatedPosts: z.array(reference('blog')),
       readingTimeMinutes: z.number().optional(), // Added by remark plugin
@@ -32,7 +33,7 @@ const tipsCollection = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      description: z.string().optional(),
+      description: z.string(),
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       tags: z.array(z.string()).optional(),
@@ -43,7 +44,9 @@ const tipsCollection = defineCollection({
           alt: z.string(),
         })
         .optional(),
+      image: z.string().optional(),
       lang: z.enum(['fr', 'en']).optional().default('fr'),
+      readingTimeMinutes: z.number().optional(), // Added by remark plugin
       relatedTips: z.array(reference('tips')).optional(),
       featured: z.boolean().optional(),
       difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),

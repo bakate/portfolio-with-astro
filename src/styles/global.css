@@ -159,3 +159,64 @@
     font-family: 'Outfit', sans-serif;
   }
 }
+
+/* --- Shiki & Code Blocks --- */
+pre.astro-code {
+  @apply relative rounded-xl border border-border/50 p-4 overflow-x-auto my-6 text-sm leading-relaxed shadow-sm;
+}
+
+/* Shiki Dual themes support */
+html.dark pre.astro-code,
+html.dark pre.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+/* Copy button styling */
+.copy-code-button {
+  @apply absolute top-3 right-3 p-2 rounded-lg bg-background/80 border border-border/50 text-muted-foreground opacity-0 hover:opacity-100 hover:text-primary hover:bg-background transition-all duration-200 backdrop-blur-sm z-10 cursor-pointer;
+}
+
+pre.astro-code:hover .copy-code-button {
+  @apply opacity-100;
+}
+
+/* Custom Scrollbar for code blocks */
+pre.astro-code::-webkit-scrollbar {
+  height: 6px;
+}
+pre.astro-code::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full;
+}
+pre.astro-code::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/40;
+}
+
+/* --- Article Typography & TOC --- */
+.prose-content {
+  @apply leading-relaxed text-foreground/90;
+}
+
+.prose-content h2 {
+  @apply mt-12 mb-6 scroll-mt-24 text-2xl font-bold border-b border-border/30 pb-2;
+}
+
+.prose-content h3 {
+  @apply mt-8 mb-4 scroll-mt-24 text-xl font-semibold;
+}
+
+.prose-content p {
+  @apply mb-6;
+}
+
+.toc-nav {
+  @apply sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 hidden xl:block;
+}
+
+/* Custom TOC highlight */
+.toc-link[data-active="true"] {
+  @apply text-primary font-medium border-primary translate-x-1;
+}
