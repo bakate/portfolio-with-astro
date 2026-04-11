@@ -1,6 +1,6 @@
 ---
-title: 'Boostez votre dev avec les alias Vite'
-description: 'Découvrez comment configurer et utiliser les alias de chemin dans Vite.js pour simplifier vos imports et améliorer la maintenabilité de vos projets.'
+title: 'Booste ton dev avec les alias Vite'
+description: 'Découvre comment configurer et utiliser les alias de chemin dans Vite.js pour simplifier tes imports et améliorer la maintenabilité de tes projets.'
 pubDate: 2024-05-29
 lang: 'fr'
 isDraft: false
@@ -9,12 +9,12 @@ featured: true
 difficulty: 'intermediate'
 ---
 
-Les alias dans Vite.js sont une fonctionnalité puissante qui vous permet de définir des raccourcis pour les chemins d'importation dans votre projet. Au lieu d'écrire des chemins relatifs longs et parfois déroutants comme `import MonComposant from '../../../../components/MonComposant'`, vous pouvez configurer un alias `@` (ou tout autre nom de votre choix) pour pointer vers votre répertoire `src`, et ainsi écrire `import MonComposant from '@/components/MonComposant'`.
+Les alias dans Vite.js sont une fonctionnalité puissante qui te permet de définir des raccourcis pour les chemins d'importation dans ton projet. Au lieu d'écrire des chemins relatifs longs et parfois déroutants comme `import MonComposant from '../../../../components/MonComposant'`, tu peux configurer un alias `@` (ou tout autre nom de ton choix) pour pointer vers ton répertoire `src`, et ainsi écrire `import MonComposant from '@/components/MonComposant'`.
 
 ### Pourquoi utiliser les alias ?
 
 1.  **Lisibilité** : Des imports plus courts et plus clairs.
-2.  **Maintenabilité** : Si vous restructurez vos dossiers, vous n'aurez qu'à mettre à jour la configuration des alias, pas tous vos imports.
+2.  **Maintenabilité** : Si tu restructures tes dossiers, tu n'auras qu'à mettre à jour la configuration des alias, pas tous tes imports.
 3.  **Cohérence** : Assure une manière uniforme d'importer les modules à travers le projet.
 
 ### Comment configurer les alias dans `vite.config.js` (ou `.ts`) ?
@@ -36,11 +36,11 @@ export default defineConfig({
 });
 ```
 
-N'oubliez pas d'installer `path` si ce n'est pas déjà fait (`npm install -D @types/node` si vous utilisez TypeScript pour avoir les types de Node.js, `path` est généralement inclus avec Node).
+N'oublie pas d'installer `path` si ce n'est pas déjà fait (`npm install -D @types/node` si tu utilises TypeScript pour avoir les types de Node.js, `path` est généralement inclus avec Node).
 
 ### Et pour TypeScript ?
 
-Si vous utilisez TypeScript, vous devrez également mettre à jour votre `tsconfig.json` pour informer TypeScript de ces alias :
+Si tu utilises TypeScript, tu devras également mettre à jour ton `tsconfig.json` pour informer TypeScript de ces alias :
 
 ```json
 // tsconfig.json
@@ -55,4 +55,4 @@ Si vous utilisez TypeScript, vous devrez également mettre à jour votre `tsconf
 }
 ```
 
-Et voilà ! Vous pouvez maintenant profiter d'imports plus propres et d'une meilleure organisation dans vos projets Vite.js.
+Et voilà ! Tu peux maintenant profiter d'imports plus propres et d'une meilleure organisation dans tes projets Vite.js.

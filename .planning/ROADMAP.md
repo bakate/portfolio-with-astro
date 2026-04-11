@@ -6,9 +6,9 @@
 |---|-------|------|--------------|--------|
 | 1 | **Foundation & SEO** | Mettre en place les bases techniques et SEO. | SEO-01, SEO-02, BLOG-03 | ✅ Completed |
 | 2 | **Section Distinction** | Séparer proprement Blog et Tips. | TIPS-01, TIPS-02 | ✅ Completed |
-| 3 | **Premium Layouts** | Définir l'identité visuelle et la typographie. | BLOG-02, BLOG-04 | ⏳ Pending |
-| 4 | **The Developer Experience** | Coloration syntaxique et navigation interne. | CODE-01, BLOG-01 | ⏳ Pending |
-| 5 | **Interactive Concepts** | Intégration CodeSandbox et polissage. | CODE-02 | ⏳ Pending |
+| 3 | **Premium Layouts** | Définir l'identité visuelle et la typographie. | BLOG-02, BLOG-04 | ✅ Completed |
+| 4 | **The Developer Experience** | Coloration syntaxique et navigation interne. | CODE-01, BLOG-01 | ✅ Completed |
+| 5 | **Interactive Concepts** | Intégration CodeSandbox et polissage. | CODE-02 | ✅ Completed |
 
 ## Phase Details
 

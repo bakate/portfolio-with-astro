@@ -1,9 +1,7 @@
 ---
 import TipLayout from '@/features/tips/layouts/TipLayout.astro';
 import { defaultLanguage } from '@/i18n/ui';
-import { getCollection } from 'astro:content';
-
-import { render } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const tips = await getCollection('tips', ({ data, id }) => {
@@ -16,8 +14,14 @@ export async function getStaticPaths() {
   }));
 }
 
+type Props = {
+  tip: CollectionEntry<'tips'>;
+};
+
 const { tip } = Astro.props;
 const { Content, headings } = await render(tip);
 ---
 
-<TipLayout tip={tip} headings={headings} />
+<TipLayout tip={tip} headings={headings}>
+  <Content />
+</TipLayout>

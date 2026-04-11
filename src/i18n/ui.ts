@@ -340,7 +340,7 @@ export const ui = {
       cms: {
         title: 'Système de Gestion de Contenu (CMS)',
         description:
-          'Une plateforme où vous pouvez créer, éditer et supprimer du contenu.',
+          'Une plateforme où tu peux créer, éditer et supprimer du contenu.',
         imageAltText: 'Image du projet CMS',
         categoryText: 'Outil de Productivité',
         dateText: '2023',
@@ -437,7 +437,7 @@ export const ui = {
           },
           terralHubWarehousesList: {
             alt: 'Liste des entrepôts disponibles sur TerralHub',
-            caption: "Trouvez l'entrepôt idéal pour vos récoltes",
+            caption: "Trouve l'entrepôt idéal pour tes récoltes",
           },
           terralHubWarehouseDetails: {
             alt: "Détails d'un entrepôt sur TerralHub",
@@ -763,13 +763,13 @@ export const ui = {
       metaDescription: 'Découvrez tous les projets de Bakate.',
       noProjects: 'Aucun projet à afficher pour le moment.',
       noProjectsDescription:
-        "Il semble que vous n'ayez pas encore de projets à afficher.",
+        "Il semble que tu n'aies pas encore de projets à afficher.",
     },
     notFoundPage: {
       pageTitle: 'Page Non Trouvée',
       title: 'Oups ! Page Non Trouvée',
       message:
-        "Désolé, la page que vous recherchez ne semble pas exister. Vérifiez l'URL ou retournez à la page d'accueil.",
+        "Désolé, la page que tu recherches ne semble pas exister. Vérifie l'URL ou retourne à la page d'accueil.",
       homeLink: "Retourner à l'Accueil",
     },
 
