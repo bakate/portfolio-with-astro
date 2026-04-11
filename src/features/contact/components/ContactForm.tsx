@@ -136,6 +136,24 @@ export function ContactForm({
                 <Input
                   type="email"
                   placeholder={formTranslations.emailPlaceholder}
+                  className="focus-visible:ring-primary/30 transition-shadow duration-300"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="company"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{formTranslations.companyLabel}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={formTranslations.companyPlaceholder}
+                  className="focus-visible:ring-primary/30 transition-shadow duration-300"
                   {...field}
                 />
               </FormControl>
@@ -153,6 +171,7 @@ export function ContactForm({
                 <Textarea
                   placeholder={formTranslations.messagePlaceholder}
                   rows={5}
+                  className="focus-visible:ring-primary/30 transition-shadow duration-300 min-h-[120px]"
                   {...field}
                 />
               </FormControl>
@@ -162,17 +181,19 @@ export function ContactForm({
         />
         <Button
           type="submit"
-          className="w-full"
-          size="lg"
+          className="w-full h-12 text-lg font-semibold shimmer-effect group"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? (
-            <Loader2 className="mr-2 size-4 animate-spin" />
+            <span className="flex items-center gap-2">
+              <Loader2 className="size-5 animate-spin" />
+              {formTranslations.sendButtonLabel}...
+            </span>
           ) : (
-            <>
-              <Send className="mr-2 size-4" />
+            <span className="flex items-center gap-2">
+              <Send className="size-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               {formTranslations.sendButtonLabel}
-            </>
+            </span>
           )}
         </Button>
       </form>

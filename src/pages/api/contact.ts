@@ -77,7 +77,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const { firstName, lastName, email, message } = validationResult.data;
+  const { firstName, lastName, email, company, message } = validationResult.data;
 
   try {
     const text = `You have a new contact form submission:`;
@@ -85,6 +85,7 @@ export const POST: APIRoute = async ({ request }) => {
 <p>You have a new contact form submission:</p>
 <p><strong>Name:</strong> ${firstName} ${lastName}</p>
 <p><strong>Email:</strong> ${email}</p>
+${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
 <p><strong>Message:</strong></p>
 <p>${message.replace(/\n/g, '<br>')}</p>
 </div>`;

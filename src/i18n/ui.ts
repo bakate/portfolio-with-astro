@@ -712,7 +712,7 @@ export const ui = {
     toc: {
       title: "Sommaire de l'article",
     },
-    contactPage: {
+      contactPage: {
       pageTitle: 'Me Contacter',
       pageDescription:
         "Discutons de ton projet, d'une collaboration potentielle, ou simplement pour échanger sur la tech !",
@@ -721,15 +721,29 @@ export const ui = {
         "Discutons de ton projet, d'une collaboration potentielle, ou simplement pour échanger sur la tech !",
 
       formTitle: 'Envoyer un message',
+      writeToMeHeader: "M'écrire",
+      letstalkHeader: 'Discutons',
+      badgeResponseTime: 'Réponse sous 24h',
+      consultingValueProp:
+        "Besoin d'avancer vite ? Réserve 15 min de consulting gratuit.",
+      contactName: 'Bakate Idrissa',
+      linkedInLabel: 'LinkedIn',
+      professionalNetworkLabel: 'Réseau Professionnel',
+      githubLabel: 'GitHub',
+      openSourceLabel: 'Open Source & Code',
+      socialLinksTitle: 'Où me trouver',
+
       firstNameLabel: 'Prénom',
       lastNameLabel: 'Nom',
       emailLabel: 'Email',
+      companyLabel: 'Société (Optionnel)',
       messageLabel: 'Message',
       sendButtonLabel: 'Envoyer',
       firstNamePlaceholder: 'Ton prénom',
 
       lastNamePlaceholder: 'Ton nom de famille',
       emailPlaceholder: 'Ton adresse e-mail',
+      companyPlaceholder: 'Le nom de ton entreprise',
       messagePlaceholder: 'Ton message ici...',
       calendarTitle: 'Planifier un RDV',
       calendarDescription:
@@ -1509,30 +1523,43 @@ export const ui = {
       pageTitle: 'Contact Me',
       pageDescription:
         "Let's discuss your project, a potential collaboration, or just chat about tech!",
-
       title: 'Contact Me',
       description:
         "Let's discuss your project, a potential collaboration, or just chat about tech!",
+
       formTitle: 'Send a message',
+      writeToMeHeader: 'Write to me',
+      letstalkHeader: "Let's talk",
+      badgeResponseTime: 'Response within 24h',
+      consultingValueProp:
+        'Need to move fast? Book a 15 min free discovery call.',
+      contactName: 'Bakate Idrissa',
+      linkedInLabel: 'LinkedIn',
+      professionalNetworkLabel: 'Professional Network',
+      githubLabel: 'GitHub',
+      openSourceLabel: 'Open Source & Code',
+      socialLinksTitle: 'Find me on',
+
       firstNameLabel: 'First Name',
       lastNameLabel: 'Last Name',
       emailLabel: 'Email',
+      companyLabel: 'Company (Optional)',
       messageLabel: 'Message',
       sendButtonLabel: 'Send',
       firstNamePlaceholder: 'Your first name',
       lastNamePlaceholder: 'Your last name',
       emailPlaceholder: 'Your email address',
+      companyPlaceholder: 'Your company name',
       messagePlaceholder: 'Your message here...',
       calendarTitle: 'Schedule a Meeting',
       calendarDescription:
         'Prefer to talk live? Book a slot directly in my calendar.',
-      calendarButtonLabel: 'See my availability',
+      calendarButtonLabel: 'View my availability',
       calendarLinkLabel: 'See my calendar',
-      calendarPlaceHolder:
-        'The integration with Google Calendar will be soon...',
+      calendarPlaceHolder: 'Integration with Google Calendar coming soon...',
       orSeparatorText: 'OR',
       toastSuccessMessageSent: 'Message sent successfully!',
-      toastErrorFailedToSend: 'Failed to send message.',
+      toastErrorFailedToSend: 'Failed to send the message.',
       toastErrorUnexpected: 'An unexpected error occurred.',
       toastErrorDetails: 'Error details:',
       toastErrorValidationFailed: 'Form validation failed.',
