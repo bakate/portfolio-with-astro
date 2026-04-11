@@ -42,32 +42,34 @@ const t = useTranslations(lang, 'tipsPage');
       </a>
     </CardTitle>
 
-    <div class="flex items-center gap-3 text-xs text-muted-foreground pt-2">
-      <div class="flex items-center gap-1">
-        <Calendar className="size-4" />
+    <div class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:gap-3 text-xs text-muted-foreground pt-2">
+      <div class="flex items-center gap-1.5">
+        <Calendar className="size-3.5" />
         <time datetime={tip.data.pubDate.toISOString()}>
           {formatDate(tip.data.pubDate, lang)}
         </time>
       </div>
-      {
-        tip.data.readingTimeMinutes && (
-          <div class="flex items-center gap-1">
-            <Clock className="size-4" />
-            <span>{tip.data.readingTimeMinutes} min</span>
-          </div>
-        )
-      }
-      {
-        tip.data.tags && tip.data.tags.length > 0 && (
-          <>
-            <span class="w-1 h-1 bg-muted-foreground rounded-full" />
-            <Badge variant={'outline'}>
-              {tip.data.tags[0].charAt(0).toUpperCase() +
-                tip.data.tags[0].slice(1)}
-            </Badge>
-          </>
-        )
-      }
+      <div class="flex items-center gap-3">
+        {
+          tip.data.readingTimeMinutes && (
+            <div class="flex items-center gap-1.5">
+              <Clock className="size-3.5" />
+              <span>{tip.data.readingTimeMinutes} min</span>
+            </div>
+          )
+        }
+        {
+          tip.data.tags && tip.data.tags.length > 0 && (
+            <div class="flex items-center gap-2">
+              <span class="hidden sm:block w-1 h-1 bg-muted-foreground rounded-full" />
+              <Badge variant={'outline'} className="text-[10px] sm:text-xs">
+                {tip.data.tags[0].charAt(0).toUpperCase() +
+                  tip.data.tags[0].slice(1)}
+              </Badge>
+            </div>
+          )
+        }
+      </div>
     </div>
   </CardHeader>
 

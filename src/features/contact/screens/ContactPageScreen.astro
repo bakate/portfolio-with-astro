@@ -42,8 +42,8 @@ const {
     title={mainHeadingTitle}
     description={mainHeadingDescription}
     showDivider={true}
-    className="flex flex-col items-center justify-center animate-fade-in-down"
-    titleClassName="md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60"
+    className="animate-fade-in-down"
+    titleClassName=" bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60"
   />
 
   <div
@@ -75,7 +75,9 @@ const {
     </div>
 
     {/* Colonne Droite: Appels & Social */}
-    <div class="lg:col-span-5 space-y-8 animate-fade-in-up [animation-delay:400ms]">
+    <div
+      class="lg:col-span-5 space-y-8 animate-fade-in-up [animation-delay:400ms]"
+    >
       {/* Section Calendar */}
       <div
         class="bg-gradient-to-br from-primary/5 to-primary/10 p-8 rounded-3xl border border-primary/20 shadow-xl relative overflow-hidden group hover:shadow-primary/5 transition-all duration-300"
@@ -141,7 +143,9 @@ const {
             >
               {formTranslations.socialLinksTitle}
             </h3>
-            <p class="text-sm font-bold truncate">{formTranslations.contactName}</p>
+            <p class="text-sm font-bold truncate">
+              {formTranslations.contactName}
+            </p>
           </div>
         </div>
 
@@ -159,7 +163,9 @@ const {
                 <Linkedin className="size-5" />
               </div>
               <div>
-                <p class="font-semibold px-2">{formTranslations.linkedInLabel}</p>
+                <p class="font-semibold px-2">
+                  {formTranslations.linkedInLabel}
+                </p>
                 <p class="text-xs text-muted-foreground px-2">
                   {formTranslations.professionalNetworkLabel}
                 </p>
