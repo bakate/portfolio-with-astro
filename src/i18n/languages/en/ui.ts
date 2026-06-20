@@ -1,35 +1,25 @@
 export const uiLabels = {
   skillsContent: {
-    frontendDevelopment: {
-      title: 'Frontend Development',
+    angularExpertise: {
+      title: 'Angular Expertise',
       description:
-        'Building responsive and accessible user interfaces with modern frameworks and libraries.',
+        'Production Angular development: components, RxJS, NgRx, Signals, performance, and state management.',
     },
-    backendDevelopment: {
-      title: 'Backend Development',
+    saasEngineering: {
+      title: 'SaaS Engineering',
       description:
-        'Creating robust server-side applications and APIs to power web applications.',
+        'Frontend architecture, APIs, real-time features, CI/CD, monitoring, and tests for maintainable B2B products.',
     },
-    databaseManagement: {
-      title: 'Database Management',
+    productEngineering: {
+      title: 'Product Engineering',
       description:
-        'Designing and optimizing database schemas for efficient data storage and retrieval.',
-    },
-    uiUxDesign: {
-      title: 'UI/UX Design',
-      description:
-        'Creating intuitive and visually appealing user interfaces and experiences.',
-    },
-    softwareArchitecture: {
-      title: 'Software Architecture',
-      description:
-        'Applying Clean Architecture principles for maintainable and scalable systems.',
+        'Turning a business problem into an MVP, validating with users, and owning features end to end.',
     },
   },
   site: {
     title: 'Bakate',
     description:
-      'My personal technical portfolio and blog as a FullStack Developer.',
+      'Portfolio of Bakate, Angular Engineer specialized in B2B SaaS applications with TypeScript, RxJS, and NgRx.',
   },
   nav: {
     home: 'Home',
@@ -150,36 +140,46 @@ export const uiLabels = {
   },
 
   homePage: {
-    pageTitle: 'Home | Bakate - FullStack Developer',
+    pageTitle: 'Bakate | Angular Engineer for B2B SaaS',
     pageDescription:
-      'Welcome to the portfolio of Bakate, a FullStack developer passionate about creating innovative web experiences.',
+      'Angular Engineer specialized in B2B SaaS: 4 years on a complex Angular application used by large companies, with TypeScript, RxJS, and NgRx.',
     heroGreeting: "Hi, I'm Bakate Idrissa",
-    heroSubtitlePart1: 'Full Stack Developer',
-    heroSubtitlePart2: 'Architecture',
+    heroSubtitlePart1: 'Angular Engineer',
+    heroSubtitlePart2: 'B2B SaaS',
     heroIntroduction:
-      'I build end-to-end web applications. I design maintainable systems using TypeScript, Angular, or Next.js.',
+      'I help product teams build and scale complex Angular applications.',
     heroIntroduction2:
-      'I use hexagonal architecture to isolate business logic and automate quality via Vitest and GitHub Actions/CircleCI.',
+      '4 years of experience on a B2B SaaS used by large companies. I also keep the FullStack range needed to build a complete SaaS product end to end.',
     heroViewWorkButton: 'View My Work',
     heroContactButton: "Let's work together",
     heroImageAlt: 'Illustration representing Bakate or a development concept',
-    featuredProjectsTitle: '3 latest projects',
+    featuredProjectsTitle: 'Core SaaS projects',
     featuredProjectsDescription:
-      "Here are some of the projects I've recently worked on. Feel free to explore!",
+      'Production Angular, B2B SaaS, and complete product ownership.',
     projectCardViewProject: 'View Project',
     projectCardViewCode: 'View Code',
     imageNotAvailable: 'Image not available for now',
-    mySkillsTitle: 'My Skills',
+    bloomflowTitle:
+      '4 years on a B2B SaaS used by CAC40-level enterprise groups',
+    bloomflowDescription:
+      'At Bloomflow, I contributed to a complex Angular platform for open innovation: critical modules, design system, frontend industrialization, and TypeScript migration.',
+    bloomflowCta: 'View my experience',
+    mySkillsTitle: 'Core Skills',
     mySkillsDescription:
-      'Explore the expertise and abilities that define my work and passion.',
+      'Angular is the core message. FullStack remains the lever for shipping a complete SaaS product.',
   },
   blogPage: {
-    pageTitle: 'My Technical Blog',
+    pageTitle: 'Angular, RxJS, and Frontend Architecture Blog',
     pageDescription:
-      'Articles and thoughts on web development, software architecture, and new technologies.',
-    title: 'My Technical Blog',
+      'Articles about Angular, RxJS, Frontend Architecture, SaaS Engineering, TypeScript, and web development.',
+    title: 'Angular & SaaS Engineering Blog',
     description:
-      'Articles and thoughts on web development, software architecture, and new technologies.',
+      'Technical notes about Angular, RxJS, frontend architecture, and SaaS product engineering.',
+    angularArticlesTitle: 'Angular Articles',
+    angularArticlesDescription:
+      'Angular, RxJS, Frontend Architecture, and SaaS Engineering content comes first.',
+    featuredArticlesTitle: 'Featured Articles',
+    allArticlesTitle: 'All articles',
     comingSoon: 'Blog posts will appear here soon. Check back later!',
     heroImageAlt: 'Hero image for article: ',
     publishedOn: 'Published on: ',
@@ -261,9 +261,16 @@ export const uiLabels = {
     viewCodeButton: 'View Code',
   },
   projectsPage: {
-    title: 'My Projects',
-    metaTitle: "My Projects | Bakate's Portfolio",
-    metaDescription: "Discover all of Bakate's projects.",
+    title: 'SaaS Projects',
+    metaTitle: 'Angular and FullStack SaaS Projects | Bakate',
+    metaDescription:
+      'Parent Up, Bloomflow, and Terral Hub: B2B SaaS, Angular, FullStack, and product architecture projects.',
+    featuredTitle: 'Featured projects',
+    featuredDescription:
+      'The three strongest proofs for my Angular and B2B SaaS positioning.',
+    archivesTitle: 'Other projects',
+    archivesDescription:
+      'Archive and secondary projects that show FullStack range without diluting the main message.',
     noProjects: 'No projects to display at the moment.',
     noProjectsDescription:
       "It seems that you don't have any projects to display at the moment.",

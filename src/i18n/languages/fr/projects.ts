@@ -118,6 +118,53 @@ export const projectsContent = {
     learnings:
       "L'utilisation des organisations Clerk réduit la complexité du middleware de sécurité et clarifie l'ownership des données.",
   },
+  bloomflow: {
+    title: 'Bloomflow - SaaS B2B Open Innovation',
+    description:
+      '4 ans de développement Angular sur un SaaS B2B complexe utilisé par des grands groupes.',
+    imageAltText: 'Aperçu de la plateforme Bloomflow',
+    categoryText: 'SaaS B2B',
+    dateText: 'Novembre 2020 - Novembre 2024',
+    detailedDescription:
+      "Chez Bloomflow, j'ai travaillé pendant 4 ans sur une plateforme SaaS B2B d'open innovation utilisée par de grands groupes pour piloter leur écosystème startups, leurs challenges, leurs programmes internes et leurs workflows de collaboration. Mon travail a surtout porté sur l'écosystème Angular : modules critiques, state management avec NgRx, RxJS, design system, industrialisation frontend et migration TypeScript.",
+    keyFeatures: {
+      angularModules: {
+        title: 'Modules Angular critiques',
+        description:
+          'Développement et évolution de modules métier à forte densité de données pour des workflows enterprise.',
+      },
+      stateManagement: {
+        title: 'State Management NgRx',
+        description:
+          "Gestion d'états complexes avec NgRx, RxJS et patterns réactifs pour garder des écrans prévisibles.",
+      },
+      designSystem: {
+        title: 'Design System',
+        description:
+          "Contribution à une librairie de composants Angular transverse pour homogénéiser l'expérience produit.",
+      },
+      typescriptMigration: {
+        title: 'Migration TypeScript',
+        description:
+          "Participation à la sécurisation progressive du code via TypeScript, tests et pipelines d'intégration.",
+      },
+      customerSuccessAutomation: {
+        title: 'Industrialisation opérationnelle',
+        description:
+          'Automatisation de workflows internes pour réduire les opérations manuelles côté Customer Success.',
+      },
+      enterpriseScale: {
+        title: 'Contexte grands comptes',
+        description:
+          'Travail sur un produit utilisé par des organisations complexes, avec exigences de fiabilité et maintenabilité.',
+      },
+    },
+    galleryImages: [],
+    challenges:
+      'Faire évoluer une application SaaS B2B riche sans dégrader la lisibilité du frontend, la cohérence UI et la stabilité des workflows critiques.',
+    learnings:
+      "Une application Angular mature demande une discipline forte : découpage des modules, état explicite, typage strict, composants réutilisables et dette technique traitée avant qu'elle ne bloque le produit.",
+  },
   codeHaven: {
     title: 'Code Haven',
     description: "Une plateforme d'apprentissage pour les futurs développeurs.",
@@ -129,7 +176,8 @@ export const projectsContent = {
     keyFeatures: {
       authentication: {
         title: 'Authentification avec Auth.js',
-        description: 'Authentification sécurisée via un lien magique ou Google.',
+        description:
+          'Authentification sécurisée via un lien magique ou Google.',
       },
       dashboard: {
         title: 'Tableau de Bord',
@@ -172,7 +220,8 @@ export const projectsContent = {
       },
       dragAndDrop: {
         title: 'Glisser-Déposer',
-        description: 'Glisser-déposer pour organiser les cours et les chapitres.',
+        description:
+          'Glisser-déposer pour organiser les cours et les chapitres.',
       },
       uploadThing: {
         title: 'Intégration UploadThing',
@@ -265,7 +314,8 @@ export const projectsContent = {
       },
       shipping: {
         title: 'Gestion des Expéditions',
-        description: 'Gestion des expéditions avec des fonctionnalités de suivi.',
+        description:
+          'Gestion des expéditions avec des fonctionnalités de suivi.',
       },
       orderManagement: {
         title: 'Gestion des Commandes',
@@ -293,7 +343,8 @@ export const projectsContent = {
   },
   samouraStore: {
     title: 'Samoura Store',
-    description: "Une plateforme e-commerce où l'on peut acheter des vêtements.",
+    description:
+      "Une plateforme e-commerce où l'on peut acheter des vêtements.",
     imageAltText: 'Image du projet Samoura Store',
     categoryText: 'Boutique E-commerce',
     dateText: '2023',
@@ -307,7 +358,8 @@ export const projectsContent = {
       },
       cart: {
         title: "Panier d'Achat Intelligent",
-        description: 'Gestion facile du panier et recommandations personnalisées.',
+        description:
+          'Gestion facile du panier et recommandations personnalisées.',
       },
     },
     galleryImages: [],

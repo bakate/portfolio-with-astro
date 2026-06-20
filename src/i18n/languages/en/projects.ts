@@ -119,6 +119,53 @@ export const projectsContent = {
     learnings:
       'Clerk Organizations significantly reduce security middleware complexity and clarify data ownership.',
   },
+  bloomflow: {
+    title: 'Bloomflow - B2B Open Innovation SaaS',
+    description:
+      '4 years of Angular development on a complex B2B SaaS used by large enterprise groups.',
+    imageAltText: 'Bloomflow platform preview',
+    categoryText: 'B2B SaaS',
+    dateText: 'November 2020 - November 2024',
+    detailedDescription:
+      'At Bloomflow, I worked for 4 years on a B2B open innovation SaaS platform used by large enterprise groups to manage startup ecosystems, challenges, internal programs, and collaboration workflows. My work focused heavily on the Angular ecosystem: critical modules, NgRx state management, RxJS, design system, frontend industrialization, and TypeScript migration.',
+    keyFeatures: {
+      angularModules: {
+        title: 'Critical Angular Modules',
+        description:
+          'Built and evolved data-heavy business modules for enterprise workflows.',
+      },
+      stateManagement: {
+        title: 'NgRx State Management',
+        description:
+          'Managed complex UI states with NgRx, RxJS, and reactive patterns to keep screens predictable.',
+      },
+      designSystem: {
+        title: 'Design System',
+        description:
+          'Contributed to a shared Angular component library to align product UX across modules.',
+      },
+      typescriptMigration: {
+        title: 'TypeScript Migration',
+        description:
+          'Helped secure the codebase progressively through TypeScript, tests, and CI pipelines.',
+      },
+      customerSuccessAutomation: {
+        title: 'Operational Industrialization',
+        description:
+          'Automated internal workflows to reduce manual operations for Customer Success teams.',
+      },
+      enterpriseScale: {
+        title: 'Enterprise Context',
+        description:
+          'Worked on a product used by complex organizations with reliability and maintainability constraints.',
+      },
+    },
+    galleryImages: [],
+    challenges:
+      'Scaling a rich B2B SaaS application without degrading frontend readability, UI consistency, or critical workflow stability.',
+    learnings:
+      'A mature Angular application requires strong discipline: module boundaries, explicit state, strict typing, reusable components, and technical debt handled before it blocks the product.',
+  },
   codeHaven: {
     title: 'Code Haven',
     description: 'A learning platform for aspiring developers.',
@@ -167,7 +214,8 @@ export const projectsContent = {
       },
       dragAndDrop: {
         title: 'Drag and Drop',
-        description: 'Drag and drop functionality for course and chapter creation.',
+        description:
+          'Drag and drop functionality for course and chapter creation.',
       },
       uploadThing: {
         title: 'UploadThing Integration',
@@ -302,8 +350,7 @@ export const projectsContent = {
       },
     },
     galleryImages: [],
-    challenges:
-      'Optimizing display performance for a large product catalog.',
+    challenges: 'Optimizing display performance for a large product catalog.',
     learnings:
       'Caching and progressive loading techniques are crucial for e-commerce.',
   },

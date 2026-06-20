@@ -19,11 +19,13 @@ import {
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Debounce utility
-function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
+function debounce<Arguments extends unknown[]>(
+  func: (...args: Arguments) => void,
+  waitFor: number
+) {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  const debounced = (...args: Parameters<F>) => {
+  const debounced = (...args: Arguments) => {
     if (timeout !== null) {
       clearTimeout(timeout);
       timeout = null;
@@ -31,7 +33,7 @@ function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
     timeout = setTimeout(() => func(...args), waitFor);
   };
 
-  return debounced as (...args: Parameters<F>) => void;
+  return debounced;
 }
 
 type TagOption = {

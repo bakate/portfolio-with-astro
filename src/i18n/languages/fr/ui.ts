@@ -1,35 +1,25 @@
 export const uiLabels = {
   skillsContent: {
-    frontendDevelopment: {
-      title: 'Développement Frontend',
+    angularExpertise: {
+      title: 'Expertise Angular',
       description:
-        "Création d'interfaces utilisateur réactives et accessibles avec des frameworks et bibliothèques modernes.",
+        'Développement Angular en production : composants, RxJS, NgRx, Signals, performance et state management.',
     },
-    backendDevelopment: {
-      title: 'Développement Backend',
+    saasEngineering: {
+      title: 'SaaS Engineering',
       description:
-        "Conception d'applications serveur robustes et d'API pour alimenter les applications web.",
+        'Architecture frontend, APIs, temps réel, CI/CD, monitoring et tests pour des produits B2B maintenables.',
     },
-    databaseManagement: {
-      title: 'Gestion de Bases de Données',
+    productEngineering: {
+      title: 'Product Engineering',
       description:
-        'Conception et optimisation de schémas de bases de données pour un stockage et une récupération efficaces des données.',
-    },
-    uiUxDesign: {
-      title: 'Conception UI/UX',
-      description:
-        "Création d'interfaces et d'expériences utilisateur intuitives et visuellement attrayantes.",
-    },
-    softwareArchitecture: {
-      title: 'Architecture Logicielle',
-      description:
-        'Application des principes de la Clean Architecture pour des systèmes maintenables et évolutifs.',
+        'Capacité à transformer un problème métier en MVP, valider avec les utilisateurs et porter une feature de bout en bout.',
     },
   },
   site: {
     title: 'Bakate',
     description:
-      'Mon portfolio et blog technique personnel de développeur FullStack.',
+      'Portfolio de Bakate, développeur Angular spécialisé dans les applications SaaS B2B avec TypeScript, RxJS et NgRx.',
   },
   nav: {
     home: 'Accueil',
@@ -149,37 +139,46 @@ export const uiLabels = {
     },
   },
   homePage: {
-    pageTitle: 'Accueil | Bakate - Développeur FullStack',
+    pageTitle: 'Bakate | Développeur Angular SaaS B2B',
     pageDescription:
-      "Bienvenue sur le portfolio de Bakate, développeur FullStack passionné par la création d'expériences web innovantes.",
+      'Développeur Angular spécialisé SaaS B2B : 4 ans sur une application Angular complexe utilisée par des grands groupes, avec TypeScript, RxJS et NgRx.',
     heroGreeting: "Salut, c'est Bakate Idrissa",
-    heroSubtitlePart1: 'Développeur FullStack',
-    heroSubtitlePart2: 'Architecture',
+    heroSubtitlePart1: 'Développeur Angular',
+    heroSubtitlePart2: 'SaaS B2B',
     heroIntroduction:
-      'Je développe des applications web de bout en bout. Je conçois des systèmes maintenables avec TypeScript, Angular ou Next.js.',
+      "J'aide les équipes produit à construire et faire évoluer des applications Angular complexes.",
     heroIntroduction2:
-      "J'applique l'architecture hexagonale pour isoler la logique métier. J'automatise la qualité via Vitest et GitHub Actions ou CircleCI.",
+      "4 ans d'expérience sur un SaaS B2B utilisé par des grands groupes. Je garde une capacité FullStack pour construire un produit SaaS complet de bout en bout.",
     heroViewWorkButton: 'Mes réalisations',
     heroContactButton: 'Travaillons ensemble',
     heroImageAlt:
       'Illustration représentant Bakate ou un concept de développement',
-    featuredProjectsTitle: '3 derniers projets',
+    featuredProjectsTitle: 'Projets SaaS principaux',
     featuredProjectsDescription:
-      "Voici quelques projets sur lesquels j'ai récemment travaillé. N'hésitez pas à les explorer !",
+      'Angular en production, SaaS B2B et ownership produit complet.',
     projectCardViewProject: 'Voir le projet',
     projectCardViewCode: 'Voir le code',
     imageNotAvailable: 'Image bientôt disponible',
-    mySkillsTitle: 'Mes Compétences',
+    bloomflowTitle: '4 ans sur un SaaS B2B utilisé par des groupes du CAC40',
+    bloomflowDescription:
+      "Chez Bloomflow, j'ai contribué à une plateforme Angular complexe pour l'open innovation : modules critiques, design system, industrialisation frontend et migration TypeScript.",
+    bloomflowCta: 'Voir mon expérience',
+    mySkillsTitle: 'Compétences clés',
     mySkillsDescription:
-      "Explorez l'expertise et les capacités qui définissent mon travail et ma passion.",
+      'Angular est le coeur du positionnement. Le FullStack reste un levier pour livrer un produit SaaS complet.',
   },
   blogPage: {
-    pageTitle: 'Mon Blog Technique',
+    pageTitle: 'Blog Angular, RxJS et Architecture Frontend',
     pageDescription:
-      "Articles et réflexions sur le développement web, l'architecture logicielle, et les nouvelles technologies.",
-    title: 'Mon Blog Technique',
+      'Articles sur Angular, RxJS, Architecture Frontend, SaaS Engineering, TypeScript et développement web.',
+    title: 'Blog Angular & SaaS Engineering',
     description:
-      "Articles et réflexions sur le développement web, l'architecture logicielle, et les nouvelles technologies.",
+      'Retours techniques sur Angular, RxJS, architecture frontend et construction de produits SaaS.',
+    angularArticlesTitle: 'Articles Angular',
+    angularArticlesDescription:
+      'Les contenus Angular, RxJS, Architecture Frontend et SaaS Engineering passent en premier.',
+    featuredArticlesTitle: 'Featured Articles',
+    allArticlesTitle: 'Tous les articles',
     comingSoon:
       'Les articles de blog apparaîtront ici bientôt. Revenez plus tard !',
     heroImageAlt: "Image de couverture pour l'article : ",
@@ -267,9 +266,16 @@ export const uiLabels = {
     viewCodeButton: 'Voir le Code',
   },
   projectsPage: {
-    title: 'Mes Projets',
-    metaTitle: 'Mes Projets | Portfolio de Bakate',
-    metaDescription: 'Découvrez tous les projets de Bakate.',
+    title: 'Projets SaaS',
+    metaTitle: 'Projets SaaS Angular et FullStack | Bakate',
+    metaDescription:
+      'Parent Up, Bloomflow et Terral Hub : projets SaaS B2B, Angular, FullStack et architecture produit.',
+    featuredTitle: 'Projets mis en avant',
+    featuredDescription:
+      'Les trois preuves les plus cohérentes avec mon positionnement Angular et SaaS B2B.',
+    archivesTitle: 'Autres projets',
+    archivesDescription:
+      'Archives et projets secondaires, utiles pour montrer la polyvalence FullStack sans diluer le message principal.',
     noProjects: 'Aucun projet à afficher pour le moment.',
     noProjectsDescription:
       "Il semble que tu n'aies pas encore de projets à afficher.",

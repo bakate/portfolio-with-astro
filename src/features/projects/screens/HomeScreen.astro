@@ -4,7 +4,7 @@ import SkillCard from '@/components/SkillCard.astro';
 import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Calendar, Dumbbell } from 'lucide-react';
+import { Calendar, Dumbbell, ArrowRight, Building2 } from 'lucide-react';
 
 import heroImage from '@/assets/bakate-hero.jpeg';
 import { Image } from 'astro:assets';
@@ -25,6 +25,9 @@ export type Props = {
   imageNotAvailable: string;
   featuredProjectsTitle: string;
   featuredProjectsDescription: string;
+  bloomflowTitle: string;
+  bloomflowDescription: string;
+  bloomflowCta: string;
   mySkillsTitle: string;
   mySkillsDescription: string;
   projectPreviewCtaText: string; // Added for specific project CTA
@@ -43,10 +46,30 @@ const {
   heroContactButton,
   featuredProjectsTitle,
   featuredProjectsDescription,
+  bloomflowTitle,
+  bloomflowDescription,
+  bloomflowCta,
   mySkillsTitle,
   mySkillsDescription,
   projectPreviewCtaText,
 } = Astro.props;
+
+const featuredProjectSlugs = ['parent-up', 'bloomflow', 'terralhub'] as const;
+const featuredProjects = featuredProjectSlugs
+  .map((featuredSlug) => {
+    return projects.find((project) => project.slug === featuredSlug);
+  })
+  .filter((project): project is TranslatedProject => project !== undefined);
+
+const bloomflowHighlights = [
+  'Angular',
+  'TypeScript',
+  'RxJS',
+  'NgRx',
+  'Architecture Frontend',
+  'Design System',
+  'Industrialisation',
+] as const;
 ---
 
 <section class="py-12 md:py-16 relative overflow-hidden">
@@ -148,7 +171,7 @@ const {
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {
-      projects.slice(0, 3).map((project: TranslatedProject) => {
+      featuredProjects.map((project: TranslatedProject) => {
         return (
           <FeaturedProjectPreview
             lang={lang}
@@ -161,6 +184,54 @@ const {
         );
       })
     }
+  </div>
+</section>
+
+{/* Bloomflow Section */}
+<section
+  class="py-14 md:py-18 my-12 rounded-[2rem] border border-primary/20 bg-primary/5 px-6 md:px-12 shadow-sm relative overflow-hidden"
+>
+  <div class="absolute right-0 top-0 p-28 bg-primary/10 blur-[100px] -z-10">
+  </div>
+  <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
+    <div>
+      <div
+        class="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/50 px-4 py-2 text-sm font-medium text-primary"
+      >
+        <Building2 className="size-4" />
+        Bloomflow · Angular · SaaS B2B
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+        {bloomflowTitle}
+      </h2>
+      <p class="text-muted-foreground leading-relaxed max-w-3xl">
+        {bloomflowDescription}
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-wrap gap-2">
+        {
+          bloomflowHighlights.map((highlight) => (
+            <span class="rounded-full border border-border/60 bg-background/60 px-3 py-1 text-sm text-foreground/90">
+              {highlight}
+            </span>
+          ))
+        }
+      </div>
+      <a
+        href={getRelativeLocaleUrl(lang, '/experience')}
+        class={buttonVariants({
+          variant: 'default',
+          size: 'lg',
+          className:
+            'w-fit shadow-lg shadow-primary/20 hover:-translate-y-1 transition-transform',
+        })}
+      >
+        {bloomflowCta}
+        <ArrowRight className="ml-2 size-5" />
+      </a>
+    </div>
   </div>
 </section>
 

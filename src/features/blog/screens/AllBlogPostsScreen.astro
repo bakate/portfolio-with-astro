@@ -51,16 +51,76 @@ const t = useTranslations(lang, 'blogPage');
 
 const pageTitle = t('pageTitle');
 const pageDescription = t('pageDescription');
+const priorityTags = [
+  'Angular',
+  'RxJS',
+  'Architecture Frontend',
+  'SaaS Engineering',
+] as const;
+const hasPriorityTag = (post: AstroCollectionEntry<'blog'>) => {
+  return post.data.tags?.some((postTag) => {
+    return priorityTags.some((priorityTag) => {
+      return priorityTag.toLowerCase() === postTag.toLowerCase();
+    });
+  });
+};
+const featuredPosts = posts.filter(hasPriorityTag).slice(0, 4);
 ---
 
 <BaseLayout {pageTitle} {pageDescription}>
   <div class="container mx-auto px-4 py-8 md:py-12">
     <Heading title={t('title')} description={t('description')} />
+
+    <section
+      class="mt-10 rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8"
+    >
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold tracking-tight">
+          {t('angularArticlesTitle')}
+        </h2>
+        <p class="mt-2 text-sm text-muted-foreground">
+          {t('angularArticlesDescription')}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        {
+          priorityTags.map((tag) => (
+            <a
+              href={`${lang === 'fr' ? '' : '/' + lang}/blog?tag=${encodeURIComponent(tag)}`}
+              class="rounded-full border border-border/60 bg-background/60 px-3 py-1.5 text-sm font-medium text-foreground/90 transition-colors hover:border-primary/40 hover:text-primary"
+            >
+              {tag}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      featuredPosts.length > 0 && (
+        <section class="mt-10">
+          <h2 class="mb-6 text-2xl font-bold tracking-tight">
+            {t('featuredArticlesTitle')}
+          </h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredPosts.map((postEntry) => (
+              <BlogPostCard post={postEntry} lang={lang} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <section class="mt-12">
+      <h2 class="mb-6 text-2xl font-bold tracking-tight">
+        {t('allArticlesTitle')}
+      </h2>
+    </section>
+
     <FilteredPostsList
       client:load
       allPosts={posts.map(transformPostForClientFilter)}
       texts={componentTexts}
-      lang={lang}
       initialSearchQuery={initialSearchQuery}
       initialTag={initialTag}
     />

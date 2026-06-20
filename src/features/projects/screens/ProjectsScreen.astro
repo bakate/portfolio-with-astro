@@ -13,43 +13,106 @@ export type Props = {
 
 const { projects, t, lang } = Astro.props;
 const projectsPageTranslations = t.projectsPage; // For easier access
+const featuredProjectSlugs = ['parent-up', 'bloomflow', 'terralhub'] as const;
+const isFeaturedProject = (project: TranslatedProject) => {
+  return featuredProjectSlugs.some((featuredSlug) => {
+    return featuredSlug === project.slug;
+  });
+};
+const featuredProjects = featuredProjectSlugs
+  .map((featuredSlug) => {
+    return projects.find((project) => project.slug === featuredSlug);
+  })
+  .filter((project): project is TranslatedProject => project !== undefined);
+const archivedProjects = projects.filter((project) => {
+  return !isFeaturedProject(project);
+});
 ---
 
 <div class="py-12 md:py-16">
-  <Heading title={projectsPageTranslations?.title ?? 'Projects'} />
+  <Heading
+    title={projectsPageTranslations?.title ?? 'Projects'}
+    description={projectsPageTranslations?.featuredDescription}
+  />
   {
-    projects && projects.length > 0 ? (
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project: TranslatedProject) => {
-          const projectUrl = `${lang === 'fr' ? '' : '/' + lang}/projects/${project.slug}`;
-          return (
-            <a
-              href={projectUrl}
-              aria-label={`View project ${project.title}`}
-              class="group flex h-full rounded-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              <SectionCard
-                title={project.title}
-                categoryText={project.categoryText}
-                className="w-full"
-                classNameTitle="text-xl"
-                tags={project.tags ?? []}
-                imageUrl={project.imageUrl}
-                imageAltText={project.imageAltText}
+    featuredProjects.length > 0 ? (
+      <section class="mb-16">
+        <h2 class="mb-6 text-2xl font-bold tracking-tight">
+          {projectsPageTranslations?.featuredTitle ?? 'Featured projects'}
+        </h2>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuredProjects.map((project: TranslatedProject) => {
+            const projectUrl = `${lang === 'fr' ? '' : '/' + lang}/projects/${project.slug}`;
+            return (
+              <a
+                href={projectUrl}
+                aria-label={`View project ${project.title}`}
+                class="group flex h-full rounded-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
-                <p class="text-sm text-muted-foreground">
-                  {project.description}
-                </p>
-              </SectionCard>
-            </a>
-          );
-        })}
-      </div>
+                <SectionCard
+                  title={project.title}
+                  categoryText={project.categoryText}
+                  className="w-full border-primary/20"
+                  classNameTitle="text-xl"
+                  tags={project.tags ?? []}
+                  imageUrl={project.imageUrl}
+                  imageAltText={project.imageAltText}
+                >
+                  <p class="text-sm text-muted-foreground">
+                    {project.description}
+                  </p>
+                </SectionCard>
+              </a>
+            );
+          })}
+        </div>
+      </section>
     ) : (
       <EmptyState
         title={projectsPageTranslations?.noProjects}
         description={projectsPageTranslations?.noProjectsDescription}
       />
+    )
+  }
+
+  {
+    archivedProjects.length > 0 && (
+      <section>
+        <div class="mb-6">
+          <h2 class="text-xl font-semibold tracking-tight text-foreground/90">
+            {projectsPageTranslations?.archivesTitle ?? 'Other projects'}
+          </h2>
+          <p class="mt-2 max-w-3xl text-sm text-muted-foreground">
+            {projectsPageTranslations?.archivesDescription}
+          </p>
+        </div>
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {archivedProjects.map((project: TranslatedProject) => {
+            const projectUrl = `${lang === 'fr' ? '' : '/' + lang}/projects/${project.slug}`;
+            return (
+              <a
+                href={projectUrl}
+                aria-label={`View project ${project.title}`}
+                class="group flex h-full rounded-xl opacity-80 transition-all duration-300 hover:opacity-100 hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <SectionCard
+                  title={project.title}
+                  categoryText={project.categoryText}
+                  className="w-full bg-muted/20"
+                  classNameTitle="text-base"
+                  tags={project.tags ?? []}
+                  imageUrl={project.imageUrl}
+                  imageAltText={project.imageAltText}
+                >
+                  <p class="text-sm text-muted-foreground">
+                    {project.description}
+                  </p>
+                </SectionCard>
+              </a>
+            );
+          })}
+        </div>
+      </section>
     )
   }
 </div>

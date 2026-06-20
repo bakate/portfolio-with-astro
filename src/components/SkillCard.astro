@@ -150,22 +150,24 @@ const IconComponent = iconComponents[iconName];
 
   {
     technologies && technologies.length > 0 && (
-      <CardFooter className="pt-3 pb-4 flex flex-wrap gap-x-3 gap-y-2 justify-start items-center">
+      <CardFooter className="pt-3 pb-4 flex flex-wrap gap-2 justify-start items-center">
         {technologies.map((tech) => {
           const techId = tech.id.toLowerCase();
           const TechIcon = techIconComponents[techId];
           const TechLucideIcon = techLucideComponents[techId];
-          return TechIcon ? (
-            <TechIcon
-              className="size-5 text-muted-foreground hover:text-primary transition-colors"
-              title={tech.name}
-            />
-          ) : TechLucideIcon ? (
-            <TechLucideIcon
-              className="size-5 text-muted-foreground hover:text-primary transition-colors"
-              aria-label={tech.name}
-            />
-          ) : null;
+          return (
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/30 px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary">
+              {TechIcon ? (
+                <TechIcon className="size-3.5 shrink-0" aria-hidden="true" />
+              ) : TechLucideIcon ? (
+                <TechLucideIcon
+                  className="size-3.5 shrink-0"
+                  aria-hidden="true"
+                />
+              ) : null}
+              <span>{tech.name}</span>
+            </span>
+          );
         })}
       </CardFooter>
     )
