@@ -39,7 +39,7 @@ const stringFieldSchema = (minLength = 2, maxLength = 50) =>
 export const contactFormSchema = z.object({
   firstName: stringFieldSchema(),
   lastName: stringFieldSchema(),
-  email: z.string().nonempty().email(),
+  email: z.email(),
   company: z.string().max(100).optional(),
   message: stringFieldSchema(10, 500),
 });

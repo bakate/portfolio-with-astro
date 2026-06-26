@@ -5,6 +5,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 
 import tailwindcss from '@tailwindcss/vite';
+import { unified } from '@astrojs/markdown-remark';
 import { remarkReadingTime } from './src/lib/remark-reading-time.mjs';
 
 import vercel from '@astrojs/vercel';
@@ -14,7 +15,9 @@ export default defineConfig({
   integrations: [
     react(),
     mdx({
+    processor: unified({
       remarkPlugins: [remarkReadingTime],
+    }),
       syntaxHighlight: {
         type: 'shiki',
         themes: {

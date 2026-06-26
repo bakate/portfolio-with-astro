@@ -5,7 +5,8 @@ import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
 import { cn } from '@/lib/utils';
 import { Image } from 'astro:assets';
-import { Calendar, Clock, Github, Linkedin } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
+import { FaGithub, FaLinkedin  } from "react-icons/fa";
 
 import { ContactForm } from '../components/ContactForm.tsx';
 import type { ContactFormTranslations } from '../type';
@@ -160,7 +161,7 @@ const {
               <div
                 class="p-2.5 rounded-xl bg-blue-600/10 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors"
               >
-                <Linkedin className="size-5" />
+                <FaLinkedin className="size-5" />
               </div>
               <div>
                 <p class="font-semibold px-2">
@@ -187,7 +188,7 @@ const {
               <div
                 class="p-2.5 rounded-xl bg-foreground/10 text-foreground group-hover:bg-foreground group-hover:text-background transition-colors"
               >
-                <Github className="size-5" />
+                <FaGithub className="size-5" />
               </div>
               <div>
                 <p class="font-semibold px-2">{formTranslations.githubLabel}</p>

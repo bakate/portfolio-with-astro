@@ -1,4 +1,4 @@
-import { z, ZodParsedType } from 'zod';
+import { z } from 'zod';
 import { ui, type LanguageCode, defaultLanguage } from './ui';
 
 // Helper to get translations safely, falling back to default language or a generic message
@@ -60,38 +60,42 @@ function getErrorMessage(
   return message;
 }
 
-const customErrorMap =
-  (lang: LanguageCode): z.ZodErrorMap =>
-  (issue, ctx) => {
-    let message: string;
 
+// ...getErrorMessage inchangée...
+
+const customErrorMap =
+  (lang: LanguageCode): z.core.$ZodErrorMap =>
+  (issue) => {
     switch (issue.code) {
-      case z.ZodIssueCode.invalid_type:
-        if (issue.received === ZodParsedType.undefined) {
-          message = getErrorMessage(lang, 'invalid_type_received_undefined');
-        } else {
-          message = getErrorMessage(lang, 'invalid_type', {
-            received: String(issue.received),
-          });
+      case 'invalid_type':
+        if (issue.received === 'undefined') {
+          return getErrorMessage(lang, 'invalid_type_received_undefined');
         }
-        break;
-      case z.ZodIssueCode.invalid_string:
-        if (issue.validation === 'email') {
-          message = getErrorMessage(lang, 'invalid_string_email');
-        } else if (issue.validation === 'url') {
-          message = getErrorMessage(lang, 'invalid_string_url');
-        } else if (issue.validation === 'uuid') {
-          message = getErrorMessage(lang, 'invalid_string_uuid');
-        } else {
-          // Generic invalid string if no specific validation message is found
-          message = ctx.defaultError;
-        }
-        break;
-      case z.ZodIssueCode.too_small: {
-        const fieldPath = issue.path.length > 0 ? String(issue.path[issue.path.length - 1]) : 'champ';
-        const fieldNameKey = fieldPath !== 'champ' ? `${fieldPath}Label` as keyof (typeof ui)[LanguageCode]['contactPage'] : undefined;
+        return getErrorMessage(lang, 'invalid_type', {
+          received: String(issue.received),
+        });
+
+case 'invalid_format':
+  if (issue.format === 'email') {
+    return getErrorMessage(lang, 'invalid_string_email');
+  }
+  if (issue.format === 'url') {
+    return getErrorMessage(lang, 'invalid_string_url');
+  }
+  if (issue.format === 'uuid') {
+    return getErrorMessage(lang, 'invalid_string_uuid');
+  }
+  return undefined;
+
+      case 'too_small': {
+  const path = issue.path ?? [];
+  const fieldPath = path.length > 0 ? String(path[path.length - 1]) : 'champ';
+        const fieldNameKey =
+          fieldPath !== 'champ'
+            ? (`${fieldPath}Label` as keyof (typeof ui)[LanguageCode]['contactPage'])
+            : undefined;
         let rawFieldName = fieldPath;
-        
+
         if (fieldNameKey) {
           rawFieldName =
             ui[lang]?.contactPage?.[fieldNameKey] ||
@@ -102,37 +106,27 @@ const customErrorMap =
 
         if (issue.type === 'string') {
           if (issue.minimum === 1 && issue.exact === false) {
-            // `.nonempty()` or `.min(1)` translates to a "required" error
-            message = getErrorMessage(lang, 'required_field_custom', {
-              fieldName,
-            });
-          } else {
-            message = getErrorMessage(lang, 'too_small_string_minimum', {
-              minimum: String(issue.minimum),
-              fieldName,
-            });
+            return getErrorMessage(lang, 'required_field_custom', { fieldName });
           }
-        } else {
-          message = ctx.defaultError;
+          return getErrorMessage(lang, 'too_small_string_minimum', {
+            minimum: String(issue.minimum),
+            fieldName,
+          });
         }
-        break;
+        return undefined;
       }
-      case z.ZodIssueCode.too_big:
+
+      case 'too_big':
         if (issue.type === 'string') {
-          message = getErrorMessage(lang, 'too_big_string_maximum', {
+          return getErrorMessage(lang, 'too_big_string_maximum', {
             maximum: String(issue.maximum),
           });
-        } else {
-          // Handle other types if necessary
-          message = ctx.defaultError;
         }
-        break;
-      default:
-        // For any other issue code, fallback to Zod's default error message
-        message = ctx.defaultError;
-    }
+        return undefined;
 
-    return { message };
+      default:
+        return undefined;
+    }
   };
 
 export const setGlobalZodErrorMap = (lang: LanguageCode) => {
