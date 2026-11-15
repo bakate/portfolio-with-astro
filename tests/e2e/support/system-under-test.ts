@@ -121,6 +121,17 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
   /** Bodies posted to the contact service, once it is stubbed. */
   const messagesReceived: Array<unknown> = [];
 
+  /** Every URL the page requested, once recording has started. */
+  const requestsMade: Array<string> = [];
+
+  /** True when the URL's host is one of the hosts or a subdomain of one. */
+  const isOnHost = (url: string, hosts: ReadonlyArray<string>) => {
+    const { hostname } = new URL(url, 'http://localhost');
+    return hosts.some(
+      (host) => hostname === host || hostname.endsWith(`.${host}`)
+    );
+  };
+
   return {
     // Given / When
 
@@ -138,6 +149,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
           body: JSON.stringify({ status: 'success', message: '' }),
         });
       });
+    },
+
+    /** Records every request the page makes, to any host, from now on. */
+    async givenEveryRequestIsRecorded() {
+      page.on('request', (sent) => requestsMade.push(sent.url()));
     },
 
     /** Fills each field by its visible label, then presses the send button. */
@@ -525,6 +541,21 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     async thenPageHasNoSection(anchor: string) {
       await expect(page.locator('main')).toBeVisible();
       await expect(page.locator(`#${anchor}`)).toHaveCount(0);
+    },
+
+    async thenPageLoadsNoScriptFrom(hosts: ReadonlyArray<string>) {
+      await page.waitForLoadState('load');
+      const sources = await page
+        .locator('script[src]')
+        .evaluateAll((scripts) =>
+          scripts.map((script) => script.getAttribute('src') ?? '')
+        );
+      expect(sources.filter((src) => isOnHost(src, hosts))).toEqual([]);
+    },
+
+    async thenNoRequestGoesTo(hosts: ReadonlyArray<string>) {
+      await page.waitForLoadState('networkidle');
+      expect(requestsMade.filter((url) => isOnHost(url, hosts))).toEqual([]);
     },
 
     async thenPageHeadingIs(heading: string) {

@@ -1,6 +1,7 @@
 ---
 import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
+import { analyticsEvents } from '@/lib/analytics';
 import { profile } from '@/lib/profile';
 import { Calendar } from 'lucide-react';
 
@@ -32,6 +33,7 @@ const linkClass =
       <p class="mt-2 text-muted-foreground">{copy.bookingDescription}</p>
       <a
         href={profile.bookingUrl}
+        data-umami-event={analyticsEvents.bookCall}
         target="_blank"
         rel="noopener noreferrer"
         class:list={[
