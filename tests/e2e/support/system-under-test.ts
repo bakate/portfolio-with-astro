@@ -183,6 +183,67 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       );
     },
 
+    /** Each anchor exists and comes after the previous one in the page. */
+    async thenSectionsFollowInOrder(anchors: ReadonlyArray<string>) {
+      const tops: Array<number> = [];
+      for (const anchor of anchors) {
+        const section = page.locator(`#${anchor}`);
+        await expect(section, `#${anchor}`).toHaveCount(1);
+        tops.push(
+          await section.evaluate(
+            (element) => element.getBoundingClientRect().top + window.scrollY
+          )
+        );
+      }
+      const order = anchors
+        .map((anchor, index) => ({ anchor, top: tops[index] }))
+        .sort((a, b) => a.top - b.top)
+        .map(({ anchor }) => anchor);
+      expect(order).toEqual([...anchors]);
+    },
+
+    async thenSectionShows(
+      anchor: string,
+      {
+        heading,
+        texts = [],
+      }: { heading: string; texts?: ReadonlyArray<string> }
+    ) {
+      const section = page.locator(`#${anchor}`);
+      await expect(
+        section.getByRole('heading', { level: 2, name: heading, exact: true })
+      ).toBeVisible();
+      for (const text of texts) await expect(section).toContainText(text);
+    },
+
+    /** An entry is a list item of the section, found by the name it shows. */
+    async thenSectionEntryShows(
+      anchor: string,
+      entry: string,
+      {
+        texts,
+        without = [],
+      }: { texts: ReadonlyArray<string>; without?: ReadonlyArray<string> }
+    ) {
+      const item = page
+        .locator(`#${anchor}`)
+        .getByRole('listitem')
+        .filter({ hasText: entry });
+      await expect(item, entry).toHaveCount(1);
+      for (const text of texts) await expect(item).toContainText(text);
+      for (const text of without) {
+        await expect(item).not.toContainText(new RegExp(`\\b${text}\\b`, 'i'));
+      }
+    },
+
+    async thenSectionLinksTo(anchor: string, name: string, path: string) {
+      const link = page.locator(`#${anchor}`).getByRole('link', { name });
+      await expect(link).toBeVisible();
+      const href = (await link.getAttribute('href')) ?? '';
+      expect(withoutQueryOrTrailingSlash(href)).toBe(path);
+      expect(await statusOf(href), href).toBe(200);
+    },
+
     async thenHeroLinkOpensInNewTab(name: string, url: string) {
       const link = hero.getByRole('link', { name });
       await expect(link).toHaveAttribute('href', url);

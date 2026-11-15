@@ -1,21 +1,4 @@
 export const uiLabels = {
-  skillsContent: {
-    angularExpertise: {
-      title: 'Production Angular',
-      description:
-        'Production Angular development: components, RxJS, NgRx, Signals, performance, and state management.',
-    },
-    saasEngineering: {
-      title: 'SaaS Engineering',
-      description:
-        'Frontend architecture, APIs, real-time features, CI/CD, monitoring, and tests for maintainable B2B products.',
-    },
-    productEngineering: {
-      title: 'Product Engineering',
-      description:
-        'Turning a business problem into an MVP, validating with users, and owning features end to end.',
-    },
-  },
   site: {
     title: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     description:
@@ -163,14 +146,60 @@ export const uiLabels = {
     projectCardViewProject: 'View Project',
     projectCardViewCode: 'View Code',
     imageNotAvailable: 'Image not available for now',
-    bloomflowTitle:
-      '4 years on a B2B SaaS used by CAC40-level enterprise groups',
-    bloomflowDescription:
-      'At Bloomflow, I contributed to a complex Angular platform for open innovation: critical modules, design system, frontend industrialization, and TypeScript migration.',
-    bloomflowCta: 'View my experience',
-    mySkillsTitle: 'Core Skills',
-    mySkillsDescription:
-      'An isolated, tested business domain, solid interfaces, and a product shipped end to end.',
+    experience: {
+      title: 'Experience',
+      description:
+        'Over five years shipping SaaS products, from the business domain to production.',
+      cta: 'See my full background',
+      entries: [
+        {
+          company: 'leZèbre Tech',
+          role: 'Software Engineer',
+          period: 'July 2026 – October 2026',
+          summary:
+            'NestJS backend services with hexagonal architecture and DDD, daily TDD, Gherkin acceptance tests, code reviews and mentoring of junior developers.',
+        },
+        {
+          company: 'Teranga Pulse',
+          role: 'Founder and Full-Stack Software Engineer',
+          period: 'November 2024 – June 2026',
+          summary:
+            'Two MVPs shipped solo, from architecture to production: Parent Up, a co-parenting platform with an AI legal assistant, and Terral Hub, agricultural logistics in Senegal.',
+        },
+        {
+          company: 'Bloomflow',
+          role: 'Full-Stack Software Engineer',
+          period: 'November 2020 – November 2024',
+          summary:
+            '4 years on a B2B open-innovation SaaS: data-heavy business screens for Bayer, Unilever and HSBC, in Angular and then React and Next.js.',
+        },
+      ],
+    },
+    howIWork: {
+      title: 'How I work',
+      description:
+        'A method that does not depend on the framework: the business first, proven by tests.',
+      practices: [
+        {
+          title: 'DDD and hexagonal architecture',
+          description:
+            'The business domain lives apart from the infrastructure, behind ports and adapters. It is tested without a database and does not depend on the framework, NestJS or Express alike.',
+        },
+        {
+          title: 'TDD and Gherkin acceptance tests',
+          description:
+            'I write the test before the code. Gherkin scenarios describe the expected behaviour in the product’s own words, so product and engineering agree before the first line.',
+        },
+        {
+          title: 'AI where it actually helps',
+          description:
+            'RAG and embeddings in production, with the Parent Up legal assistant, and LLM-assisted specifications before writing the code.',
+        },
+      ],
+      careerChangeTitle: 'Before code, sales',
+      careerChange:
+        'I spent 10 years in sales before moving into software engineering in 2020. It gave me product sense and a feel for client relationships: I understand the problem before choosing the solution, and I talk to business teams as easily as to developers.',
+    },
   },
   blogPage: {
     pageTitle: 'Angular, RxJS, and Frontend Architecture Blog',

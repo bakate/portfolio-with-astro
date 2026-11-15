@@ -57,13 +57,7 @@ import {
   useTranslations,
   type LanguageCode,
 } from '@/i18n/ui';
-import type {
-  Proof,
-  ProjectData,
-  SkillData,
-  TranslatedProject,
-  TranslatedSkill,
-} from './type';
+import type { Proof, ProjectData, TranslatedProject } from './type';
 
 const projectsListUnsorted: Array<ProjectData> = [
   {
@@ -551,70 +545,6 @@ export function getTranslatedProjectBySlug(
   }
   const currentLang = lang || defaultLanguage;
   return translateProject(project, currentLang);
-}
-
-// Skills
-
-export const skillsList: Array<SkillData> = [
-  {
-    id: 'angularExpertise',
-    iconName: 'MonitorSmartphone',
-    technologies: [
-      { id: 'angular', name: 'Angular' },
-      { id: 'rxjs', name: 'RxJS' },
-      { id: 'ngrx', name: 'NgRx' },
-      { id: 'signals', name: 'Signals' },
-      { id: 'performance', name: 'Performance' },
-      { id: 'state-management', name: 'State Management' },
-    ],
-  },
-  {
-    id: 'saasEngineering',
-    iconName: 'Network',
-    technologies: [
-      { id: 'frontend-architecture', name: 'Architecture Frontend' },
-      { id: 'apis', name: 'APIs' },
-      { id: 'realtime', name: 'Temps réel' },
-      { id: 'ci-cd', name: 'CI/CD' },
-      { id: 'monitoring', name: 'Monitoring' },
-      { id: 'tests', name: 'Tests' },
-    ],
-  },
-  {
-    id: 'productEngineering',
-    iconName: 'ServerCog',
-    technologies: [
-      { id: 'mvp', name: 'MVP' },
-      { id: 'discovery', name: 'Discovery' },
-      { id: 'user-validation', name: 'Validation utilisateur' },
-      { id: 'product-architecture', name: 'Architecture produit' },
-      { id: 'feature-ownership', name: 'Feature ownership' },
-      { id: 'typescript', name: 'TypeScript' },
-    ],
-  },
-];
-
-// Function to get skills with translated content
-export function getTranslatedSkills(
-  lang: LanguageCode | undefined
-): Array<TranslatedSkill> {
-  const currentLang = lang ?? defaultLanguage;
-
-  return skillsList.map((skill) => {
-    type SkillIdKey =
-      keyof (typeof ui)[typeof defaultLanguage]['skillsContent'];
-    const currentSkillId = skill.id as SkillIdKey;
-
-    const skillTranslations =
-      ui[currentLang]?.skillsContent?.[currentSkillId] ??
-      ui[defaultLanguage].skillsContent[currentSkillId]!;
-
-    return {
-      ...skill, // This includes id and iconName
-      title: skillTranslations.title,
-      description: skillTranslations.description,
-    };
-  });
 }
 
 /** The measured outcomes shown under the hero, in display order. */

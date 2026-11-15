@@ -1,21 +1,4 @@
 export const uiLabels = {
-  skillsContent: {
-    angularExpertise: {
-      title: 'Angular en production',
-      description:
-        'Développement Angular en production : composants, RxJS, NgRx, Signals, performance et state management.',
-    },
-    saasEngineering: {
-      title: 'SaaS Engineering',
-      description:
-        'Architecture frontend, APIs, temps réel, CI/CD, monitoring et tests pour des produits B2B maintenables.',
-    },
-    productEngineering: {
-      title: 'Product Engineering',
-      description:
-        'Capacité à transformer un problème métier en MVP, valider avec les utilisateurs et porter une feature de bout en bout.',
-    },
-  },
   site: {
     title: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     description:
@@ -162,13 +145,60 @@ export const uiLabels = {
     projectCardViewProject: 'Voir le projet',
     projectCardViewCode: 'Voir le code',
     imageNotAvailable: 'Image bientôt disponible',
-    bloomflowTitle: '4 ans sur un SaaS B2B utilisé par des groupes du CAC40',
-    bloomflowDescription:
-      "Chez Bloomflow, j'ai contribué à une plateforme Angular complexe pour l'open innovation : modules critiques, design system, industrialisation frontend et migration TypeScript.",
-    bloomflowCta: 'Voir mon expérience',
-    mySkillsTitle: 'Compétences clés',
-    mySkillsDescription:
-      'Un domaine métier isolé et testé, des interfaces solides, et un produit livré de bout en bout.',
+    experience: {
+      title: 'Expérience',
+      description:
+        'Plus de cinq ans à livrer des produits SaaS, du domaine métier à la production.',
+      cta: 'Voir tout mon parcours',
+      entries: [
+        {
+          company: 'leZèbre Tech',
+          role: 'Software Engineer',
+          period: 'Juillet 2026 – octobre 2026',
+          summary:
+            "Services backend NestJS en architecture hexagonale et DDD, TDD au quotidien, tests d'acceptation Gherkin, revues de code et accompagnement des développeurs juniors.",
+        },
+        {
+          company: 'Teranga Pulse',
+          role: 'Fondateur et Software Engineer Full-Stack',
+          period: 'Novembre 2024 – juin 2026',
+          summary:
+            "Deux MVP livrés seul, de l'architecture à la production : Parent Up, plateforme de coparentalité avec un assistant juridique IA, et Terral Hub, logistique agricole au Sénégal.",
+        },
+        {
+          company: 'Bloomflow',
+          role: 'Software Engineer Full-Stack',
+          period: 'Novembre 2020 – novembre 2024',
+          summary:
+            "4 ans sur un SaaS B2B d'open innovation : écrans métier à gros volumes de données pour Bayer, Unilever et HSBC, en Angular puis en React et Next.js.",
+        },
+      ],
+    },
+    howIWork: {
+      title: 'Comment je travaille',
+      description:
+        "Une méthode qui ne dépend pas du framework : le métier d'abord, prouvé par les tests.",
+      practices: [
+        {
+          title: 'DDD et architecture hexagonale',
+          description:
+            "Le domaine métier vit à l'écart de l'infrastructure, derrière des ports et des adaptateurs. Il se teste sans base de données et ne dépend pas du framework, NestJS comme Express.",
+        },
+        {
+          title: "TDD et tests d'acceptation Gherkin",
+          description:
+            "J'écris le test avant le code. Les scénarios Gherkin décrivent le comportement attendu dans les mots du produit, pour que produit et technique s'accordent avant la première ligne.",
+        },
+        {
+          title: "L'IA là où elle sert",
+          description:
+            "RAG et embeddings en production, avec l'assistant juridique de Parent Up, et des spécifications assistées par LLM avant d'écrire le code.",
+        },
+      ],
+      careerChangeTitle: 'Avant le code, la vente',
+      careerChange:
+        "J'ai passé 10 ans dans la vente avant de me reconvertir au développement en 2020. J'en garde le sens du produit et la relation client : je comprends le problème avant de choisir la solution, et je parle aussi bien aux équipes métier qu'aux développeurs.",
+    },
   },
   blogPage: {
     pageTitle: 'Blog Angular, RxJS et Architecture Frontend',
