@@ -20,7 +20,7 @@ Welcome to the repository for my personal portfolio and technical blog, develope
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/)
 - **Blog Content**: [MDX](https://mdxjs.com/) (with React components for interactivity)
-- **Package Manager**: [Bun](https://bun.sh/)
+- **Package Manager**: [pnpm](https://pnpm.io/) (version pinned via the `packageManager` field in `package.json`)
 
 ## 🚀 Quick Start
 
@@ -34,12 +34,14 @@ Welcome to the repository for my personal portfolio and technical blog, develope
 2.  **Install dependencies:**
 
     ```bash
-    bun install
+    npm install -g corepack   # only on Node.js 25+, which no longer bundles Corepack
+    corepack enable           # uses the pnpm version pinned in package.json
+    pnpm install
     ```
 
 3.  **Start the development server:**
     ```bash
-    bun dev
+    pnpm dev
     ```
     The site will be available at `http://localhost:4321`.
 
@@ -47,13 +49,19 @@ Welcome to the repository for my personal portfolio and technical blog, develope
 
 All commands are run from the root of the project:
 
-| Command         | Action                                                          |
-| :-------------- | :-------------------------------------------------------------- |
-| `bun install`   | Installs project dependencies.                                  |
-| `bun dev`       | Starts the local development server with hot-reloading.         |
-| `bun build`     | Builds the site for production in the `./dist/` folder.         |
-| `bun preview`   | Allows you to preview the production build locally.             |
-| `bun astro ...` | Executes Astro CLI commands (e.g., `astro add`, `astro check`). |
+| Command          | Action                                                               |
+| :--------------- | :------------------------------------------------------------------- |
+| `pnpm install`   | Installs project dependencies.                                       |
+| `pnpm dev`       | Starts the local development server with hot-reloading.              |
+| `pnpm build`     | Builds the site for production (Vercel output in `.vercel/output/`). |
+| `pnpm preview`   | Not supported with the Vercel adapter (see note below).              |
+| `pnpm astro ...` | Executes Astro CLI commands (e.g., `astro add`, `astro check`).      |
+
+> **Note:** the `@astrojs/vercel` adapter does not support `astro preview`. Instead:
+>
+> - **Production build, pages and API routes:** push a branch; Vercel deploys it to a preview URL (linked on the pull request) built with `pnpm build`.
+> - **Prerendered pages only, locally:** after `pnpm build`, run `pnpm dlx serve .vercel/output/static`. API routes such as `/api/contact` are not served.
+> - **API routes in development:** `vercel dev` runs the dev server with the API routes; it does not use the production build.
 
 ## 📁 Project Structure (Simplified)
 

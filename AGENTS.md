@@ -1,0 +1,35 @@
+# Portfolio (Astro)
+
+Bilingual (FR/EN) freelance portfolio and technical blog for a senior full-stack developer positioned on Angular SaaS. Its job is to convince recruiters and clients: the UI must feel premium, and content quality matters as much as code.
+
+Stack: Astro 7 with React 19 islands, Tailwind 4, shadcn/ui (Radix), MDX, deployed on Vercel. Versions and scripts live in `package.json`.
+
+## Commands
+
+pnpm is the only package manager (version pinned by `packageManager`; run `corepack enable`). One-off tools go through `pnpm dlx`.
+
+- `pnpm build` is the check that a change works; `pnpm astro check` typechecks.
+- `pnpm preview` does not work: the Vercel adapter refuses it. Use `vercel dev` to test the contact form (`/api/contact`); serving `.vercel/output/static` only shows the prerendered pages.
+- There is no test suite.
+
+## Bilingual by construction
+
+French is the default locale, served without prefix; English lives under `/en`. Every user-facing change lands in both languages:
+
+- **Pages**: each route exists twice, `src/pages/<route>` and `src/pages/en/<route>`, as thin files that read `Astro.currentLocale` and pass translated strings to a feature screen. Edit both.
+- **UI strings**: `src/i18n/languages/{fr,en}/`, read through `useTranslations(lang, feature)` from `@/i18n/ui`. Keys are typed against French only, and a key missing in English silently falls back to French, so the compiler will not catch a forgotten translation.
+- **Content**: blog and tips articles are MDX under `src/features/{blog,tips}/content/{fr,en}/`, schemas in `src/content.config.ts`.
+
+## Code layout
+
+- Feature modules in `src/features/<feature>/` (`screens/`, `components/`, `service.ts`, `index.ts` as public API). Pages import from the feature's `index.ts`.
+- Shared UI in `src/components/` (shadcn primitives in `src/components/ui/`), helpers in `src/lib/`, nanostores in `src/stores/`.
+- Import via the `@/` alias for `src/`.
+- Interactive parts are React islands; everything else stays static `.astro`.
+
+## Conventions and gotchas
+
+- Formatting is Prettier (`pnpm format`).
+- Validate input with Zod at the boundary; user feedback goes through Sonner toasts.
+- Brand/social icons come from `react-icons` (lucide 1.x dropped brand icons); lucide stays for generic icons.
+- The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`; the contact page also reads `PUBLIC_GOOGLE_CALENDAR_URL`.
