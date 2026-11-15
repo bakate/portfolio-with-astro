@@ -53,10 +53,10 @@ All commands are run from the root of the project:
 | `pnpm install`   | Installs project dependencies.                                       |
 | `pnpm dev`       | Starts the local development server with hot-reloading.              |
 | `pnpm build`     | Builds the site for production (Vercel output in `.vercel/output/`). |
-| `pnpm preview`   | Previews the production build locally (see note below).              |
+| `pnpm preview`   | Not supported with the Vercel adapter (see note below).              |
 | `pnpm astro ...` | Executes Astro CLI commands (e.g., `astro add`, `astro check`).      |
 
-> **Note:** the `@astrojs/vercel` adapter does not support `astro preview`. To check a production build locally, serve the prerendered pages with e.g. `npx serve .vercel/output/static`, or use `vercel dev`.
+> **Note:** the `@astrojs/vercel` adapter does not support `astro preview`. To check a production build locally, use `vercel dev` (runs the API routes too), or serve only the prerendered pages with `pnpm dlx serve .vercel/output/static`.
 
 ## 📁 Project Structure (Simplified)
 

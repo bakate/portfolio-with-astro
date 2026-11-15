@@ -22,8 +22,8 @@ Un portfolio professionnel haute performance conçu avec Astro 5 pour mettre en 
 - JavaScript (ESM) - Build scripts and configuration files (e.g., `astro.config.mjs`).
 ## Runtime
 - Node.js - Development and build environment.
-- bun - High-performance package manager and runner (detected `bun.lock`).
-- Lockfile: present (`bun.lock`).
+- pnpm - Package manager, version pinned via `packageManager` in `package.json`.
+- Lockfile: present (`pnpm-lock.yaml`).
 ## Frameworks
 - Astro 5.15.6 - Static site generator and web framework.
 - React 19.1.0 - Used for interactive components (islands).
@@ -44,7 +44,7 @@ Un portfolio professionnel haute performance conçu avec Astro 5 pour mettre en 
 - `tsconfig.json` - TypeScript compiler settings.
 - `components.json` - shadcn/ui configuration.
 ## Platform Requirements
-- Bun or Node.js runtime.
+- Node.js runtime with pnpm (via Corepack).
 - Vercel (Primary target).
 <!-- GSD:stack-end -->
 

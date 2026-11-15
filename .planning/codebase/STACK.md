@@ -17,8 +17,8 @@
 - Node.js - Development and build environment.
 
 **Package Manager:**
-- bun - High-performance package manager and runner (detected `bun.lock`).
-- Lockfile: present (`bun.lock`).
+- pnpm - Package manager, version pinned via `packageManager` in `package.json`.
+- Lockfile: present (`pnpm-lock.yaml`).
 
 ## Frameworks
 
@@ -59,7 +59,7 @@
 ## Platform Requirements
 
 **Development:**
-- Bun or Node.js runtime.
+- Node.js runtime with pnpm (via Corepack).
 
 **Production:**
 - Vercel (Primary target).
