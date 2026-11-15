@@ -59,6 +59,29 @@ export async function crawlSite(
   return pages;
 }
 
+/**
+ * `path → needle` for every crawled page whose HTML mentions a needle
+ * (case-insensitive). Fails when the crawl came back empty, so an empty site
+ * can never pass as "no offenders".
+ */
+export async function findMentions(
+  request: APIRequestContext,
+  needles: ReadonlyArray<string>
+): Promise<Array<string>> {
+  const pages = await crawlSite(request);
+  for (const lang of locales) {
+    if (!pages.has(localePath(lang, '/projects'))) {
+      throw new Error(`crawl did not reach the ${lang} projects page`);
+    }
+  }
+  return [...pages].flatMap(([path, html]) => {
+    const text = html.toLowerCase();
+    return needles
+      .filter((needle) => text.includes(needle.toLowerCase()))
+      .map((needle) => `${path} → ${needle}`);
+  });
+}
+
 /** Project detail routes, read from the links a visitor sees on the projects page. */
 export async function projectRoutes(
   request: APIRequestContext,

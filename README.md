@@ -77,7 +77,7 @@ pnpm test:e2e                           # builds, serves .vercel/output/static o
 - `pnpm exec playwright test tests/e2e/language-parity.spec.ts` runs a single file.
 - The static server is `scripts/serve-static.mjs`; it serves prerendered pages only, not `/api/contact`.
 
-CI (`.github/workflows/e2e.yml`) runs the suite on every pull request.
+CI (`.github/workflows/e2e.yml`) runs the suite on every pull request. To block merging on failure, mark the **End-to-end tests / e2e** check as required in the GitHub branch protection rule for `main` (a repository setting, not something the code can set).
 
 ## 📁 Project Structure (Simplified)
 

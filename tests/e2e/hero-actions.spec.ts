@@ -54,3 +54,17 @@ for (const lang of locales) {
     );
   });
 }
+
+const sendButtonByLocale = {
+  fr: 'Envoyer',
+  en: 'Send',
+} as const satisfies Record<LanguageCode, string>;
+
+for (const lang of locales) {
+  test(`contact page keeps the message form (${lang})`, async ({ page }) => {
+    await page.goto(localePath(lang, '/contact'));
+    await expect(
+      page.getByRole('button', { name: sendButtonByLocale[lang], exact: true })
+    ).toBeVisible();
+  });
+}

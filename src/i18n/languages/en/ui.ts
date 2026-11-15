@@ -143,7 +143,6 @@ export const uiLabels = {
     pageTitle: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     pageDescription:
       'Bakate Idrissa Ba, Software Engineer Full-Stack TypeScript: I build SaaS products end to end, with an isolated, tested business domain (DDD, hexagonal architecture, TDD), Next.js and Angular interfaces, and AI where it actually helps.',
-    heroTitle: 'Software Engineer Full-Stack TypeScript',
     heroPitch:
       'I build SaaS products end to end: an isolated, tested business domain (DDD, hexagonal architecture, TDD), whatever the framework (NestJS, Express…), Next.js and Angular interfaces, and AI where it actually helps.',
     heroAvailability: 'Available · Hybrid Île-de-France / remote',

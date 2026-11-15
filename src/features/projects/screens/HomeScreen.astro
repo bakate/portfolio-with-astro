@@ -16,7 +16,6 @@ export type Props = {
   lang: LanguageCode;
   projects: Array<TranslatedProject>;
   skills: Array<TranslatedSkill>;
-  heroTitle: string;
   heroPitch: string;
   heroAvailability: string;
   heroBookCallButton: string;
@@ -36,7 +35,6 @@ const {
   lang,
   projects,
   skills,
-  heroTitle,
   heroPitch,
   heroAvailability,
   heroBookCallButton,
@@ -92,7 +90,7 @@ const bloomflowHighlights = [
         {profile.displayName}
       </h1>
       <p class="text-xl md:text-2xl font-medium text-muted-foreground mb-4">
-        <span class="text-foreground/90">{heroTitle}</span>
+        <span class="text-foreground/90">{profile.jobTitle}</span>
       </p>
       <p
         class="text-lg text-muted-foreground/80 mb-10 max-w-2xl mx-auto md:mx-0 leading-relaxed"

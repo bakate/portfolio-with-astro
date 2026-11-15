@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import type { LanguageCode } from '@/i18n/ui';
-import { crawlSite, localePath, locales } from './support/site';
+import { findMentions, localePath, locales } from './support/site';
 
 const fullName = 'Bakate Idrissa Ba';
 const jobTitle = 'Software Engineer Full-Stack TypeScript';
@@ -86,11 +86,5 @@ for (const lang of locales) {
 }
 
 test('no page presents the former Angular identity', async ({ request }) => {
-  const pages = await crawlSite(request);
-  const offenders = [...pages].flatMap(([path, html]) =>
-    formerIdentities
-      .filter((identity) => html.toLowerCase().includes(identity.toLowerCase()))
-      .map((identity) => `${path} → ${identity}`)
-  );
-  expect(offenders).toEqual([]);
+  expect(await findMentions(request, formerIdentities)).toEqual([]);
 });

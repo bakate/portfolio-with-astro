@@ -142,7 +142,6 @@ export const uiLabels = {
     pageTitle: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     pageDescription:
       'Bakate Idrissa Ba, Software Engineer Full-Stack TypeScript : je conçois des produits SaaS de bout en bout, avec un domaine métier isolé et testé (DDD, architecture hexagonale, TDD), des interfaces Next.js et Angular, et l’IA là où elle sert vraiment.',
-    heroTitle: 'Software Engineer Full-Stack TypeScript',
     heroPitch:
       "Je conçois des produits SaaS de bout en bout : un domaine métier isolé et testé (DDD, architecture hexagonale, TDD), quel que soit le framework (NestJS, Express…), des interfaces Next.js et Angular, et l'IA là où elle sert vraiment.",
     heroAvailability: 'Disponible · Hybride Île-de-France / remote',
