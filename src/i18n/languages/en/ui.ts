@@ -1,21 +1,4 @@
 export const uiLabels = {
-  skillsContent: {
-    angularExpertise: {
-      title: 'Production Angular',
-      description:
-        'Production Angular development: components, RxJS, NgRx, Signals, performance, and state management.',
-    },
-    saasEngineering: {
-      title: 'SaaS Engineering',
-      description:
-        'Frontend architecture, APIs, real-time features, CI/CD, monitoring, and tests for maintainable B2B products.',
-    },
-    productEngineering: {
-      title: 'Product Engineering',
-      description:
-        'Turning a business problem into an MVP, validating with users, and owning features end to end.',
-    },
-  },
   site: {
     title: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     description:
@@ -130,21 +113,72 @@ export const uiLabels = {
     heroAvailability: 'Available · Hybrid Île-de-France / remote',
     heroBookCallButton: 'Book a 15-min call',
     heroDownloadCvButton: 'Download my CV',
-    heroImageAlt: 'Illustration representing Bakate or a development concept',
-    featuredProjectsTitle: 'Core SaaS projects',
+    heroImageAlt: 'Portrait of Bakate Idrissa, smiling',
+    proofTitle: 'In production, by the numbers',
+    proofLoadTimeFigure: '7-8 s → under 2 s',
+    proofLoadTimeContext: 'Analytics module load time at Bloomflow',
+    proofBackOfficeFigure: '2 days → a few clicks',
+    proofBackOfficeContext: 'Internal back-office tool',
+    proofExperienceFigure: '5 years',
+    proofExperienceContext:
+      'of SaaS in production, including 4 at Bloomflow for Bayer, Unilever, HSBC',
+    featuredProjectsTitle: 'Featured projects',
     featuredProjectsDescription:
-      'SaaS products shipped to production, from design to deployment.',
-    projectCardViewProject: 'View Project',
-    projectCardViewCode: 'View Code',
-    imageNotAvailable: 'Image not available for now',
-    bloomflowTitle:
-      '4 years on a B2B SaaS used by CAC40-level enterprise groups',
-    bloomflowDescription:
-      'At Bloomflow, I contributed to a complex Angular platform for open innovation: critical modules, design system, frontend industrialization, and TypeScript migration.',
-    bloomflowCta: 'View my experience',
-    mySkillsTitle: 'Core Skills',
-    mySkillsDescription:
-      'An isolated, tested business domain, solid interfaces, and a product shipped end to end.',
+      'Products delivered end to end, around an isolated, tested business domain.',
+    experience: {
+      title: 'Experience',
+      description:
+        'Over five years shipping SaaS products, from the business domain to production.',
+      cta: 'See my full background',
+      entries: [
+        {
+          company: 'leZèbre Tech',
+          role: 'Software Engineer',
+          period: 'July 2026 – October 2026',
+          summary:
+            'NestJS backend services with hexagonal architecture and DDD, daily TDD, Gherkin acceptance tests, code reviews and mentoring of junior developers.',
+        },
+        {
+          company: 'Teranga Pulse',
+          role: 'Founder and Full-Stack Software Engineer',
+          period: 'November 2024 – June 2026',
+          summary:
+            'Two MVPs shipped solo, from architecture to production: Parent Up, a co-parenting platform with an AI legal assistant, and Terral Hub, agricultural logistics in Senegal.',
+        },
+        {
+          company: 'Bloomflow',
+          role: 'Full-Stack Software Engineer',
+          period: 'November 2020 – November 2024',
+          summary:
+            '4 years on a B2B open-innovation SaaS: data-heavy business screens for Bayer, Unilever and HSBC, in Angular and then React and Next.js.',
+        },
+      ],
+    },
+    howIWork: {
+      title: 'How I work',
+      description:
+        'A method that does not depend on the framework: the business first, proven by tests.',
+      practices: [
+        {
+          title: 'DDD and hexagonal architecture',
+          description:
+            'The business domain lives apart from the infrastructure, behind ports and adapters. It is tested without a database and does not depend on the framework, NestJS or Express alike.',
+        },
+        {
+          title: 'TDD and Gherkin acceptance tests',
+          description:
+            'I write the test before the code. Gherkin scenarios describe the expected behaviour in the product’s own words, so product and engineering agree before the first line.',
+        },
+        {
+          title: 'AI where it actually helps',
+          description:
+            'RAG and embeddings in production, with the Parent Up legal assistant, and LLM-assisted specifications before writing the code.',
+        },
+      ],
+      careerChangeTitle: 'Before code, sales',
+      careerChange:
+        'I spent 10 years in sales before moving into software engineering in 2020. It gave me product sense and a feel for client relationships: I understand the problem before choosing the solution, and I talk to business teams as easily as to developers.',
+    },
   },
   blogPage: {
     pageTitle: 'Angular, RxJS, and Frontend Architecture Blog',
@@ -226,21 +260,24 @@ export const uiLabels = {
     learningsTitle: 'Learnings',
     visitProjectButton: 'Visit Project',
     viewCodeButton: 'View Code',
+    videoTitle: 'Video walkthrough',
   },
   projectsPage: {
-    title: 'SaaS Projects',
-    metaTitle: 'Full-Stack TypeScript SaaS Projects | Bakate Idrissa Ba',
+    title: 'Projects',
+    metaTitle: 'Full-Stack TypeScript Projects | Bakate Idrissa Ba',
     metaDescription:
-      'Parent Up, Bloomflow, and Terral Hub: B2B SaaS, Full-Stack TypeScript, and product architecture projects.',
+      'Resume Studio, Parent Up, Terral Hub and Avionics: products delivered end to end, around an isolated, tested business domain.',
     featuredTitle: 'Featured projects',
     featuredDescription:
-      'The three strongest proofs for my Full-Stack TypeScript and B2B SaaS positioning.',
-    archivesTitle: 'Other projects',
-    archivesDescription:
-      'Archive and secondary projects that show FullStack range without diluting the main message.',
-    noProjects: 'No projects to display at the moment.',
-    noProjectsDescription:
-      "It seems that you don't have any projects to display at the moment.",
+      'Products delivered end to end, around an isolated, tested business domain.',
+    archivesTitle: 'Archives',
+    archivesDescription: 'Older projects, kept for the record.',
+  },
+  projectCard: {
+    viewProject: 'View project',
+    viewDemo: 'Demo',
+    viewCode: 'Source code',
+    technologies: 'Technologies',
   },
   notFoundPage: {
     pageTitle: 'Page not found | Bakate Idrissa',

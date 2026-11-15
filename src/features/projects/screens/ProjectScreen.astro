@@ -114,6 +114,21 @@ const { project, t, lang } = Astro.props;
         )
     }
 
+    {
+      project.video && (
+        <section class="mb-12">
+          <h2>{t.projectDetailPage.videoTitle}</h2>
+          <video
+            controls
+            preload="metadata"
+            class="not-prose w-full rounded-lg border border-border"
+          >
+            <source src={project.video.src} type={project.video.type} />
+          </video>
+        </section>
+      )
+    }
+
     {/* Gallery */}
 
     {

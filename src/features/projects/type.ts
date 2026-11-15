@@ -16,12 +16,41 @@ export type GalleryImage = {
   caption?: string; // Optional, will be translated
 };
 
+/**
+ * How prominently a project is shown: a large or compact card among the
+ * highlighted projects, or a line in the projects page's Archives.
+ */
+export type ShowcaseLevel = 'large' | 'compact' | 'archive';
+
+/** A video presenting the project, served from `public/`. */
+export type ProjectVideo = {
+  src: string;
+  type: 'video/mp4' | 'video/webm';
+};
+
+/** Translated case study: how the project was reasoned about, end to end. */
+export type CaseStudy = {
+  context: string;
+  problem: string;
+  architectureDecisions: Array<string>;
+  outcome: string;
+  learnings: string;
+  /** Mermaid source of the architecture diagram. */
+  diagram?: string;
+};
+
 export type ProjectData = {
   id: string; // Keep as is, used for main i18n key and internal reference
   slug: string; // New: for URL generation, e.g., 'my-awesome-project'
+  showcase: ShowcaseLevel;
+  /** Shown among the home page's featured projects. */
+  onHomePage?: true;
   imageUrl?: ImageMetadata; // Main project image, keep as is
-  projectUrl?: string; // Link to live project, keep as is
-  codeUrl?: string; // Link to source code, keep as is
+  /** Public demo. Absent when there is none: no demo button is shown. */
+  projectUrl?: string;
+  /** Public repository. Absent when private: no code button is shown. */
+  codeUrl?: string;
+  video?: ProjectVideo;
   tags: Array<string>; // Existing tags, can be used for quick filtering or display
 
   // New fields for detailed project page
@@ -66,27 +95,14 @@ export type TranslatedProject = ProjectData & {
     caption: string; // Translated caption
   }>;
   keyFeaturesTranslated?: Array<TranslatedKeyFeature>; // Key features with translated titles/descriptions
+  caseStudy?: CaseStudy;
   challenges?: string; // Description of challenges faced (translated)
   learnings?: string; // Key learnings from the project (translated)
   // technologiesUsed.name will be translated if needed, or could be kept as is if they are proper names
 };
 
-// Skills
-export type Technology = {
-  id: string; // e.g., 'react', 'angular', 'typescript' (will map to react-icons)
-  name: string; // e.g., 'React', 'Angular', 'TypeScript'
-};
-
-export type SkillData = {
-  id: string; // Unique identifier for the skill, used for i18n keys
-  iconName: string; // Name of the Lucide icon
-  technologies: Array<Technology>;
-};
-
-// Define the type for a skill once its content is translated
-export type TranslatedSkill = SkillData & {
-  title: string;
-  description: string;
-  // iconName is already part of SkillData
-  // technologies is already part of SkillData
+/** A measured outcome shown under the hero: the figure, then what it measures. */
+export type Proof = {
+  figure: string;
+  context: string;
 };

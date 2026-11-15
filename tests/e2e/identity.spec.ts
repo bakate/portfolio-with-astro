@@ -86,3 +86,14 @@ test('Given the whole site in French and English, when a crawler follows every l
     { visitedAtLeast: ['/', '/en', '/experience', '/en/experience'] }
   );
 });
+
+test('Given the whole site in French and English, when a crawler follows every link, then no page mentions the Thrashnochados studio', async ({
+  page,
+  request,
+}) => {
+  const site = createSystemUnderTest({ page, request });
+  await site.crawlerFollowsEveryLinkFrom(['/', '/en']);
+  site.thenNoVisitedPageMentions(['Thrashnochados'], {
+    visitedAtLeast: ['/', '/en', '/experience', '/en/experience'],
+  });
+});

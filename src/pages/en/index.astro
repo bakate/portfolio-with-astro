@@ -1,42 +1,43 @@
 ---
 import {
   PortfolioScreen,
-  getTranslatedProjects,
-  getTranslatedSkills,
+  getHomePageProjects,
+  getTranslatedProofs,
   type TranslatedProject,
-  type TranslatedSkill,
 } from '@/features/projects';
-import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
+import {
+  defaultLanguage,
+  ui,
+  useTranslations,
+  type LanguageCode,
+} from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PersonStructuredData from '@/components/PersonStructuredData.astro';
 
 const lang =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
 const t = useTranslations(lang, 'homePage');
+const { experience, howIWork } = ui[lang].homePage;
 
 const pageTitle = t('pageTitle');
 const pageDescription = t('pageDescription');
 
-const projects: Array<TranslatedProject> = getTranslatedProjects(lang);
-const skills: Array<TranslatedSkill> = getTranslatedSkills(lang);
+const featuredProjects: Array<TranslatedProject> = getHomePageProjects(lang);
 
 const layoutProps = {
   lang,
-  projects,
-  skills,
+  featuredProjects,
   heroPitch: t('heroPitch'),
   heroAvailability: t('heroAvailability'),
   heroBookCallButton: t('heroBookCallButton'),
   heroDownloadCvButton: t('heroDownloadCvButton'),
-  imageNotAvailable: t('imageNotAvailable'),
+  heroImageAlt: t('heroImageAlt'),
+  proofTitle: t('proofTitle'),
+  proofs: getTranslatedProofs(lang),
   featuredProjectsTitle: t('featuredProjectsTitle'),
   featuredProjectsDescription: t('featuredProjectsDescription'),
-  bloomflowTitle: t('bloomflowTitle'),
-  bloomflowDescription: t('bloomflowDescription'),
-  bloomflowCta: t('bloomflowCta'),
-  mySkillsTitle: t('mySkillsTitle'),
-  mySkillsDescription: t('mySkillsDescription'),
-  projectPreviewCtaText: t('projectCardViewProject'),
+  experience,
+  howIWork,
 };
 ---
 

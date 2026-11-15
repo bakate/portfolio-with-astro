@@ -14,6 +14,7 @@ import {
   terralHubPreviewImage,
   parentUpPreviewImage,
   avionicsPreviewImage,
+  resumeStudioPreviewImage,
 } from '@/assets/projects/all-previews';
 import {
   codeHavenAuth,
@@ -50,21 +51,70 @@ import {
   terralHubWarehousesListMapInfo,
 } from '@/assets/projects/terralHub';
 
-// Import i18n utilities
-import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
-import type {
-  ProjectData,
-  SkillData,
-  TranslatedProject,
-  TranslatedSkill,
-} from './type';
+import { z } from 'zod';
 
-const projectsListUnsorted: Array<ProjectData> = [
+// Import i18n utilities
+import {
+  defaultLanguage,
+  ui,
+  useTranslations,
+  type LanguageCode,
+} from '@/i18n/ui';
+import type { CaseStudy, Proof, ProjectData, TranslatedProject } from './type';
+
+/**
+ * Every project, in the order a visitor sees them: highlighted projects first
+ * (large cards, then compact ones), archives last.
+ */
+const projectsData: Array<ProjectData> = [
+  {
+    id: 'resumeStudio',
+    slug: 'resume-studio',
+    showcase: 'large',
+    onHomePage: true,
+    imageUrl: resumeStudioPreviewImage,
+    projectUrl: 'https://resume-studio.bakateba.workers.dev/',
+    codeUrl: 'https://github.com/bakate/resume-tailoring',
+    tags: [
+      'TypeScript',
+      'DDD',
+      'Hexagonal Architecture',
+      'AI SDK',
+      'TanStack Start',
+      'Cloudflare Workers',
+      'Vitest',
+      'Playwright',
+    ],
+    category: 'AI Resume Tailoring',
+    date: '2026-09-26',
+    galleryImages: [],
+    keyFeatures: [
+      { id: 'explainableMatchScore' },
+      { id: 'noFabrication' },
+      { id: 'modelQualification' },
+      { id: 'processingConsent' },
+      { id: 'dailyQuota' },
+      { id: 'architectureRules' },
+    ],
+    technologiesUsed: [
+      { id: 'typescript', name: 'TypeScript' },
+      { id: 'react', name: 'React' },
+      { id: 'tanstack-start', name: 'TanStack Start' },
+      { id: 'vercel-ai-sdk', name: 'Vercel AI SDK' },
+      { id: 'mantine', name: 'Mantine' },
+      { id: 'turborepo', name: 'Turborepo' },
+      { id: 'dependency-cruiser', name: 'dependency-cruiser' },
+      { id: 'vitest', name: 'Vitest' },
+      { id: 'playwright', name: 'Playwright' },
+      { id: 'cloudflare-workers', name: 'Cloudflare Workers' },
+    ],
+  },
   {
     id: 'parentUp',
     slug: 'parent-up',
+    showcase: 'large',
+    onHomePage: true,
     imageUrl: parentUpPreviewImage,
-    codeUrl: '',
     tags: [
       'Next.js',
       'TypeScript',
@@ -125,45 +175,156 @@ const projectsListUnsorted: Array<ProjectData> = [
     ],
   },
   {
-    id: 'bloomflow',
-    slug: 'bloomflow',
-    projectUrl: 'https://www.bloomflow.com/',
-    codeUrl: '',
-    tags: [
-      'Angular',
-      'TypeScript',
-      'RxJS',
-      'NgRx',
-      'SaaS B2B',
-      'Design System',
-      'Frontend Architecture',
+    id: 'terralhub',
+    slug: 'terralhub',
+    showcase: 'compact',
+    onHomePage: true,
+    imageUrl: terralHubPreviewImage,
+    tags: ['Next.js', 'TailwindCSS', 'TypeScript', 'shadcn/ui', 'PayDunya'],
+    category: 'logisticsPlatform',
+    date: '2025-05-14',
+    galleryImages: [
+      {
+        id: 'terralHubLogin',
+        src: terralHubLogin,
+      },
+      {
+        id: 'terralHubLogistics',
+        src: terralHubLogistics,
+      },
+      {
+        id: 'terralHubCompaniesList',
+        src: terralHubCompaniesList,
+      },
+      {
+        id: 'terralHubCompanyDetails',
+        src: terralHubCompanyDetails,
+      },
+      {
+        id: 'terralHubWarehousesList',
+        src: terralHubWarehousesList,
+      },
+      {
+        id: 'terralHubWarehouseDetails',
+        src: terralHubWarehouseDetails,
+      },
+      {
+        id: 'terralHubWarehousesListMapInfo',
+        src: terralHubWarehousesListMapInfo,
+      },
+      {
+        id: 'terralHubAboutUs',
+        src: terralHubAboutUs,
+      },
     ],
-    category: 'B2B SaaS Platform',
-    date: '2024-11-01',
-    galleryImages: [],
     keyFeatures: [
-      { id: 'angularModules' },
-      { id: 'stateManagement' },
-      { id: 'designSystem' },
-      { id: 'typescriptMigration' },
-      { id: 'customerSuccessAutomation' },
-      { id: 'enterpriseScale' },
+      { id: 'userManagement' }, // Gestion des comptes utilisateurs
+      { id: 'roleManagement' }, // Gestion des rôles : agriculteurs, entrepôts, transporteurs
+      { id: 'warehouseSearchAndBooking' }, // Recherche et réservation d'entrepôts
+      { id: 'transporterSearchAndBooking' }, // Recherche et réservation de transporteurs
+      { id: 'realTimeWarehouseMonitoring' }, // Suivi en temps réel de la capacité des entrepôts
+      { id: 'securePaymentGateway' }, // Paiements d'acomptes sécurisés via PayDunya
+      { id: 'inventoryTrackingForFarmers' }, // Suivi des stocks pour les agriculteurs et gestion pour les entrepôts
+      { id: 'pwaSupport' }, // Accès via Progressive Web App
+      { id: 'adminDashboard' }, // Tableau de bord administrateur
     ],
     technologiesUsed: [
-      { id: 'angular', name: 'Angular' },
+      { id: 'nextjs', name: 'Next.js' },
       { id: 'typescript', name: 'TypeScript' },
-      { id: 'rxjs', name: 'RxJS' },
-      { id: 'ngrx', name: 'NgRx' },
-      { id: 'storybook', name: 'Storybook' },
-      { id: 'jest', name: 'Jest' },
-      { id: 'nodejs', name: 'Node.js' },
-      { id: 'mongodb', name: 'MongoDB' },
-      { id: 'postgresql', name: 'PostgreSQL' },
+      { id: 'tanstack-query', name: 'TanStack/React-Query' },
+      { id: 'shadcn-ui', name: 'shadcn/ui' },
+      { id: 'tailwindcss', name: 'TailwindCSS' },
+      { id: 'tRPC', name: 'tRPC' },
+      { id: 'authjs', name: 'AuthJS' },
+      { id: 'next-intl', name: 'Next-Intl' },
+      { id: 'paydunya', name: 'PayDunya' },
+      { id: 'vercel', name: 'Vercel' },
+    ],
+  },
+  {
+    id: 'avionics',
+    slug: 'avionics',
+    showcase: 'compact',
+    onHomePage: true,
+    imageUrl: avionicsPreviewImage,
+    projectUrl: 'https://avionics-effect.vercel.app/',
+    codeUrl: 'https://github.com/bakate/avionics',
+    tags: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Turborepo',
+      'Effect',
+      'XState',
+      'Hexagonal Architecture',
+    ],
+    category: 'Avionics Simulator',
+    date: '2026-03-30',
+    galleryImages: [],
+    keyFeatures: [
+      { id: 'monorepoArchitecture' },
+      { id: 'frameworkAgnosticUi' },
+      { id: 'effectResilience' },
+      { id: 'propertyBasedTesting' },
+      { id: 'nativeDi' },
+      { id: 'parseDontValidate' },
+    ],
+    technologiesUsed: [
+      { id: 'react', name: 'React' },
+      { id: 'typescript', name: 'TypeScript' },
+      { id: 'vite', name: 'Vite' },
+      { id: 'turborepo', name: 'Turborepo' },
+      { id: 'effect', name: 'Effect (TS)' },
+      { id: 'xstate', name: 'XState' },
+      { id: 'vitest', name: 'Vitest' },
+      { id: 'fast-check', name: 'Fast-Check (PBT)' },
+      { id: 'polar', name: 'Polar' },
+      { id: 'scalar', name: 'Scalar' },
+      { id: 'tailwindcss', name: 'TailwindCSS' },
+    ],
+  },
+  {
+    id: 'b2bOrderPlatform',
+    slug: 'b2b-order-platform',
+    showcase: 'compact',
+    codeUrl: 'https://github.com/bakate/b2b-order-platform',
+    tags: [
+      'NestJS',
+      'TypeScript',
+      'DDD',
+      'Hexagonal Architecture',
+      'React',
+      'XState',
+      'OpenAPI',
+      'Turborepo',
+    ],
+    category: 'B2B Order Platform',
+    date: '2026-07-09',
+    galleryImages: [],
+    keyFeatures: [
+      { id: 'isolatedDomain' },
+      { id: 'apiContract' },
+      { id: 'hardenedApi' },
+      { id: 'frontendStateMachines' },
+    ],
+    technologiesUsed: [
+      { id: 'nestjs', name: 'NestJS' },
+      { id: 'typescript', name: 'TypeScript' },
+      { id: 'zod', name: 'Zod' },
+      { id: 'scalar', name: 'Scalar' },
+      { id: 'react', name: 'React' },
+      { id: 'vite', name: 'Vite' },
+      { id: 'xstate', name: 'XState' },
+      { id: 'mantine', name: 'Mantine' },
+      { id: 'turborepo', name: 'Turborepo' },
+      { id: 'biome', name: 'Biome' },
+      { id: 'vitest', name: 'Vitest' },
     ],
   },
   {
     id: 'codeHaven',
     slug: 'code-haven',
+    showcase: 'archive',
     imageUrl: codeHavenPreviewImage,
     codeUrl: 'https://github.com/bakate/code-haven',
     tags: ['Next.js', 'TypeScript', 'drizzle-orm', 'postgresql'],
@@ -238,9 +399,9 @@ const projectsListUnsorted: Array<ProjectData> = [
   {
     id: 'afrikaZon',
     slug: 'afrikazon',
+    showcase: 'archive',
     imageUrl: afrikaZonPreviewImage,
     projectUrl: 'https://africazon.vercel.app/',
-    codeUrl: '',
     tags: [
       'Next.js',
       'TailwindCSS',
@@ -313,6 +474,7 @@ const projectsListUnsorted: Array<ProjectData> = [
   {
     id: 'samouraStore',
     slug: 'samoura-store',
+    showcase: 'archive',
     imageUrl: samouraStorePreviewImage,
     projectUrl: 'https://e-commerce-cms-ney3.vercel.app/',
     codeUrl: 'https://github.com/bakate/e-commerce-store',
@@ -329,6 +491,7 @@ const projectsListUnsorted: Array<ProjectData> = [
   {
     id: 'cms',
     slug: 'cms',
+    showcase: 'archive',
     imageUrl: cmsPreviewImage,
     codeUrl: 'https://github.com/bakate/e-commerce-cms',
     tags: ['Next.js', 'TailwindCSS', 'TypeScript', 'shadcn/ui'],
@@ -341,119 +504,19 @@ const projectsListUnsorted: Array<ProjectData> = [
       { id: 'typescript', name: 'TypeScript' },
     ], // Placeholder
   },
-  {
-    id: 'terralhub',
-    slug: 'terralhub',
-    imageUrl: terralHubPreviewImage,
-    codeUrl: '', // Si tu as un lien vers le code source, ajoute-le ici
-    tags: ['Next.js', 'TailwindCSS', 'TypeScript', 'shadcn/ui', 'PayDunya'],
-    category: 'logisticsPlatform',
-    date: '2025-05-14',
-    galleryImages: [
-      {
-        id: 'terralHubLogin',
-        src: terralHubLogin,
-      },
-      {
-        id: 'terralHubLogistics',
-        src: terralHubLogistics,
-      },
-      {
-        id: 'terralHubCompaniesList',
-        src: terralHubCompaniesList,
-      },
-      {
-        id: 'terralHubCompanyDetails',
-        src: terralHubCompanyDetails,
-      },
-      {
-        id: 'terralHubWarehousesList',
-        src: terralHubWarehousesList,
-      },
-      {
-        id: 'terralHubWarehouseDetails',
-        src: terralHubWarehouseDetails,
-      },
-      {
-        id: 'terralHubWarehousesListMapInfo',
-        src: terralHubWarehousesListMapInfo,
-      },
-      {
-        id: 'terralHubAboutUs',
-        src: terralHubAboutUs,
-      },
-    ],
-    keyFeatures: [
-      { id: 'userManagement' }, // Gestion des comptes utilisateurs
-      { id: 'roleManagement' }, // Gestion des rôles : agriculteurs, entrepôts, transporteurs
-      { id: 'warehouseSearchAndBooking' }, // Recherche et réservation d'entrepôts
-      { id: 'transporterSearchAndBooking' }, // Recherche et réservation de transporteurs
-      { id: 'realTimeWarehouseMonitoring' }, // Suivi en temps réel de la capacité des entrepôts
-      { id: 'securePaymentGateway' }, // Paiements d'acomptes sécurisés via PayDunya
-      { id: 'inventoryTrackingForFarmers' }, // Suivi des stocks pour les agriculteurs et gestion pour les entrepôts
-      { id: 'pwaSupport' }, // Accès via Progressive Web App
-      { id: 'adminDashboard' }, // Tableau de bord administrateur
-    ],
-    technologiesUsed: [
-      { id: 'nextjs', name: 'Next.js' },
-      { id: 'typescript', name: 'TypeScript' },
-      { id: 'tanstack-query', name: 'TanStack/React-Query' },
-      { id: 'shadcn-ui', name: 'shadcn/ui' },
-      { id: 'tailwindcss', name: 'TailwindCSS' },
-      { id: 'tRPC', name: 'tRPC' },
-      { id: 'authjs', name: 'AuthJS' },
-      { id: 'next-intl', name: 'Next-Intl' },
-      { id: 'paydunya', name: 'PayDunya' },
-      { id: 'vercel', name: 'Vercel' },
-    ],
-  },
-  {
-    id: 'avionics',
-    slug: 'avionics',
-    imageUrl: avionicsPreviewImage,
-    projectUrl: 'https://avionics-effect.vercel.app/',
-    codeUrl: 'https://github.com/bakate/avionics',
-    tags: [
-      'React',
-      'TypeScript',
-      'Vite',
-      'Turborepo',
-      'Effect',
-      'XState',
-      'Hexagonal Architecture',
-    ],
-    category: 'Avionics Simulator',
-    date: '2026-03-30',
-    galleryImages: [],
-    keyFeatures: [
-      { id: 'monorepoArchitecture' },
-      { id: 'frameworkAgnosticUi' },
-      { id: 'effectResilience' },
-      { id: 'propertyBasedTesting' },
-      { id: 'nativeDi' },
-      { id: 'parseDontValidate' },
-    ],
-    technologiesUsed: [
-      { id: 'react', name: 'React' },
-      { id: 'typescript', name: 'TypeScript' },
-      { id: 'vite', name: 'Vite' },
-      { id: 'turborepo', name: 'Turborepo' },
-      { id: 'effect', name: 'Effect (TS)' },
-      { id: 'xstate', name: 'XState' },
-      { id: 'vitest', name: 'Vitest' },
-      { id: 'fast-check', name: 'Fast-Check (PBT)' },
-      { id: 'polar', name: 'Polar' },
-      { id: 'scalar', name: 'Scalar' },
-      { id: 'tailwindcss', name: 'TailwindCSS' },
-    ],
-  },
 ];
 
-export const projectsList = [...projectsListUnsorted].sort((a, b) => {
-  const dateA = new Date(a.date);
-  const dateB = new Date(b.date);
-  return dateB.getTime() - dateA.getTime();
+/** A demo or repository link is a public https URL, or absent. */
+const projectLinksSchema = z.object({
+  projectUrl: z.url({ protocol: /^https$/ }).optional(),
+  codeUrl: z.url({ protocol: /^https$/ }).optional(),
 });
+
+export const projectsList: Array<ProjectData> = projectsData.map((project) => ({
+  ...project,
+  ...projectLinksSchema.parse(project),
+}));
+
 // Helper function to translate a single project
 function translateProject(
   project: ProjectData,
@@ -469,6 +532,8 @@ function translateProject(
     : ui[defaultLanguage].projectsContent;
 
   const i18nData = projectContentSource[currentProjectId];
+  // Content tables are typed per project, and only some carry a case study.
+  const { caseStudy } = i18nData as { caseStudy?: CaseStudy };
 
   // Translate key features
   const keyFeaturesTranslated =
@@ -512,12 +577,31 @@ function translateProject(
     imageAltText: i18nData.imageAltText,
     categoryText: i18nData.categoryText ?? project.category,
     dateText: i18nData.dateText ?? project.date,
-    detailedDescription:
-      i18nData?.detailedDescription ?? 'Detailed description missing',
+    detailedDescription: i18nData.detailedDescription,
     keyFeaturesTranslated,
     galleryImagesTranslated,
-    challenges: i18nData?.challenges ?? 'Challenges information missing',
-    learnings: i18nData?.learnings ?? 'Learnings information missing',
+    caseStudy,
+    challenges: i18nData.challenges,
+    learnings: i18nData.learnings,
+  };
+}
+
+/** The home page's featured projects, in showcase order. */
+export function getHomePageProjects(
+  lang: LanguageCode | undefined
+): Array<TranslatedProject> {
+  return getTranslatedProjects(lang).filter((project) => project.onHomePage);
+}
+
+/** The projects page: highlighted projects first, then the Archives. */
+export function getProjectsShowcase(lang: LanguageCode | undefined): {
+  highlighted: Array<TranslatedProject>;
+  archives: Array<TranslatedProject>;
+} {
+  const projects = getTranslatedProjects(lang);
+  return {
+    highlighted: projects.filter((project) => project.showcase !== 'archive'),
+    archives: projects.filter((project) => project.showcase === 'archive'),
   };
 }
 
@@ -547,66 +631,23 @@ export function getTranslatedProjectBySlug(
   return translateProject(project, currentLang);
 }
 
-// Skills
-
-export const skillsList: Array<SkillData> = [
-  {
-    id: 'angularExpertise',
-    iconName: 'MonitorSmartphone',
-    technologies: [
-      { id: 'angular', name: 'Angular' },
-      { id: 'rxjs', name: 'RxJS' },
-      { id: 'ngrx', name: 'NgRx' },
-      { id: 'signals', name: 'Signals' },
-      { id: 'performance', name: 'Performance' },
-      { id: 'state-management', name: 'State Management' },
-    ],
-  },
-  {
-    id: 'saasEngineering',
-    iconName: 'Network',
-    technologies: [
-      { id: 'frontend-architecture', name: 'Architecture Frontend' },
-      { id: 'apis', name: 'APIs' },
-      { id: 'realtime', name: 'Temps réel' },
-      { id: 'ci-cd', name: 'CI/CD' },
-      { id: 'monitoring', name: 'Monitoring' },
-      { id: 'tests', name: 'Tests' },
-    ],
-  },
-  {
-    id: 'productEngineering',
-    iconName: 'ServerCog',
-    technologies: [
-      { id: 'mvp', name: 'MVP' },
-      { id: 'discovery', name: 'Discovery' },
-      { id: 'user-validation', name: 'Validation utilisateur' },
-      { id: 'product-architecture', name: 'Architecture produit' },
-      { id: 'feature-ownership', name: 'Feature ownership' },
-      { id: 'typescript', name: 'TypeScript' },
-    ],
-  },
-];
-
-// Function to get skills with translated content
-export function getTranslatedSkills(
+/** The measured outcomes shown under the hero, in display order. */
+export function getTranslatedProofs(
   lang: LanguageCode | undefined
-): Array<TranslatedSkill> {
-  const currentLang = lang ?? defaultLanguage;
-
-  return skillsList.map((skill) => {
-    type SkillIdKey =
-      keyof (typeof ui)[typeof defaultLanguage]['skillsContent'];
-    const currentSkillId = skill.id as SkillIdKey;
-
-    const skillTranslations =
-      ui[currentLang]?.skillsContent?.[currentSkillId] ??
-      ui[defaultLanguage].skillsContent[currentSkillId]!;
-
-    return {
-      ...skill, // This includes id and iconName
-      title: skillTranslations.title,
-      description: skillTranslations.description,
-    };
-  });
+): Array<Proof> {
+  const t = useTranslations(lang, 'homePage');
+  return [
+    {
+      figure: t('proofLoadTimeFigure'),
+      context: t('proofLoadTimeContext'),
+    },
+    {
+      figure: t('proofBackOfficeFigure'),
+      context: t('proofBackOfficeContext'),
+    },
+    {
+      figure: t('proofExperienceFigure'),
+      context: t('proofExperienceContext'),
+    },
+  ];
 }

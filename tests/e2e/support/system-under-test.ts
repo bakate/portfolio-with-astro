@@ -1,4 +1,10 @@
-import { expect, type APIRequestContext, type Page } from '@playwright/test';
+import {
+  expect,
+  type APIRequestContext,
+  type Locator,
+  type Page,
+} from '@playwright/test';
+import type { Proof } from '@/features/projects';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 
@@ -22,6 +28,19 @@ const withoutQueryOrTrailingSlash = (href: string) =>
 export function createSystemUnderTest({ page, request }: Fixtures) {
   const crawled = new Map<string, string>();
   const hero = page.locator('#hero');
+  const proof = page.locator('#proof');
+
+  async function boxOf(locator: Locator) {
+    const box = await locator.boundingBox();
+    expect(box, 'element is laid out').not.toBeNull();
+    return box!;
+  }
+
+  type Box = Awaited<ReturnType<typeof boxOf>>;
+
+  /** True when the two boxes overlap vertically, i.e. sit on the same rows. */
+  const sharesRows = (a: Box, b: Box) =>
+    a.y < b.y + b.height && b.y < a.y + a.height;
 
   async function statusOf(path: string): Promise<number> {
     return (await request.get(path)).status();
@@ -35,6 +54,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       .map((href) => withoutQueryOrTrailingSlash(href.slice(prefix.length)));
     return [...new Set(slugs)].sort();
   }
+
+  const projectCard = (project: string) =>
+    page.getByRole('article').filter({
+      has: page.getByRole('heading', { level: 3, name: project, exact: true }),
+    });
 
   const meta = (property: string) =>
     page.locator(`meta[property="${property}"]`).getAttribute('content');
@@ -90,6 +114,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     async visitorOpensMissingPage(path: string) {
       const response = await page.goto(path);
       expect(response?.status(), path).toBe(404);
+    },
+
+    /** Lands wherever the address leads, redirects included. */
+    async visitorFollowsLinkTo(path: string) {
+      await page.goto(path);
     },
 
     /** Follows every internal link, breadth-first, from the given home pages. */
@@ -155,6 +184,76 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       expect(mentions).toEqual([]);
     },
 
+    /** Fails on an empty crawl, so an unreachable site never passes. */
+    thenNoVisitedPageHasAnEmptyLink({
+      visitedAtLeast,
+    }: {
+      visitedAtLeast: ReadonlyArray<string>;
+    }) {
+      for (const path of visitedAtLeast) {
+        expect(crawled.has(path), `crawl reached ${path}`).toBe(true);
+      }
+      const emptyLinks = [...crawled].flatMap(([path, html]) =>
+        hrefsIn(html)
+          .filter((href) => href.trim() === '' || href === '#')
+          .map((href) => `${path} → href="${href}"`)
+      );
+      expect(emptyLinks).toEqual([]);
+    },
+
+    /** Project cards are read through their titles, in the order shown. */
+    async thenSectionListsProjects(
+      anchor: string,
+      projects: ReadonlyArray<string>
+    ) {
+      await expect(
+        page.locator(anchor).getByRole('heading', { level: 3 })
+      ).toHaveText([...projects]);
+    },
+
+    async thenVisitorIsOn(path: string) {
+      await expect(page).toHaveURL(
+        (url) => withoutQueryOrTrailingSlash(url.pathname) === path
+      );
+    },
+
+    /** Compares the area each card takes on screen. */
+    async thenProjectCardsAreShownLarger(
+      larger: ReadonlyArray<string>,
+      smaller: ReadonlyArray<string>
+    ) {
+      const areaOf = async (project: string) => {
+        const box = await projectCard(project).boundingBox();
+        expect(box, `${project} card is on screen`).not.toBeNull();
+        return (box?.width ?? 0) * (box?.height ?? 0);
+      };
+      for (const big of larger) {
+        for (const small of smaller) {
+          expect(
+            await areaOf(big),
+            `${big} is shown larger than ${small}`
+          ).toBeGreaterThan(await areaOf(small));
+        }
+      }
+    },
+
+    async thenSectionIsTitled(anchor: string, heading: string) {
+      await expect(
+        page.locator(anchor).getByRole('heading', { level: 2 })
+      ).toHaveText(heading);
+    },
+
+    async thenProjectCardHasNoLinkNamed(
+      project: string,
+      names: ReadonlyArray<string>
+    ) {
+      const card = projectCard(project);
+      await expect(card).toHaveCount(1);
+      for (const name of names) {
+        await expect(card.getByRole('link', { name })).toHaveCount(0);
+      }
+    },
+
     async thenHeroShows({
       heading,
       texts,
@@ -207,6 +306,67 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       expect(person.sameAs).toEqual(
         expect.arrayContaining([...expected.profiles])
       );
+    },
+
+    /** Each anchor exists and comes after the previous one in the page. */
+    async thenSectionsFollowInOrder(anchors: ReadonlyArray<string>) {
+      const tops: Array<number> = [];
+      for (const anchor of anchors) {
+        const section = page.locator(`#${anchor}`);
+        await expect(section, `#${anchor}`).toHaveCount(1);
+        tops.push(
+          await section.evaluate(
+            (element) => element.getBoundingClientRect().top + window.scrollY
+          )
+        );
+      }
+      const order = anchors
+        .map((anchor, index) => ({ anchor, top: tops[index] }))
+        .sort((a, b) => a.top - b.top)
+        .map(({ anchor }) => anchor);
+      expect(order).toEqual([...anchors]);
+    },
+
+    async thenSectionShows(
+      anchor: string,
+      {
+        heading,
+        texts = [],
+      }: { heading: string; texts?: ReadonlyArray<string> }
+    ) {
+      const section = page.locator(`#${anchor}`);
+      await expect(
+        section.getByRole('heading', { level: 2, name: heading, exact: true })
+      ).toBeVisible();
+      for (const text of texts) await expect(section).toContainText(text);
+    },
+
+    /** An entry is a list item of the section, found by the name it shows. */
+    async thenSectionEntryShows(
+      anchor: string,
+      entry: string,
+      {
+        texts,
+        without = [],
+      }: { texts: ReadonlyArray<string>; without?: ReadonlyArray<string> }
+    ) {
+      const item = page
+        .locator(`#${anchor}`)
+        .getByRole('listitem')
+        .filter({ hasText: entry });
+      await expect(item, entry).toHaveCount(1);
+      for (const text of texts) await expect(item).toContainText(text);
+      for (const text of without) {
+        await expect(item).not.toContainText(new RegExp(`\\b${text}\\b`, 'i'));
+      }
+    },
+
+    async thenSectionLinksTo(anchor: string, name: string, path: string) {
+      const link = page.locator(`#${anchor}`).getByRole('link', { name });
+      await expect(link).toBeVisible();
+      const href = (await link.getAttribute('href')) ?? '';
+      expect(withoutQueryOrTrailingSlash(href)).toBe(path);
+      expect(await statusOf(href), href).toBe(200);
     },
 
     async thenHeroLinkOpensInNewTab(name: string, url: string) {
@@ -316,6 +476,87 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
         await button.elementHandle()
       );
       expect(linkIsFirst, `${url} before "${buttonName}"`).toBe(true);
+    },
+
+    async thenProofSectionShows(proofs: ReadonlyArray<Proof>) {
+      const items = proof.getByRole('listitem');
+      await expect(items).toHaveCount(proofs.length);
+      for (const [index, { figure, context }] of proofs.entries()) {
+        await expect(items.nth(index)).toContainText(figure);
+        await expect(items.nth(index)).toContainText(context);
+      }
+    },
+
+    async thenProofSectionHasNoImage() {
+      await expect(proof).toBeVisible();
+      await expect(proof.getByRole('img')).toHaveCount(0);
+    },
+
+    /** Reads every image's description and address for the given names. */
+    async thenNoImageOnThePageShows(names: ReadonlyArray<string>) {
+      const images = await page
+        .locator('img')
+        .evaluateAll((elements) =>
+          elements.map(
+            (image) =>
+              `${image.getAttribute('alt') ?? ''} ${image.getAttribute('src') ?? ''}`
+          )
+        );
+      expect(images.length, 'images on the page').toBeGreaterThan(0);
+      const matches = images.filter((image) =>
+        names.some((name) => image.toLowerCase().includes(name.toLowerCase()))
+      );
+      expect(matches).toEqual([]);
+    },
+
+    async thenHeroPhotoIsDescribedAs(alt: string) {
+      await expect(hero.getByRole('img', { name: alt })).toBeVisible();
+    },
+
+    async visitorUsesAScreenWide(width: number) {
+      await page.setViewportSize({ width, height: 800 });
+    },
+
+    async thenPageDoesNotScrollSideways() {
+      const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }));
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    },
+
+    /** Beside: overlapping rows. Above: photo ends before the name starts. */
+    async thenHeroPhotoIsNextToTheName() {
+      const photo = await boxOf(hero.getByRole('img'));
+      const name = await boxOf(hero.getByRole('heading', { level: 1 }));
+      const beside = sharesRows(photo, name);
+      const above = photo.y + photo.height <= name.y;
+      expect(beside || above, 'photo beside or above the name').toBe(true);
+      expect(photo.height, 'compact photo').toBeLessThan(200);
+    },
+
+    /**
+     * The title block and the pitch start at the left edge the next section
+     * starts from, the pitch stops well before the right edge, and the photo
+     * stays compact on the title rows instead of filling a column of its own.
+     */
+    async thenHeroIsAsymmetric({ pitch }: { pitch: string }) {
+      const section = await boxOf(hero);
+      const leftEdge = (await boxOf(proof.getByRole('heading'))).x;
+      const name = await boxOf(hero.getByRole('heading', { level: 1 }));
+      const photo = await boxOf(hero.getByRole('img'));
+      const text = await boxOf(hero.getByText(pitch));
+      expect(photo.x, 'title block starts at the left edge').toBeCloseTo(
+        leftEdge,
+        0
+      );
+      expect(text.x, 'pitch starts at the left edge').toBeCloseTo(leftEdge, 0);
+      expect(
+        text.x + text.width,
+        'right side of the hero left open'
+      ).toBeLessThan(section.x + section.width * 0.75);
+      expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
+      expect(sharesRows(photo, name), 'photo shares the title rows').toBe(true);
     },
 
     async thenPageHasButton(name: string) {

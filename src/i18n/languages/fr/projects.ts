@@ -1,6 +1,6 @@
 export const projectsContent = {
   parentUp: {
-    title: 'Parent Up - Plateforme de Coparentalité',
+    title: 'Parent Up',
     description: 'Plateforme de coordination pour parents séparés.',
     imageAltText: "Aperçu de l'application Parent Up",
     categoryText: 'SaaS Coparentalité',
@@ -118,52 +118,89 @@ export const projectsContent = {
     learnings:
       "L'utilisation des organisations Clerk réduit la complexité du middleware de sécurité et clarifie l'ownership des données.",
   },
-  bloomflow: {
-    title: 'Bloomflow - SaaS B2B Open Innovation',
+  resumeStudio: {
+    title: 'Resume Studio',
     description:
-      '4 ans de développement Angular sur un SaaS B2B complexe utilisé par des grands groupes.',
-    imageAltText: 'Aperçu de la plateforme Bloomflow',
-    categoryText: 'SaaS B2B',
-    dateText: 'Novembre 2020 - Novembre 2024',
+      "Un CV adapté à chaque offre, sans inventer aucune compétence : l'IA au service d'un domaine métier isolé et testé.",
     detailedDescription:
-      "Chez Bloomflow, j'ai travaillé pendant 4 ans sur une plateforme SaaS B2B d'open innovation utilisée par de grands groupes pour piloter leur écosystème startups, leurs challenges, leurs programmes internes et leurs workflows de collaboration. Mon travail a surtout porté sur l'écosystème Angular : modules critiques, state management avec NgRx, RxJS, design system, industrialisation frontend et migration TypeScript.",
+      "Resume Studio transforme les preuves professionnelles qu'un candidat déclare en une analyse de correspondance explicable, puis en un CV adapté à une offre d'emploi, sans jamais inventer de qualification. Le domaine (exigences, couverture, score, preuves) est modélisé en DDD dans des packages séparés pour le domaine, l'application et le moteur de correspondance. Le modèle de langage n'est qu'un adaptateur derrière un port, et il ne sert qu'après avoir été qualifié par des évaluations enregistrées.",
+    categoryText: 'IA et DDD',
+    dateText: 'Depuis septembre 2026',
+    imageAltText: "Page d'accueil de Resume Studio",
+    galleryImages: {},
     keyFeatures: {
-      angularModules: {
-        title: 'Modules Angular critiques',
+      explainableMatchScore: {
+        title: 'Score de correspondance explicable',
         description:
-          'Développement et évolution de modules métier à forte densité de données pour des workflows enterprise.',
+          "Chaque exigence de l'offre est pondérée (critique, centrale ou complémentaire) et jugée couverte, partiellement couverte ou non couverte, avec les faits du candidat qui la justifient.",
       },
-      stateManagement: {
-        title: 'State Management NgRx',
+      noFabrication: {
+        title: 'Aucune qualification inventée',
         description:
-          "Gestion d'états complexes avec NgRx, RxJS et patterns réactifs pour garder des écrans prévisibles.",
+          'Chaque valeur du CV renvoie à un fait fourni par le candidat. Une compétence voisine est montrée à côté du manque, sans jamais le combler.',
       },
-      designSystem: {
-        title: 'Design System',
+      modelQualification: {
+        title: 'Modèle qualifié par évaluation',
         description:
-          "Contribution à une librairie de composants Angular transverse pour homogénéiser l'expérience produit.",
+          "Un modèle et ses réglages ne servent qu'après une évaluation enregistrée : rappel d'extraction, fidélité multilingue, latence, coût et sûreté de la provenance.",
       },
-      typescriptMigration: {
-        title: 'Migration TypeScript',
+      processingConsent: {
+        title: 'Consentement versionné',
         description:
-          "Participation à la sécurisation progressive du code via TypeScript, tests et pipelines d'intégration.",
+          'Le candidat accepte une politique de traitement versionnée avant la première opération du modèle ; tout changement important demande un nouvel accord.',
       },
-      customerSuccessAutomation: {
-        title: 'Industrialisation opérationnelle',
+      dailyQuota: {
+        title: 'Quota journalier',
         description:
-          'Automatisation de workflows internes pour réduire les opérations manuelles côté Customer Success.',
+          'Un nombre de CV gratuits par réseau et par jour, sous un plafond global, remis à zéro à minuit, heure de Paris.',
       },
-      enterpriseScale: {
-        title: 'Contexte grands comptes',
+      architectureRules: {
+        title: 'Architecture vérifiée',
         description:
-          'Travail sur un produit utilisé par des organisations complexes, avec exigences de fiabilité et maintenabilité.',
+          'Les règles de dépendance entre domaine, application et adaptateurs sont vérifiées automatiquement par dependency-cruiser.',
       },
     },
-    galleryImages: [],
     challenges:
-      'Faire évoluer une application SaaS B2B riche sans dégrader la lisibilité du frontend, la cohérence UI et la stabilité des workflows critiques.',
+      "Utiliser un modèle de langage sans le laisser inventer : toute correspondance proposée doit citer un texte présent à la fois dans l'offre et dans les faits du candidat.",
     learnings:
-      "Une application Angular mature demande une discipline forte : découpage des modules, état explicite, typage strict, composants réutilisables et dette technique traitée avant qu'elle ne bloque le produit.",
+      "Traiter le modèle d'IA comme une dépendance : on le qualifie par des évaluations enregistrées, comme n'importe quel adaptateur, et changer de modèle ou de réglage oblige à le qualifier de nouveau.",
+  },
+  b2bOrderPlatform: {
+    title: 'b2b-order-platform',
+    description:
+      "Socle d'une plateforme de commandes B2B : une API NestJS en DDD et architecture hexagonale, et un contrat OpenAPI partagé avec le front.",
+    detailedDescription:
+      "Monorepo Turborepo qui pose les fondations d'une plateforme de commandes B2B. Côté API, chaque module NestJS sépare domaine, application, infrastructure et présentation : le domaine et les cas d'usage restent en TypeScript pur, sans dépendance à Nest. Côté front, une application React et Vite dont les parcours sont orchestrés par des machines XState, avec des types générés depuis le contrat OpenAPI de l'API.",
+    categoryText: 'Plateforme B2B',
+    dateText: 'Juillet 2026',
+    imageAltText: 'Aperçu de b2b-order-platform',
+    galleryImages: {},
+    keyFeatures: {
+      isolatedDomain: {
+        title: 'Domaine isolé',
+        description:
+          "Le domaine et les cas d'usage n'importent rien de NestJS ; les contrôleurs restent fins : ils valident, appellent un cas d'usage et traduisent les erreurs.",
+      },
+      apiContract: {
+        title: "Contrat d'API vérifié",
+        description:
+          "L'API possède le contrat OpenAPI ; les types du front en sont générés, et une vérification échoue dès qu'ils sont périmés.",
+      },
+      hardenedApi: {
+        title: 'API durcie',
+        description:
+          "En-têtes de sécurité Helmet, limitation de débit, validation Zod des requêtes, format d'erreur stable et configuration validée au démarrage.",
+      },
+      frontendStateMachines: {
+        title: "Parcours en machines d'états",
+        description:
+          'Les parcours du front sont des machines XState indépendantes du framework, branchées sur React par des hooks.',
+      },
+    },
+    challenges:
+      "Garder NestJS à la périphérie : décorateurs et injection restent dans la présentation et l'infrastructure, pour que les règles métier se testent sans démarrer le framework.",
+    learnings:
+      "Un contrat d'API généré puis vérifié supprime toute une classe de bugs entre le front et le back.",
   },
   codeHaven: {
     title: 'Code Haven',
@@ -369,7 +406,7 @@ export const projectsContent = {
       "Les techniques de mise en cache et de chargement progressif sont cruciales pour l'e-commerce.",
   },
   cms: {
-    title: 'Système de Gestion de Contenu (CMS)',
+    title: 'CMS e-commerce',
     description:
       'Une plateforme où tu peux créer, éditer et supprimer du contenu.',
     imageAltText: 'Image du projet CMS',
@@ -396,7 +433,7 @@ export const projectsContent = {
       "Une conception d'API bien pensée est essentielle pour l'extensibilité et l'intégration tierce.",
   },
   terralhub: {
-    title: 'TerralHub - Plateforme Logistique Agricole',
+    title: 'Terral Hub',
     description: `TerralHub est une plateforme innovante conçue pour les agriculteurs sénégalais. Elle leur permet de trouver facilement des entrepôts sécurisés à proximité pour stocker leurs récoltes après la moisson, contribuant ainsi à réduire significativement les pertes post-récolte. La plateforme facilite également la mise en relation avec des transporteurs fiables pour acheminer les produits agricoles vers les lieux de stockage. Les agriculteurs peuvent effectuer des paiements d'acomptes pour les réservations d'entrepôts et de transport via PayDunya, et suivre en temps réel la capacité disponible des entrepôts.`,
     imageAltText: 'Aperçu de la plateforme TerralHub',
     categoryText: 'Plateforme Logistique',
