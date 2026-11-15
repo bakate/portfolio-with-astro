@@ -3,7 +3,8 @@ import type { Proof } from '@/features/projects';
 import type { LanguageCode } from '@/i18n/ui';
 import { createSystemUnderTest } from './support/system-under-test';
 
-const clients = ['Bayer', 'Unilever', 'HSBC'];
+/** Bloomflow's clients: named in text, never shown as a logo. */
+const bloomflowClients = ['Bayer', 'Unilever', 'HSBC'];
 
 const languages = {
   fr: {
@@ -23,7 +24,8 @@ const languages = {
       },
       {
         figure: '5 ans',
-        context: 'de SaaS en production chez Bayer, Unilever, HSBC',
+        context:
+          'de SaaS en production, dont 4 ans chez Bloomflow pour Bayer, Unilever, HSBC',
       },
     ],
   },
@@ -44,7 +46,8 @@ const languages = {
       },
       {
         figure: '5 years',
-        context: 'of SaaS in production at Bayer, Unilever, HSBC',
+        context:
+          'of SaaS in production, including 4 at Bloomflow for Bayer, Unilever, HSBC',
       },
     ],
   },
@@ -69,14 +72,14 @@ for (const language of Object.values(languages)) {
     await site.thenProofSectionShows(language.proofs);
   });
 
-  test(`Given the ${language.name} home page, when a visitor looks for client logos, then clients are named in text and no image shows a client`, async ({
+  test(`Given the ${language.name} home page, when a visitor looks for client logos, then Bloomflow's clients are named in text and no image shows them`, async ({
     page,
     request,
   }) => {
     const site = createSystemUnderTest({ page, request });
     await site.visitorOpens(language.home);
     await site.thenProofSectionHasNoImage();
-    await site.thenNoImageOnThePageShows(clients);
+    await site.thenNoImageOnThePageShows(bloomflowClients);
   });
 
   test(`Given the ${language.name} home page, when a visitor reads the hero, then the CV photo is described as "${language.portraitAlt}"`, async ({

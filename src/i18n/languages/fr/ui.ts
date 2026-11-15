@@ -154,7 +154,8 @@ export const uiLabels = {
     proofBackOfficeFigure: '2 jours → quelques clics',
     proofBackOfficeContext: 'Outil interne de back-office',
     proofExperienceFigure: '5 ans',
-    proofExperienceContext: 'de SaaS en production chez Bayer, Unilever, HSBC',
+    proofExperienceContext:
+      'de SaaS en production, dont 4 ans chez Bloomflow pour Bayer, Unilever, HSBC',
     featuredProjectsTitle: 'Projets SaaS principaux',
     featuredProjectsDescription:
       'Des produits SaaS livrés en production, de la conception au déploiement.',
