@@ -57,7 +57,11 @@ All commands are run from the root of the project:
 | `pnpm preview`   | Not supported with the Vercel adapter (see note below).              |
 | `pnpm astro ...` | Executes Astro CLI commands (e.g., `astro add`, `astro check`).      |
 
-> **Note:** the `@astrojs/vercel` adapter does not support `astro preview`. To check a production build locally, use `vercel dev` (runs the API routes too), or serve only the prerendered pages with `pnpm dlx serve .vercel/output/static`.
+> **Note:** the `@astrojs/vercel` adapter does not support `astro preview`. Instead:
+>
+> - **Production build, pages and API routes:** push a branch; Vercel deploys it to a preview URL (linked on the pull request) built with `pnpm build`.
+> - **Prerendered pages only, locally:** after `pnpm build`, run `pnpm dlx serve .vercel/output/static`. API routes such as `/api/contact` are not served.
+> - **API routes in development:** `vercel dev` runs the dev server with the API routes; it does not use the production build.
 
 ## 📁 Project Structure (Simplified)
 
