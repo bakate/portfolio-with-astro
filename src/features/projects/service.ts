@@ -51,8 +51,14 @@ import {
 } from '@/assets/projects/terralHub';
 
 // Import i18n utilities
-import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
+import {
+  defaultLanguage,
+  ui,
+  useTranslations,
+  type LanguageCode,
+} from '@/i18n/ui';
 import type {
+  Proof,
   ProjectData,
   SkillData,
   TranslatedProject,
@@ -609,4 +615,25 @@ export function getTranslatedSkills(
       description: skillTranslations.description,
     };
   });
+}
+
+/** The measured outcomes shown under the hero, in display order. */
+export function getTranslatedProofs(
+  lang: LanguageCode | undefined
+): Array<Proof> {
+  const t = useTranslations(lang, 'homePage');
+  return [
+    {
+      figure: t('proofLoadTimeFigure'),
+      context: t('proofLoadTimeContext'),
+    },
+    {
+      figure: t('proofBackOfficeFigure'),
+      context: t('proofBackOfficeContext'),
+    },
+    {
+      figure: t('proofExperienceFigure'),
+      context: t('proofExperienceContext'),
+    },
+  ];
 }

@@ -152,8 +152,7 @@ export const uiLabels = {
     proofLoadTimeFigure: '7-8 s → moins de 2 s',
     proofLoadTimeContext: 'Chargement du module analytique chez Bloomflow',
     proofBackOfficeFigure: '2 jours → quelques clics',
-    proofBackOfficeContext:
-      'Une opération de back-office, grâce à un outil interne',
+    proofBackOfficeContext: 'Outil interne de back-office',
     proofExperienceFigure: '5 ans',
     proofExperienceContext: 'de SaaS en production chez Bayer, Unilever, HSBC',
     featuredProjectsTitle: 'Projets SaaS principaux',

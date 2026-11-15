@@ -2,6 +2,7 @@
 import {
   PortfolioScreen,
   getTranslatedProjects,
+  getTranslatedProofs,
   getTranslatedSkills,
   type TranslatedProject,
   type TranslatedSkill,
@@ -30,20 +31,7 @@ const layoutProps = {
   heroDownloadCvButton: t('heroDownloadCvButton'),
   heroImageAlt: t('heroImageAlt'),
   proofTitle: t('proofTitle'),
-  proofs: [
-    {
-      figure: t('proofLoadTimeFigure'),
-      context: t('proofLoadTimeContext'),
-    },
-    {
-      figure: t('proofBackOfficeFigure'),
-      context: t('proofBackOfficeContext'),
-    },
-    {
-      figure: t('proofExperienceFigure'),
-      context: t('proofExperienceContext'),
-    },
-  ],
+  proofs: getTranslatedProofs(lang),
   imageNotAvailable: t('imageNotAvailable'),
   featuredProjectsTitle: t('featuredProjectsTitle'),
   featuredProjectsDescription: t('featuredProjectsDescription'),

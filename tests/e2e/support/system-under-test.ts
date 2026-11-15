@@ -4,6 +4,7 @@ import {
   type Locator,
   type Page,
 } from '@playwright/test';
+import type { Proof } from '@/features/projects';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 
@@ -34,6 +35,12 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     expect(box, 'element is laid out').not.toBeNull();
     return box!;
   }
+
+  type Box = Awaited<ReturnType<typeof boxOf>>;
+
+  /** True when the two boxes overlap vertically, i.e. sit on the same rows. */
+  const sharesRows = (a: Box, b: Box) =>
+    a.y < b.y + b.height && b.y < a.y + a.height;
 
   async function statusOf(path: string): Promise<number> {
     return (await request.get(path)).status();
@@ -230,9 +237,7 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
     },
 
-    async thenProofSectionShows(
-      proofs: ReadonlyArray<{ figure: string; context: string }>
-    ) {
+    async thenProofSectionShows(proofs: ReadonlyArray<Proof>) {
       const items = proof.getByRole('listitem');
       await expect(items).toHaveCount(proofs.length);
       for (const [index, { figure, context }] of proofs.entries()) {
@@ -243,7 +248,7 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenProofSectionHasNoImage() {
       await expect(proof).toBeVisible();
-      await expect(proof.locator('img, svg, picture')).toHaveCount(0);
+      await expect(proof.getByRole('img')).toHaveCount(0);
     },
 
     /** Reads every image's description and address for the given names. */
@@ -283,33 +288,34 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     async thenHeroPhotoIsNextToTheName() {
       const photo = await boxOf(hero.getByRole('img'));
       const name = await boxOf(hero.getByRole('heading', { level: 1 }));
-      const beside =
-        photo.y < name.y + name.height && name.y < photo.y + photo.height;
+      const beside = sharesRows(photo, name);
       const above = photo.y + photo.height <= name.y;
       expect(beside || above, 'photo beside or above the name').toBe(true);
       expect(photo.height, 'compact photo').toBeLessThan(200);
     },
 
     /**
-     * Text starts on the left, the photo stays compact and shares the title
-     * block's rows instead of filling a column of its own.
+     * The title block and the pitch start at the left edge the next section
+     * starts from, the pitch stops well before the right edge, and the photo
+     * stays compact on the title rows instead of filling a column of its own.
      */
-    async thenHeroIsAsymmetric() {
+    async thenHeroIsAsymmetric({ pitch }: { pitch: string }) {
       const section = await boxOf(hero);
+      const leftEdge = (await boxOf(proof.getByRole('heading'))).x;
       const name = await boxOf(hero.getByRole('heading', { level: 1 }));
       const photo = await boxOf(hero.getByRole('img'));
-      const pitch = await boxOf(hero.locator('p').last());
-      expect(name.x - section.x, 'name starts on the left').toBeLessThan(
-        section.width / 4
+      const text = await boxOf(hero.getByText(pitch));
+      expect(photo.x, 'title block starts at the left edge').toBeCloseTo(
+        leftEdge,
+        0
       );
-      expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
+      expect(text.x, 'pitch starts at the left edge').toBeCloseTo(leftEdge, 0);
       expect(
-        photo.y < name.y + name.height && name.y < photo.y + photo.height,
-        'photo shares the title rows'
-      ).toBe(true);
-      expect(pitch.x - section.x, 'pitch starts on the left').toBeLessThan(
-        section.width / 4
-      );
+        text.x + text.width,
+        'right side of the hero left open'
+      ).toBeLessThan(section.x + section.width * 0.75);
+      expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
+      expect(sharesRows(photo, name), 'photo shares the title rows').toBe(true);
     },
 
     async thenPageHasButton(name: string) {

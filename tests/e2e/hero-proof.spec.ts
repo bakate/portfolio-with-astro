@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import type { Proof } from '@/features/projects';
 import type { LanguageCode } from '@/i18n/ui';
 import { createSystemUnderTest } from './support/system-under-test';
 
@@ -9,6 +10,8 @@ const languages = {
     name: 'French',
     home: '/',
     portraitAlt: 'Portrait de Bakate Idrissa, souriant',
+    pitch:
+      "Je conçois des produits SaaS de bout en bout : un domaine métier isolé et testé (DDD, architecture hexagonale, TDD), quel que soit le framework (NestJS, Express…), des interfaces Next.js et Angular, et l'IA là où elle sert vraiment.",
     proofs: [
       {
         figure: '7-8 s → moins de 2 s',
@@ -16,7 +19,7 @@ const languages = {
       },
       {
         figure: '2 jours → quelques clics',
-        context: 'Une opération de back-office, grâce à un outil interne',
+        context: 'Outil interne de back-office',
       },
       {
         figure: '5 ans',
@@ -28,6 +31,8 @@ const languages = {
     name: 'English',
     home: '/en',
     portraitAlt: 'Portrait of Bakate Idrissa, smiling',
+    pitch:
+      'I build SaaS products end to end: an isolated, tested business domain (DDD, hexagonal architecture, TDD), whatever the framework (NestJS, Express…), Next.js and Angular interfaces, and AI where it actually helps.',
     proofs: [
       {
         figure: '7-8 s → under 2 s',
@@ -35,7 +40,7 @@ const languages = {
       },
       {
         figure: '2 days → a few clicks',
-        context: 'A back-office operation, through an internal tool',
+        context: 'Internal back-office tool',
       },
       {
         figure: '5 years',
@@ -49,7 +54,8 @@ const languages = {
     name: string;
     home: string;
     portraitAlt: string;
-    proofs: ReadonlyArray<{ figure: string; context: string }>;
+    pitch: string;
+    proofs: ReadonlyArray<Proof>;
   }
 >;
 
@@ -93,13 +99,13 @@ for (const language of Object.values(languages)) {
     await site.thenHeroPhotoIsNextToTheName();
   });
 
-  test(`Given a desktop screen, when a visitor opens the ${language.name} home page, then the hero text is left-aligned with the photo set into the title block`, async ({
+  test(`Given a desktop screen, when a visitor opens the ${language.name} home page, then the hero text starts at the content's left edge, leaves the right side open and sets the photo into the title block`, async ({
     page,
     request,
   }) => {
     const site = createSystemUnderTest({ page, request });
     await site.visitorUsesAScreenWide(1280);
     await site.visitorOpens(language.home);
-    await site.thenHeroIsAsymmetric();
+    await site.thenHeroIsAsymmetric({ pitch: language.pitch });
   });
 }
