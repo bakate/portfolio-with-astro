@@ -1,14 +1,26 @@
 // Serves the prerendered pages of the Vercel build (.vercel/output/static),
-// the way Vercel resolves them: `/foo` → `foo/index.html`, unknown paths → 404.html
-// with a 404 status. `astro preview` is not an option: the Vercel adapter refuses it.
+// the way Vercel resolves them: the redirects declared in `config.json` first,
+// then `/foo` → `foo/index.html`, unknown paths → 404.html with a 404 status. `astro preview` is not an option: the Vercel adapter refuses it.
 // API routes (/api/contact) are not served.
 import { createReadStream } from 'node:fs';
-import { stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
 
 const root = path.resolve('.vercel/output/static');
 const port = Number(process.env.PORT ?? 4322);
+
+/** Redirect routes of the build (`redirects` in astro.config), as Vercel applies them. */
+const { routes = [] } = JSON.parse(
+  await readFile(path.resolve('.vercel/output/config.json'), 'utf8')
+);
+const redirects = routes
+  .filter((route) => route.status >= 300 && route.status < 400)
+  .map((route) => ({
+    pattern: new RegExp(route.src),
+    status: route.status,
+    location: route.headers.Location,
+  }));
 
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -53,6 +65,12 @@ function send(res, status, file) {
 
 createServer(async (req, res) => {
   const { pathname } = new URL(req.url ?? '/', 'http://localhost');
+  const redirect = redirects.find(({ pattern }) => pattern.test(pathname));
+  if (redirect) {
+    res.writeHead(redirect.status, { location: redirect.location });
+    res.end();
+    return;
+  }
   const file = await findFile(pathname);
   if (file) send(res, 200, file);
   else send(res, 404, path.join(root, '404.html'));

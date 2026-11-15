@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getTranslatedProjects, ProjectsScreen } from '@/features/projects';
+import { getProjectsShowcase, ProjectsScreen } from '@/features/projects';
 import { ui, type LanguageCode, defaultLanguage, languages } from '@/i18n/ui';
 
 let lang: LanguageCode;
@@ -13,7 +13,7 @@ if (currentLocale && currentLocale in languages) {
 }
 
 const t = ui[lang] as (typeof ui)[typeof defaultLanguage];
-const projects = getTranslatedProjects(lang);
+const { highlighted, archives } = getProjectsShowcase(lang);
 
 const projectsPageTranslations = t.projectsPage;
 const metaTitle =
@@ -25,5 +25,10 @@ const metaDescription =
 ---
 
 <BaseLayout pageTitle={metaTitle} pageDescription={metaDescription}>
-  <ProjectsScreen projects={projects} t={t} lang={lang} />
+  <ProjectsScreen
+    highlighted={highlighted}
+    archives={archives}
+    t={t}
+    lang={lang}
+  />
 </BaseLayout>

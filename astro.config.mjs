@@ -31,6 +31,12 @@ export default defineConfig({
     }),
   ],
 
+  // Bloomflow left the projects list: it is an employer, told on the Experience page.
+  redirects: {
+    '/projects/bloomflow': '/experience',
+    '/en/projects/bloomflow': '/en/experience',
+  },
+
   i18n: {
     locales: ['fr', 'en'],
     defaultLocale: 'fr',
