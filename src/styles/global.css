@@ -69,7 +69,8 @@
  * Contrast pairs (foreground/background, muted-foreground on background/muted/card,
  * primary on background/card, primary-foreground on primary) are WCAG AA (>= 4.5:1)
  * in both modes. Avoid opacity modifiers on muted-foreground and primary text:
- * they drop those pairs below AA.
+ * they drop those pairs below AA. Same for primary text on a primary tint
+ * (bg-primary/10) stacked over muted: ~4.3:1, keep tints on background/card.
  */
 :root {
   --background: oklch(0.985 0.004 75);
