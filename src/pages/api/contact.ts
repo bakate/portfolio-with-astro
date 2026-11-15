@@ -5,10 +5,7 @@ export const prerender = false;
 import { contactFormSchema as ContactFormSchema } from '@/features/contact/type'; // Using alias for clarity if needed, or direct import
 import { sendEmail } from '@/lib/email';
 import { ui, type LanguageCode } from '@/i18n/ui';
-import type {
-  ContactFormTranslations,
-  ContactFormApiResponse,
-} from '@/features/contact/type';
+import type { ContactFormApiResponse } from '@/features/contact/type';
 
 // Initialize Resend with the API key from environment variables
 const resendApiKey = import.meta.env.RESEND_API_KEY;
@@ -28,8 +25,8 @@ if (!contactFormToEmail) {
 
 export const POST: APIRoute = async ({ request }) => {
   let lang: LanguageCode = 'en'; // Default language
-  let currentTranslations: ContactFormTranslations = ui[lang]
-    .contactPage as ContactFormTranslations; // Default translations
+  let currentTranslations: (typeof ui)[LanguageCode]['contactPage'] =
+    ui[lang].contactPage; // Default translations
   if (!resendApiKey || !resendFromEmail || !contactFormToEmail) {
     return new Response(
       JSON.stringify({
@@ -46,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
     const requestLang = requestBody.lang as LanguageCode | undefined;
     if (requestLang && ui[requestLang]) {
       lang = requestLang;
-      currentTranslations = ui[lang].contactPage as ContactFormTranslations;
+      currentTranslations = ui[lang].contactPage;
     }
     // Separate formData for Zod validation (without lang property)
     const { lang: _lang, ...restOfBody } = requestBody;
@@ -77,7 +74,8 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const { firstName, lastName, email, company, message } = validationResult.data;
+  const { firstName, lastName, email, company, message } =
+    validationResult.data;
 
   try {
     const text = `You have a new contact form submission:`;

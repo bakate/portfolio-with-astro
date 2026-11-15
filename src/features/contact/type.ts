@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+/** Strings the message form reads; the rest of the contact page is passed as screen props. */
 export type ContactFormTranslations = {
   firstNameLabel: string;
   lastNameLabel: string;
@@ -16,17 +17,6 @@ export type ContactFormTranslations = {
   toastErrorFailedToSend: string;
   toastErrorUnexpected: string;
   toastErrorDetails: string;
-  toastErrorValidationFailed: string;
-  badgeResponseTime: string;
-  writeToMeHeader: string;
-  letstalkHeader: string;
-  socialLinksTitle: string;
-  consultingValueProp: string;
-  contactName: string;
-  linkedInLabel: string;
-  professionalNetworkLabel: string;
-  githubLabel: string;
-  openSourceLabel: string;
 };
 
 const stringFieldSchema = (minLength = 2, maxLength = 50) =>

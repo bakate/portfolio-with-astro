@@ -1,16 +1,12 @@
 ---
-import { profile } from '@/lib/profile';
 import { ContactScreen } from '@/features/contact';
 import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/lib/profile';
 
-const lang = defaultLanguage as LanguageCode;
+const lang =
+  (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
 const t = useTranslations(lang, 'contactPage');
-
-const pageMeta = {
-  title: t('pageTitle'),
-  description: t('pageDescription'),
-};
 
 const formTranslations = {
   firstNameLabel: t('firstNameLabel'),
@@ -28,33 +24,24 @@ const formTranslations = {
   toastErrorFailedToSend: t('toastErrorFailedToSend'),
   toastErrorUnexpected: t('toastErrorUnexpected'),
   toastErrorDetails: t('toastErrorDetails'),
-  toastErrorValidationFailed: t('toastErrorValidationFailed'),
-  badgeResponseTime: t('badgeResponseTime'),
-  writeToMeHeader: t('writeToMeHeader'),
-  letstalkHeader: t('letstalkHeader'),
-  socialLinksTitle: t('socialLinksTitle'),
-  consultingValueProp: t('consultingValueProp'),
-  contactName: t('contactName'),
-  linkedInLabel: t('linkedInLabel'),
-  professionalNetworkLabel: t('professionalNetworkLabel'),
-  githubLabel: t('githubLabel'),
-  openSourceLabel: t('openSourceLabel'),
-};
-
-const layoutProps = {
-  lang,
-  mainHeadingTitle: pageMeta.title,
-  mainHeadingDescription: t('description'),
-  formTitle: t('formTitle'),
-  formTranslations,
-  orSeparatorText: t('orSeparatorText'),
-  calendarTitle: t('calendarTitle'),
-  calendarDescription: t('calendarDescription'),
-  calendarLinkLabel: t('calendarLinkLabel'),
-  calendarUrl: profile.bookingUrl,
 };
 ---
 
-<BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.description}>
-  <ContactScreen {...layoutProps} />
+<BaseLayout pageTitle={t('pageTitle')} pageDescription={t('pageDescription')}>
+  <ContactScreen
+    lang={lang}
+    heading={t('title')}
+    description={t('description')}
+    freelanceLine={t('freelanceLine')}
+    bookingTitle={t('calendarTitle')}
+    bookingDescription={t('calendarDescription')}
+    bookingLinkLabel={t('calendarLinkLabel')}
+    bookingUrl={profile.bookingUrl}
+    formHeading={t('writeToMeHeader')}
+    responseTime={t('badgeResponseTime')}
+    formTranslations={formTranslations}
+    elsewhereLabel={t('socialLinksTitle')}
+    linkedInLabel={t('linkedInLabel')}
+    githubLabel={t('githubLabel')}
+  />
 </BaseLayout>

@@ -33,112 +33,94 @@ export const uiLabels = {
     rights: 'All rights reserved.',
   },
   experiencePage: {
-    pageTitle: 'Experience | Bakate - FullStack Developer',
+    pageTitle: 'Experience | Bakate Idrissa',
     pageDescription:
-      'Professional background of Bakate: 4 years at Bloomflow, then Founder of Teranga Pulse in Paris.',
-    pageHeading: 'Professional Experience',
-    presentLabel: 'present',
-    stackLabel: 'Tech stack',
-    seekingLabel: 'Open to new opportunities',
-    downloadCV: 'Download Resume',
-    terangaPulse: {
-      company: 'Teranga Pulse',
-      role: 'Founder & Full-Stack Developer',
-      period: 'November 2024 – Present',
-      location: 'Paris, France',
-      tagline: 'Solo-preneur · Product · Tech · Ops',
-      about:
-        'Building and operating critical SaaS platforms. Full ownership of product, infrastructure, and software quality.',
-      subRoles: [
-        {
-          project: 'Parent Up',
-          role: 'Founder & Full-Stack Developer',
-          period: 'July 2025 – Present',
-        },
-        {
-          project: 'Terral Hub',
-          role: 'Founder & Full-Stack Developer',
-          period: 'November 2024 – June 2025',
-        },
-      ],
-      achievements: {
-        product: {
-          title: '360° Product Ownership',
-          description:
-            'Roadmap, UX, architecture, security, monitoring (Sentry), and CI/CD pipelines (GitHub Actions) — fully defined and operated solo.',
-        },
-        backend: {
-          title: 'Real-Time Backend & AI',
-          description:
-            'Secure messaging, Google Calendar sync, AI legal assistant via RAG (Vercel AI SDK, OpenAI, embeddings), email notifications via Resend.',
-        },
-        quality: {
-          title: 'Design System & Testing',
-          description:
-            'Internal UI library, strict typing, Vitest and Convex Test coverage. Advanced auth with Clerk Organizations.',
-        },
+      'Background of Bakate Idrissa, Full-Stack TypeScript Software Engineer: leZèbre Tech, founder of Teranga Pulse, 4 years at Bloomflow.',
+    pageHeading: 'Professional experience',
+    stackLabel: 'Stack',
+    seekingLabel: 'Open to new opportunities.',
+    downloadCV: 'Download my CV',
+    entries: [
+      {
+        company: 'leZèbre Tech',
+        role: 'Software Engineer',
+        period: 'July 2026 – October 2026',
+        location: 'Antony, France',
+        summary: 'NestJS backend services with hexagonal architecture and DDD.',
+        highlights: [
+          'Isolated the business domain from infrastructure through ports and adapters, for testable, maintainable code.',
+          'Practiced TDD daily and wrote Gherkin acceptance tests to align product and engineering on expected behavior.',
+          'Mentored junior developers through code reviews.',
+          'Wrote specifications with LLMs and Linear; shipped lean, incremental releases.',
+        ],
+        technologies: [
+          'NestJS',
+          'TypeScript',
+          'Node.js',
+          'DDD',
+          'Hexagonal architecture',
+          'TDD',
+          'Gherkin',
+        ],
       },
-      technologies: [
-        'Next.js',
-        'TypeScript',
-        'Convex',
-        'Turborepo',
-        'Clerk',
-        'Vercel AI SDK',
-        'OpenAI',
-        'Resend',
-        'Vitest',
-        'Sentry',
-        'GitHub Actions',
-      ],
-    },
-    bloomflow: {
-      company: 'Bloomflow',
-      role: 'Full-Stack Developer',
-      period: 'November 2020 – November 2024',
-      location: 'Paris, France · Hybrid',
-      tagline: 'B2B Scale-up · SaaS · 4 years',
-      about:
-        'Developed open innovation tools for Fortune 500 companies to manage their startup ecosystems.',
-      achievements: {
-        designSystem: {
-          title: 'UI Industrialization (Design System)',
-          description:
-            'Architected a cross-project Angular component library via Storybook to ensure visual and technical alignment across several modules.',
-        },
-        migration: {
-          title: 'TypeScript Migration & Quality',
-          description:
-            'Led the JS-to-TS migration of a mission-critical Next.js back-office. Secured the codebase with unit/integration tests and automated CI pipelines.',
-        },
-        automation: {
-          title: 'Operational Impact & SaaS',
-          description:
-            'Built a self-service module for Customer Success, slashing complex 2-day manual workflows into instant, one-click validations.',
-        },
-        angular: {
-          title: 'Angular State Management (NgRx, Signals)',
-          description:
-            'Managed complex states (NgRx, Signals) and implemented dynamic forms for professional processes with high data volumes.',
-        },
+      {
+        company: 'Teranga Pulse',
+        role: 'Founder and Full-Stack Software Engineer',
+        period: 'November 2024 – June 2026',
+        location: 'Paris / Dakar',
+        summary: 'Shipped two MVPs solo, from architecture to production.',
+        highlights: [
+          'Parent Up (co-parenting): Next.js and TypeScript in a Turborepo monorepo, real-time Convex backend, secure messaging, Google Calendar sync, restricted-access documents and an AI legal assistant (RAG, embeddings, Vercel AI SDK, OpenAI).',
+          'Terral Hub (agricultural logistics, Senegal): platform connecting farmers, warehouses and carriers, with booking, real-time capacity tracking, PayDunya payments and an offline-first PWA for low-connectivity areas.',
+          'UI built with Tailwind and shadcn/ui, forms with React Hook Form + Zod; signed, idempotent webhooks (Clerk, Convex); Vitest, GitHub Actions CI/CD, Sentry.',
+        ],
+        technologies: [
+          'Next.js',
+          'TypeScript',
+          'Convex',
+          'Turborepo',
+          'Clerk',
+          'Vercel AI SDK',
+          'OpenAI',
+          'Tailwind CSS',
+          'Vitest',
+          'GitHub Actions',
+          'Sentry',
+        ],
       },
-      technologies: [
-        'Angular',
-        'Next.js',
-        'React',
-        'TypeScript',
-        'Node',
-        'Express',
-        'MongoDB',
-        'Elastic Search',
-        'PostgreSQL',
-        'SQLite',
-        'Jest',
-        'Docker',
-      ],
-    },
+      {
+        company: 'Bloomflow',
+        companyUrl: 'https://www.bloomflow.com/',
+        role: 'Full-Stack Software Engineer',
+        period: 'November 2020 – November 2024',
+        location: 'Paris',
+        summary: 'B2B open-innovation SaaS for large enterprises, 4 years.',
+        highlights: [
+          'Built complex, data-heavy business screens for enterprise clients (Bayer, Unilever, HSBC, Orange, Chanel), in Angular and then React / Next.js.',
+          "Reworked the analytics module's loading strategy so each chart and map renders as soon as it is ready, cutting load time from 7–8 s to under 2 s.",
+          'Built internal tools and TypeScript / Node.js scripts that turned a critical 2-day manual task into a few clicks in the back office (Next.js).',
+          'Designed a design system and internal UI library shared across product teams.',
+          'Helped set up an NgRx store (Redux pattern) on the front end to centralize state and avoid redundant API calls.',
+          'Automated tests (Jest, Testing Library) in CI; worked in a Kubernetes environment and configured client instances hosted on AWS, OVH and Azure.',
+          'Monthly on-call rotation ("Houston"): single point of contact for production bugs, prioritized with the PM, fixed critical issues, shipped the release and briefed Customer Success.',
+        ],
+        technologies: [
+          'Angular',
+          'NgRx',
+          'React',
+          'Next.js',
+          'TypeScript',
+          'Node.js',
+          'Express',
+          'MongoDB',
+          'PostgreSQL',
+          'Jest',
+          'Storybook',
+          'Kubernetes',
+        ],
+      },
+    ],
   },
-
   homePage: {
     pageTitle: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     pageDescription:
@@ -200,30 +182,26 @@ export const uiLabels = {
     tableOfContents: 'Table of contents',
   },
   contactPage: {
-    pageTitle: 'Contact Me',
+    pageTitle: 'Contact | Bakate Idrissa',
     pageDescription:
-      "Let's discuss your project, a potential collaboration, or just chat about tech!",
-    title: 'Contact Me',
+      'Book a 15-minute call or write to Bakate Idrissa, Full-Stack TypeScript Software Engineer. Also available for freelance missions.',
+    title: 'Get in touch',
     description:
-      "Let's discuss your project, a potential collaboration, or just chat about tech!",
-
-    formTitle: 'Send a message',
+      'A role, a project or a technical question: the simplest way is to book 15 minutes. Prefer writing? The form is right below.',
+    freelanceLine: 'Also available for freelance missions.',
+    calendarTitle: 'Book a call',
+    calendarDescription: '15 minutes on video, at a time that suits you.',
+    calendarLinkLabel: 'Book a 15-min call',
     writeToMeHeader: 'Write to me',
-    letstalkHeader: "Let's talk",
-    badgeResponseTime: 'Response within 24h',
-    consultingValueProp:
-      'Need to move fast? Book a 15 min free discovery call.',
-    contactName: 'Bakate Idrissa',
+    badgeResponseTime: 'Reply within 24 hours.',
+    socialLinksTitle: 'Also on',
     linkedInLabel: 'LinkedIn',
-    professionalNetworkLabel: 'Professional Network',
     githubLabel: 'GitHub',
-    openSourceLabel: 'Open Source & Code',
-    socialLinksTitle: 'Find me on',
 
-    firstNameLabel: 'First Name',
-    lastNameLabel: 'Last Name',
+    firstNameLabel: 'First name',
+    lastNameLabel: 'Last name',
     emailLabel: 'Email',
-    companyLabel: 'Company (Optional)',
+    companyLabel: 'Company (optional)',
     messageLabel: 'Message',
     sendButtonLabel: 'Send',
     firstNamePlaceholder: 'Your first name',
@@ -231,13 +209,6 @@ export const uiLabels = {
     emailPlaceholder: 'Your email address',
     companyPlaceholder: 'Your company name',
     messagePlaceholder: 'Your message here...',
-    calendarTitle: 'Schedule a Meeting',
-    calendarDescription:
-      'Prefer to talk live? Book a slot directly in my calendar.',
-    calendarButtonLabel: 'View my availability',
-    calendarLinkLabel: 'See my calendar',
-    calendarPlaceHolder: 'Integration with Google Calendar coming soon...',
-    orSeparatorText: 'OR',
     toastSuccessMessageSent: 'Message sent successfully!',
     toastErrorFailedToSend: 'Failed to send the message.',
     toastErrorUnexpected: 'An unexpected error occurred.',
@@ -272,11 +243,11 @@ export const uiLabels = {
       "It seems that you don't have any projects to display at the moment.",
   },
   notFoundPage: {
-    pageTitle: 'Page Not Found',
-    title: 'Oops! Page Not Found',
+    pageTitle: 'Page not found | Bakate Idrissa',
+    title: 'Page not found',
     message:
-      'Sorry, the page you are looking for does not seem to exist. Check the URL or return to the homepage.',
-    homeLink: 'Return to Homepage',
+      'This address does not lead to any page. It may have moved, or contain a typo.',
+    homeLink: 'Back to the home page',
   },
 
   tipsPage: {

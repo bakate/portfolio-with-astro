@@ -1,61 +1,26 @@
 ---
+import { ExperienceScreen } from '@/features/experience';
+import {
+  defaultLanguage,
+  ui,
+  useTranslations,
+  type LanguageCode,
+} from '@/i18n/ui';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { profile } from '@/lib/profile';
-import type {
-  Achievement,
-  ExperienceEntry,
-} from '@/features/experience/screens/ExperienceScreen.astro';
-import ExperienceScreen from '@/features/experience/screens/ExperienceScreen.astro';
-import { ui, useTranslations, type LanguageCode } from '@/i18n/ui';
-import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const lang = 'en' as LanguageCode;
+const lang =
+  (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
 const t = useTranslations(lang, 'experiencePage');
-const expPage = ui[lang].experiencePage;
-
-const pageMeta = {
-  title: t('pageTitle'),
-  description: t('pageDescription'),
-};
-
-const { terangaPulse, bloomflow } = expPage;
-
-const experiences: ExperienceEntry[] = [
-  {
-    company: terangaPulse.company,
-    companyUrl: 'https://www.linkedin.com/company/teranga-pulse',
-    role: terangaPulse.role,
-    period: terangaPulse.period,
-    location: terangaPulse.location,
-    tagline: terangaPulse.tagline,
-    about: terangaPulse.about,
-    subRoles: [...terangaPulse.subRoles],
-    achievements: Object.values(terangaPulse.achievements) as Achievement[],
-    technologies: [...terangaPulse.technologies],
-    isFounder: true,
-  },
-  {
-    company: bloomflow.company,
-    companyUrl: 'https://www.bloomflow.com/',
-    role: bloomflow.role,
-    period: bloomflow.period,
-    location: bloomflow.location,
-    tagline: bloomflow.tagline,
-    about: bloomflow.about,
-    achievements: Object.values(bloomflow.achievements) as Achievement[],
-    technologies: [...bloomflow.technologies],
-    subRoles: [],
-  },
-];
 ---
 
-<BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.description}>
+<BaseLayout pageTitle={t('pageTitle')} pageDescription={t('pageDescription')}>
   <ExperienceScreen
-    lang={lang}
     pageHeading={t('pageHeading')}
     stackLabel={t('stackLabel')}
     seekingLabel={t('seekingLabel')}
     downloadLabel={t('downloadCV')}
-    cvUrl={profile.cvPathByLanguage.en}
-    experiences={experiences}
+    cvUrl={profile.cvPathByLanguage[lang]}
+    experiences={ui[lang].experiencePage.entries}
   />
 </BaseLayout>

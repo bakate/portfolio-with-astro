@@ -47,6 +47,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       expect(response?.status(), path).toBe(200);
     },
 
+    async visitorOpensMissingPage(path: string) {
+      const response = await page.goto(path);
+      expect(response?.status(), path).toBe(404);
+    },
+
     /** Follows every internal link, breadth-first, from the given home pages. */
     async crawlerFollowsEveryLinkFrom(homes: ReadonlyArray<string>) {
       const queue = [...homes];
@@ -216,6 +221,41 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenPageLinksTo(url: string) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
+    },
+
+    async thenPageShows(
+      texts: ReadonlyArray<string>,
+      { without = [] }: { without?: ReadonlyArray<string> } = {}
+    ) {
+      const main = page.locator('main');
+      for (const text of texts) await expect(main).toContainText(text);
+      for (const text of without) await expect(main).not.toContainText(text);
+    },
+
+    /** The page's sections (level-2 headings), in reading order. */
+    async thenSectionsAre(headings: ReadonlyArray<string>) {
+      await expect(
+        page.locator('main').getByRole('heading', { level: 2 })
+      ).toHaveText([...headings]);
+    },
+
+    async thenLinkComesBeforeButton(url: string, buttonName: string) {
+      const link = page.locator(`main a[href="${url}"]`).first();
+      const button = page.getByRole('button', {
+        name: buttonName,
+        exact: true,
+      });
+      await expect(link).toBeVisible();
+      await expect(button).toBeVisible();
+      const linkIsFirst = await link.evaluate(
+        (linkElement, buttonElement) =>
+          Boolean(
+            linkElement.compareDocumentPosition(buttonElement as Node) &
+            Node.DOCUMENT_POSITION_FOLLOWING
+          ),
+        await button.elementHandle()
+      );
+      expect(linkIsFirst, `${url} before "${buttonName}"`).toBe(true);
     },
 
     async thenPageHasButton(name: string) {

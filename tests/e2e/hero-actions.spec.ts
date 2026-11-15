@@ -14,6 +14,7 @@ const languages = {
     cvButton: 'Télécharger mon CV',
     cv: '/cv/bakate-idrissa-ba-cv-fr.pdf',
     sendButton: 'Envoyer',
+    freelanceLine: 'Disponible aussi en mission freelance.',
   },
   en: {
     name: 'English',
@@ -23,6 +24,7 @@ const languages = {
     cvButton: 'Download my CV',
     cv: '/cv/bakate-idrissa-ba-cv-en.pdf',
     sendButton: 'Send',
+    freelanceLine: 'Also available for freelance missions.',
   },
 } as const satisfies Record<
   LanguageCode,
@@ -34,6 +36,7 @@ const languages = {
     cvButton: string;
     cv: string;
     sendButton: string;
+    freelanceLine: string;
   }
 >;
 
@@ -75,5 +78,23 @@ for (const language of Object.values(languages)) {
     const site = createSystemUnderTest({ page, request });
     await site.visitorOpens(language.contact);
     await site.thenPageHasButton(language.sendButton);
+  });
+
+  test(`Given the ${language.name} contact page, when a visitor arrives, then the booking link comes before the message form`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.contact);
+    await site.thenLinkComesBeforeButton(bookingPage, language.sendButton);
+  });
+
+  test(`Given the ${language.name} contact page, when a client looks for a mission, then one line says freelance missions are welcome too`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.contact);
+    await site.thenPageShows([language.freelanceLine]);
   });
 }
