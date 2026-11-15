@@ -1,4 +1,10 @@
-import { expect, type APIRequestContext, type Page } from '@playwright/test';
+import {
+  expect,
+  type APIRequestContext,
+  type Locator,
+  type Page,
+} from '@playwright/test';
+import type { Proof } from '@/features/projects';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 
@@ -22,6 +28,19 @@ const withoutQueryOrTrailingSlash = (href: string) =>
 export function createSystemUnderTest({ page, request }: Fixtures) {
   const crawled = new Map<string, string>();
   const hero = page.locator('#hero');
+  const proof = page.locator('#proof');
+
+  async function boxOf(locator: Locator) {
+    const box = await locator.boundingBox();
+    expect(box, 'element is laid out').not.toBeNull();
+    return box!;
+  }
+
+  type Box = Awaited<ReturnType<typeof boxOf>>;
+
+  /** True when the two boxes overlap vertically, i.e. sit on the same rows. */
+  const sharesRows = (a: Box, b: Box) =>
+    a.y < b.y + b.height && b.y < a.y + a.height;
 
   async function statusOf(path: string): Promise<number> {
     return (await request.get(path)).status();
@@ -216,6 +235,87 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenPageLinksTo(url: string) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
+    },
+
+    async thenProofSectionShows(proofs: ReadonlyArray<Proof>) {
+      const items = proof.getByRole('listitem');
+      await expect(items).toHaveCount(proofs.length);
+      for (const [index, { figure, context }] of proofs.entries()) {
+        await expect(items.nth(index)).toContainText(figure);
+        await expect(items.nth(index)).toContainText(context);
+      }
+    },
+
+    async thenProofSectionHasNoImage() {
+      await expect(proof).toBeVisible();
+      await expect(proof.getByRole('img')).toHaveCount(0);
+    },
+
+    /** Reads every image's description and address for the given names. */
+    async thenNoImageOnThePageShows(names: ReadonlyArray<string>) {
+      const images = await page
+        .locator('img')
+        .evaluateAll((elements) =>
+          elements.map(
+            (image) =>
+              `${image.getAttribute('alt') ?? ''} ${image.getAttribute('src') ?? ''}`
+          )
+        );
+      expect(images.length, 'images on the page').toBeGreaterThan(0);
+      const matches = images.filter((image) =>
+        names.some((name) => image.toLowerCase().includes(name.toLowerCase()))
+      );
+      expect(matches).toEqual([]);
+    },
+
+    async thenHeroPhotoIsDescribedAs(alt: string) {
+      await expect(hero.getByRole('img', { name: alt })).toBeVisible();
+    },
+
+    async visitorUsesAScreenWide(width: number) {
+      await page.setViewportSize({ width, height: 800 });
+    },
+
+    async thenPageDoesNotScrollSideways() {
+      const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }));
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    },
+
+    /** Beside: overlapping rows. Above: photo ends before the name starts. */
+    async thenHeroPhotoIsNextToTheName() {
+      const photo = await boxOf(hero.getByRole('img'));
+      const name = await boxOf(hero.getByRole('heading', { level: 1 }));
+      const beside = sharesRows(photo, name);
+      const above = photo.y + photo.height <= name.y;
+      expect(beside || above, 'photo beside or above the name').toBe(true);
+      expect(photo.height, 'compact photo').toBeLessThan(200);
+    },
+
+    /**
+     * The title block and the pitch start at the left edge the next section
+     * starts from, the pitch stops well before the right edge, and the photo
+     * stays compact on the title rows instead of filling a column of its own.
+     */
+    async thenHeroIsAsymmetric({ pitch }: { pitch: string }) {
+      const section = await boxOf(hero);
+      const leftEdge = (await boxOf(proof.getByRole('heading'))).x;
+      const name = await boxOf(hero.getByRole('heading', { level: 1 }));
+      const photo = await boxOf(hero.getByRole('img'));
+      const text = await boxOf(hero.getByText(pitch));
+      expect(photo.x, 'title block starts at the left edge').toBeCloseTo(
+        leftEdge,
+        0
+      );
+      expect(text.x, 'pitch starts at the left edge').toBeCloseTo(leftEdge, 0);
+      expect(
+        text.x + text.width,
+        'right side of the hero left open'
+      ).toBeLessThan(section.x + section.width * 0.75);
+      expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
+      expect(sharesRows(photo, name), 'photo shares the title rows').toBe(true);
     },
 
     async thenPageHasButton(name: string) {

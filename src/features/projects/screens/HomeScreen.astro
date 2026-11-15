@@ -10,7 +10,8 @@ import { Calendar, FileDown, ArrowRight, Building2 } from 'lucide-react';
 import heroImage from '@/assets/bakate-portrait.png';
 import { Image } from 'astro:assets';
 import FeaturedProjectPreview from '../components/FeaturedProjectPreview.astro';
-import type { TranslatedProject, TranslatedSkill } from '../type';
+import ProofSection from '@/features/projects/components/ProofSection.astro';
+import type { Proof, TranslatedProject, TranslatedSkill } from '../type';
 
 export type Props = {
   lang: LanguageCode;
@@ -20,6 +21,9 @@ export type Props = {
   heroAvailability: string;
   heroBookCallButton: string;
   heroDownloadCvButton: string;
+  heroImageAlt: string;
+  proofTitle: string;
+  proofs: Array<Proof>;
   imageNotAvailable: string;
   featuredProjectsTitle: string;
   featuredProjectsDescription: string;
@@ -39,6 +43,9 @@ const {
   heroAvailability,
   heroBookCallButton,
   heroDownloadCvButton,
+  heroImageAlt,
+  proofTitle,
+  proofs,
   featuredProjectsTitle,
   featuredProjectsDescription,
   bloomflowTitle,
@@ -67,76 +74,67 @@ const bloomflowHighlights = [
 ] as const;
 ---
 
-<section id="hero" class="py-12 md:py-16">
-  <div class="grid md:grid-cols-2 gap-12 items-center justify-between">
-    {/* Hero Text Column */}
-    <div class="text-center md:text-left">
-      <p
-        class="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1 text-sm text-muted-foreground mb-6"
-      >
-        <span class="size-2 rounded-full bg-green-500" aria-hidden="true"
-        ></span>
-        {heroAvailability}
-      </p>
-      <h1
-        class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6"
-      >
-        {profile.displayName}
-      </h1>
-      <p class="text-xl md:text-2xl font-medium text-muted-foreground mb-4">
-        <span class="text-foreground/90">{profile.jobTitle}</span>
-      </p>
-      <p
-        class="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto md:mx-0 leading-relaxed"
-      >
-        {heroPitch}
-      </p>
-      <div
-        class="flex flex-col sm:flex-row gap-5 justify-center md:justify-start"
-      >
-        <a
-          href={profile.bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class={buttonVariants({
-            variant: 'default',
-            size: 'lg',
-          })}
+<section id="hero" class="pt-12 pb-4 md:pt-20 md:pb-8">
+  <div class="max-w-3xl">
+    <p
+      class="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1 text-sm text-muted-foreground mb-8"
+    >
+      <span class="size-2 rounded-full bg-green-500" aria-hidden="true"></span>
+      {heroAvailability}
+    </p>
+    <div class="flex items-center gap-4 sm:gap-6 mb-6">
+      <Image
+        src={heroImage}
+        alt={heroImageAlt}
+        width={224}
+        height={224}
+        loading="eager"
+        quality="high"
+        class="size-20 sm:size-24 md:size-28 shrink-0 rounded-md border border-border object-cover"
+      />
+      <div class="min-w-0">
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-2"
         >
-          <Calendar className="mr-2 size-5" />
-          {heroBookCallButton}
-        </a>
-        <a
-          href={profile.cvPathByLanguage[lang]}
-          download
-          class={buttonVariants({
-            variant: 'outline',
-            size: 'lg',
-          })}
-        >
-          <FileDown className="mr-2 size-5" />
-          {heroDownloadCvButton}
-        </a>
+          {profile.displayName}
+        </h1>
+        <p class="text-lg md:text-2xl font-medium text-foreground/90">
+          {profile.jobTitle}
+        </p>
       </div>
     </div>
-
-    {/* Hero Image (Placeholder for now) */}
-    <div class="md:text-right flex justify-center md:justify-end mt-12 md:mt-0">
-      <div
-        class="w-full max-w-[420px] aspect-square rounded-lg overflow-hidden border border-border bg-muted"
+    <p class="text-lg text-muted-foreground mb-10 leading-relaxed">
+      {heroPitch}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a
+        href={profile.bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={buttonVariants({
+          variant: 'default',
+          size: 'lg',
+        })}
       >
-        <Image
-          src={heroImage}
-          alt={profile.displayName}
-          width={576}
-          height={576}
-          quality="high"
-          class="h-full w-full object-cover"
-        />
-      </div>
+        <Calendar className="mr-2 size-5" />
+        {heroBookCallButton}
+      </a>
+      <a
+        href={profile.cvPathByLanguage[lang]}
+        download
+        class={buttonVariants({
+          variant: 'outline',
+          size: 'lg',
+        })}
+      >
+        <FileDown className="mr-2 size-5" />
+        {heroDownloadCvButton}
+      </a>
     </div>
   </div>
 </section>
+
+<ProofSection title={proofTitle} proofs={proofs} />
 
 {/* Featured Projects Section */}
 <section
