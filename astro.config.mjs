@@ -12,12 +12,14 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://bakateba.tech',
+
   integrations: [
     react(),
     mdx({
-    processor: unified({
-      remarkPlugins: [remarkReadingTime],
-    }),
+      processor: unified({
+        remarkPlugins: [remarkReadingTime],
+      }),
       syntaxHighlight: {
         type: 'shiki',
         themes: {

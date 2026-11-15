@@ -1,4 +1,5 @@
 ---
+import { profile } from '@/lib/profile';
 import { ContactScreen } from '@/features/contact';
 import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -50,7 +51,7 @@ const layoutProps = {
   calendarTitle: t('calendarTitle'),
   calendarDescription: t('calendarDescription'),
   calendarLinkLabel: t('calendarLinkLabel'),
-  calendarUrl: import.meta.env.PUBLIC_GOOGLE_CALENDAR_URL as string,
+  calendarUrl: profile.bookingUrl,
 };
 ---
 

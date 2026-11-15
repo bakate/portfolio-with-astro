@@ -64,7 +64,6 @@ const projectsListUnsorted: Array<ProjectData> = [
     id: 'parentUp',
     slug: 'parent-up',
     imageUrl: parentUpPreviewImage,
-    projectUrl: 'https://staging.parentup.eu/',
     codeUrl: '',
     tags: [
       'Next.js',
@@ -166,7 +165,6 @@ const projectsListUnsorted: Array<ProjectData> = [
     id: 'codeHaven',
     slug: 'code-haven',
     imageUrl: codeHavenPreviewImage,
-    projectUrl: 'https://staging.codehaven.eu/',
     codeUrl: 'https://github.com/bakate/code-haven',
     tags: ['Next.js', 'TypeScript', 'drizzle-orm', 'postgresql'],
     category: 'LMS (Learning Management System)',
@@ -332,7 +330,6 @@ const projectsListUnsorted: Array<ProjectData> = [
     id: 'cms',
     slug: 'cms',
     imageUrl: cmsPreviewImage,
-    projectUrl: 'https://e-commerce-cms-ebon.vercel.app/',
     codeUrl: 'https://github.com/bakate/e-commerce-cms',
     tags: ['Next.js', 'TailwindCSS', 'TypeScript', 'shadcn/ui'],
     category: 'Content Management System', // Placeholder
@@ -348,7 +345,6 @@ const projectsListUnsorted: Array<ProjectData> = [
     id: 'terralhub',
     slug: 'terralhub',
     imageUrl: terralHubPreviewImage,
-    projectUrl: 'https://terral-hub-senegal.vercel.app/',
     codeUrl: '', // Si tu as un lien vers le code source, ajoute-le ici
     tags: ['Next.js', 'TailwindCSS', 'TypeScript', 'shadcn/ui', 'PayDunya'],
     category: 'logisticsPlatform',
