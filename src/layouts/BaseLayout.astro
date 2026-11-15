@@ -31,6 +31,8 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 type Props = {
   pageTitle: string;
   pageDescription?: string;
+  /** Keeps the page out of search results, as for a draft article. */
+  noIndex?: boolean;
 };
 
 export type NavItem = {
@@ -39,7 +41,7 @@ export type NavItem = {
   icon: any;
 };
 
-const { pageTitle, pageDescription } = Astro.props;
+const { pageTitle, pageDescription, noIndex = false } = Astro.props;
 const lang =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
 const currentPathname = Astro.url.pathname;
@@ -72,6 +74,7 @@ const languagesForSelector: Array<LanguageSelectorItem> =
       name="description"
       content={pageDescription || tSite('description')}
     />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={Astro.url.href} />
 
     {/* Open Graph / Facebook */}
