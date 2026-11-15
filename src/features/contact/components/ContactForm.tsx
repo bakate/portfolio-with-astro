@@ -47,7 +47,11 @@ export function ContactForm({
       email: '',
       message: '',
     },
-    mode: 'onBlur',
+    // Validate on submit, then live while correcting. Validating on blur
+    // inserts an error under the field being left, which pushes the send
+    // button away mid-click and swallows the submission.
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
   });
 
   async function onSubmit(values: ContactFormValues) {
@@ -91,7 +95,13 @@ export function ContactForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      {/* noValidate: the browser's own bubbles speak the browser's language;
+          the translated Zod messages below each field replace them. */}
+      <form
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 items-start">
           <FormField
             control={form.control}

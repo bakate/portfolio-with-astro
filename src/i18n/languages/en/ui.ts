@@ -284,10 +284,10 @@ export const uiLabels = {
     // Common errors
     invalid_type: 'Invalid type.',
     invalid_type_received_undefined: 'This field is required.', // For required fields (fallback)
-    required_field_custom: '{fieldName} is required.',
+    required_field_custom: 'The {fieldName} is required.',
     // String errors
     too_small_string_minimum:
-      '{fieldName} must be at least {minimum} character(s:minimum) long.',
+      'The {fieldName} must be at least {minimum} character(s:minimum) long.',
     too_big_string_maximum: 'Must be no more than {maximum} characters long.',
     invalid_string_email: 'Invalid email address.',
     invalid_string_url: 'Invalid URL.',

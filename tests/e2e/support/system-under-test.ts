@@ -67,6 +67,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       sendButton: string
     ) {
       const form = page.locator('main form');
+      // The form is a React island: typing before it hydrates is lost, as it
+      // would be for a visitor on a slow connection.
+      await page.waitForFunction(
+        () => !document.querySelector('main astro-island:has(form)[ssr]')
+      );
       for (const [label, value] of Object.entries(fields)) {
         await form.getByLabel(label, { exact: true }).fill(value);
       }
@@ -267,6 +272,17 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenVisitorIsTold(confirmation: string) {
       await expect(page.getByText(confirmation, { exact: true })).toBeVisible();
+    },
+
+    async thenFormExplains(errors: ReadonlyArray<string>) {
+      const form = page.locator('main form');
+      for (const error of errors) {
+        await expect(form.getByText(error, { exact: true })).toBeVisible();
+      }
+    },
+
+    thenContactServiceReceivedNothing() {
+      expect(messagesReceived).toEqual([]);
     },
 
     async thenContactServiceReceived(message: Record<string, string>) {

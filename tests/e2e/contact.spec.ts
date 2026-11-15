@@ -19,6 +19,12 @@ const languages = {
       message: 'Message',
     },
     confirmation: 'Message envoyé avec succès !',
+    errors: [
+      'Le prénom doit contenir au moins 2 caractères.',
+      'Le nom est requis.',
+      'Adresse e-mail invalide.',
+      'Le message doit contenir au moins 10 caractères.',
+    ],
   },
   en: {
     name: 'English',
@@ -33,6 +39,12 @@ const languages = {
       message: 'Message',
     },
     confirmation: 'Message sent successfully!',
+    errors: [
+      'The first name must be at least 2 characters long.',
+      'The last name is required.',
+      'Invalid email address.',
+      'The message must be at least 10 characters long.',
+    ],
   },
 } as const satisfies Record<
   LanguageCode,
@@ -44,6 +56,7 @@ const languages = {
     freelanceLine: string;
     labels: Record<'firstName' | 'lastName' | 'email' | 'message', string>;
     confirmation: string;
+    errors: ReadonlyArray<string>;
   }
 >;
 
@@ -103,5 +116,24 @@ for (const language of Object.values(languages)) {
       lang: language.lang,
     });
     await site.thenVisitorIsTold(language.confirmation);
+  });
+
+  test(`Given the ${language.name} contact page, when a visitor sends the form half filled in, then it explains each mistake in ${language.name} and sends nothing`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.givenTheContactServiceAcceptsMessages();
+    await site.visitorOpens(language.contact);
+    await site.visitorSendsMessage(
+      {
+        [language.labels.firstName]: 'C',
+        [language.labels.email]: 'camille.martin',
+        [language.labels.message]: 'Bonjour',
+      },
+      language.sendButton
+    );
+    await site.thenFormExplains(language.errors);
+    site.thenContactServiceReceivedNothing();
   });
 }
