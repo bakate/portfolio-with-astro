@@ -9,7 +9,7 @@ Stack: Astro 7 with React 19 islands, Tailwind 4, shadcn/ui (Radix), MDX, deploy
 pnpm is the only package manager (version pinned by `packageManager`; run `corepack enable`). One-off tools go through `pnpm dlx`.
 
 - `pnpm build` is the check that a change works; `pnpm astro check` typechecks.
-- `pnpm preview` does not work: the Vercel adapter refuses it. Serve `.vercel/output/static` or use `vercel dev`.
+- `pnpm preview` does not work: the Vercel adapter refuses it. Use `vercel dev` to test the contact form (`/api/contact`); serving `.vercel/output/static` only shows the prerendered pages.
 - There is no test suite.
 
 ## Bilingual by construction
