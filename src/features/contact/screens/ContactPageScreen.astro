@@ -72,9 +72,16 @@ const linkClass =
     </div>
 
     <div class="mt-10 rounded-lg border border-border bg-card p-6 md:p-8">
-      <h2 class="text-2xl font-semibold">{formHeading}</h2>
+      <h2 id="contact-form-heading" class="text-2xl font-semibold">
+        {formHeading}
+      </h2>
       <p class="mt-2 mb-8 text-muted-foreground">{responseTime}</p>
-      <ContactForm client:load {lang} {formTranslations} />
+      <ContactForm
+        client:load
+        {lang}
+        {formTranslations}
+        labelledBy="contact-form-heading"
+      />
     </div>
 
     <p class="mt-10 text-sm text-muted-foreground">

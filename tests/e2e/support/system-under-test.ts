@@ -39,16 +39,8 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
   const meta = (property: string) =>
     page.locator(`meta[property="${property}"]`).getAttribute('content');
 
-  const form = page.locator('main form');
-
-  /**
-   * The form is a React island: typing before it hydrates is lost, as it
-   * would be for a visitor on a slow connection.
-   */
-  const formIsReady = () =>
-    page.waitForFunction(
-      () => !document.querySelector('main astro-island:has(form)[ssr]')
-    );
+  /** The message form, by its role and the heading that names it. */
+  const form = page.getByRole('form');
 
   /** Bodies posted to the contact service, once it is stubbed. */
   const messagesReceived: Array<unknown> = [];
@@ -77,7 +69,6 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       fields: Record<string, string>,
       sendButton: string
     ) {
-      await formIsReady();
       for (const [label, value] of Object.entries(fields)) {
         await form.getByLabel(label, { exact: true }).fill(value);
       }
@@ -86,7 +77,6 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     /** Types in one field, then moves on without sending. */
     async visitorFillsThenLeaves(label: string, value: string) {
-      await formIsReady();
       const field = form.getByLabel(label, { exact: true });
       await field.fill(value);
       await field.blur();
