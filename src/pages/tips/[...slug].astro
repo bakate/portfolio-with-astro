@@ -4,8 +4,10 @@ import { defaultLanguage } from '@/i18n/ui';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
-  const tips = await getCollection('tips', ({ data, id }) => {
-    return data.isDraft !== true && id.startsWith(`${defaultLanguage}/`);
+  // Drafts are built at their final address but never listed (see index.astro),
+  // so they can be reviewed through a hidden URL; the layout marks them noindex.
+  const tips = await getCollection('tips', ({ id }) => {
+    return id.startsWith(`${defaultLanguage}/`);
   });
 
   return tips.map((tip) => ({
