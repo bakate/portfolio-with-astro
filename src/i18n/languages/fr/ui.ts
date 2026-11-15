@@ -146,8 +146,8 @@ export const uiLabels = {
     heroPitch:
       "Je conçois des produits SaaS de bout en bout : un domaine métier isolé et testé (DDD, architecture hexagonale, TDD), quel que soit le framework (NestJS, Express…), des interfaces Next.js et Angular, et l'IA là où elle sert vraiment.",
     heroAvailability: 'Disponible · Hybride Île-de-France / remote',
-    heroViewWorkButton: 'Mes réalisations',
-    heroContactButton: 'Travaillons ensemble',
+    heroBookCallButton: 'Réserver 15 min',
+    heroDownloadCvButton: 'Télécharger mon CV',
     heroImageAlt:
       'Illustration représentant Bakate ou un concept de développement',
     featuredProjectsTitle: 'Projets SaaS principaux',

@@ -36,4 +36,4 @@ French is the default locale, served without prefix; English lives under `/en`. 
 - Formatting is Prettier (`pnpm format`).
 - Validate input with Zod at the boundary; user feedback goes through Sonner toasts.
 - Brand/social icons come from `react-icons` (lucide 1.x dropped brand icons); lucide stays for generic icons.
-- The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`; the contact page also reads `PUBLIC_GOOGLE_CALENDAR_URL`.
+- The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`. The booking link and CV paths are constants in `src/lib/profile.ts`; the CV PDFs live in `public/cv/` under stable names.

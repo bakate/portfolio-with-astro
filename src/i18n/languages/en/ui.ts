@@ -147,8 +147,8 @@ export const uiLabels = {
     heroPitch:
       'I build SaaS products end to end: an isolated, tested business domain (DDD, hexagonal architecture, TDD), whatever the framework (NestJS, Express…), Next.js and Angular interfaces, and AI where it actually helps.',
     heroAvailability: 'Available · Hybrid Île-de-France / remote',
-    heroViewWorkButton: 'View My Work',
-    heroContactButton: "Let's work together",
+    heroBookCallButton: 'Book a 15-min call',
+    heroDownloadCvButton: 'Download my CV',
     heroImageAlt: 'Illustration representing Bakate or a development concept',
     featuredProjectsTitle: 'Core SaaS projects',
     featuredProjectsDescription:

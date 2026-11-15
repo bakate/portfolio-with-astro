@@ -5,7 +5,7 @@ import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
 import { profile } from '@/lib/profile';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Calendar, Dumbbell, ArrowRight, Building2 } from 'lucide-react';
+import { Calendar, FileDown, ArrowRight, Building2 } from 'lucide-react';
 
 import heroImage from '@/assets/bakate-hero.jpeg';
 import { Image } from 'astro:assets';
@@ -19,8 +19,8 @@ export type Props = {
   heroTitle: string;
   heroPitch: string;
   heroAvailability: string;
-  heroViewWorkButton: string;
-  heroContactButton: string;
+  heroBookCallButton: string;
+  heroDownloadCvButton: string;
   imageNotAvailable: string;
   featuredProjectsTitle: string;
   featuredProjectsDescription: string;
@@ -39,8 +39,8 @@ const {
   heroTitle,
   heroPitch,
   heroAvailability,
-  heroViewWorkButton,
-  heroContactButton,
+  heroBookCallButton,
+  heroDownloadCvButton,
   featuredProjectsTitle,
   featuredProjectsDescription,
   bloomflowTitle,
@@ -103,7 +103,9 @@ const bloomflowHighlights = [
         class="flex flex-col sm:flex-row gap-5 justify-center md:justify-start"
       >
         <a
-          href="/projects"
+          href={profile.bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           class={buttonVariants({
             variant: 'default',
             size: 'lg',
@@ -111,11 +113,12 @@ const bloomflowHighlights = [
               'shadow-lg shadow-primary/20 hover:-translate-y-1 transition-transform',
           })}
         >
-          <Dumbbell className="mr-2 size-5" />
-          {heroViewWorkButton}
+          <Calendar className="mr-2 size-5" />
+          {heroBookCallButton}
         </a>
         <a
-          href={getRelativeLocaleUrl(lang, '/contact')}
+          href={profile.cvPathByLanguage[lang]}
+          download
           class={buttonVariants({
             variant: 'outline',
             size: 'lg',
@@ -123,8 +126,8 @@ const bloomflowHighlights = [
               'hover:bg-muted/50 hover:-translate-y-1 transition-transform',
           })}
         >
-          <Calendar className="mr-2 size-5" />
-          {heroContactButton}
+          <FileDown className="mr-2 size-5" />
+          {heroDownloadCvButton}
         </a>
       </div>
     </div>
