@@ -37,3 +37,13 @@ French is the default locale, served without prefix; English lives under `/en`. 
 - Validate input with Zod at the boundary; user feedback goes through Sonner toasts.
 - Brand/social icons come from `react-icons` (lucide 1.x dropped brand icons); lucide stays for generic icons.
 - The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`. The booking link and CV paths are constants in `src/lib/profile.ts`; the CV PDFs live in `public/cv/` under stable names.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues (`bakate/portfolio-with-astro`), managed through the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root, created lazily. See `docs/agents/domain.md`.
