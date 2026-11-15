@@ -15,9 +15,9 @@ export default defineConfig({
   integrations: [
     react(),
     mdx({
-    processor: unified({
-      remarkPlugins: [remarkReadingTime],
-    }),
+      processor: unified({
+        remarkPlugins: [remarkReadingTime],
+      }),
       syntaxHighlight: {
         type: 'shiki',
         themes: {
