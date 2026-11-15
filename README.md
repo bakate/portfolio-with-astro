@@ -55,6 +55,7 @@ All commands are run from the root of the project:
 | `pnpm dev`       | Starts the local development server with hot-reloading.              |
 | `pnpm build`     | Builds the site for production (Vercel output in `.vercel/output/`). |
 | `pnpm preview`   | Not supported with the Vercel adapter (see note below).              |
+| `pnpm test:e2e`  | Builds the site and runs the Playwright suite against the build.     |
 | `pnpm astro ...` | Executes Astro CLI commands (e.g., `astro add`, `astro check`).      |
 
 > **Note:** the `@astrojs/vercel` adapter does not support `astro preview`. Instead:
@@ -62,6 +63,21 @@ All commands are run from the root of the project:
 > - **Production build, pages and API routes:** push a branch; Vercel deploys it to a preview URL (linked on the pull request) built with `pnpm build`.
 > - **Prerendered pages only, locally:** after `pnpm build`, run `pnpm dlx serve .vercel/output/static`. API routes such as `/api/contact` are not served.
 > - **API routes in development:** `vercel dev` runs the dev server with the API routes; it does not use the production build.
+
+## 🧪 Tests
+
+The only test level is Playwright end-to-end tests in `tests/e2e/`, run against the **built** site. They check what a visitor sees (HTML, links, HTTP responses), never component internals.
+
+```bash
+pnpm exec playwright install chromium   # once, downloads the browser
+pnpm test:e2e                           # builds, serves .vercel/output/static on :4322, runs the suite
+```
+
+- `pnpm exec playwright test` re-runs the suite on the last build, without rebuilding.
+- `pnpm exec playwright test tests/e2e/language-parity.spec.ts` runs a single file.
+- The static server is `scripts/serve-static.mjs`; it serves prerendered pages only, not `/api/contact`.
+
+CI (`.github/workflows/e2e.yml`) runs the suite on every pull request.
 
 ## 📁 Project Structure (Simplified)
 
