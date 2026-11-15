@@ -56,8 +56,12 @@ for (const language of Object.values(languages)) {
   }) => {
     const site = createSystemUnderTest({ page, request });
     await site.visitorOpens(language.experience);
-    await site.thenPageShows([], {
-      without: ['Thrashnochados', 'CDI', 'CDD', 'Freelance', 'freelance'],
-    });
+    await site.thenPageNeverMentions([
+      'Thrashnochados',
+      'CDI',
+      'CDD',
+      'Freelance',
+      'freelance',
+    ]);
   });
 }

@@ -39,8 +39,39 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
   const meta = (property: string) =>
     page.locator(`meta[property="${property}"]`).getAttribute('content');
 
+  /** Bodies posted to the contact service, once it is stubbed. */
+  const messagesReceived: Array<unknown> = [];
+
   return {
     // Given / When
+
+    /**
+     * The static build serves no API, so the contact service is stubbed. It
+     * answers success with no message of its own: the confirmation the visitor
+     * reads is the site's.
+     */
+    async givenTheContactServiceAcceptsMessages() {
+      await page.route('**/api/contact', async (route) => {
+        messagesReceived.push(route.request().postDataJSON());
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ status: 'success', message: '' }),
+        });
+      });
+    },
+
+    /** Fills each field by its visible label, then presses the send button. */
+    async visitorSendsMessage(
+      fields: Record<string, string>,
+      sendButton: string
+    ) {
+      const form = page.locator('main form');
+      for (const [label, value] of Object.entries(fields)) {
+        await form.getByLabel(label, { exact: true }).fill(value);
+      }
+      await form.getByRole('button', { name: sendButton, exact: true }).click();
+    },
 
     async visitorOpens(path: string) {
       const response = await page.goto(path);
@@ -223,13 +254,23 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
     },
 
-    async thenPageShows(
-      texts: ReadonlyArray<string>,
-      { without = [] }: { without?: ReadonlyArray<string> } = {}
-    ) {
+    async thenPageShows(texts: ReadonlyArray<string>) {
       const main = page.locator('main');
       for (const text of texts) await expect(main).toContainText(text);
-      for (const text of without) await expect(main).not.toContainText(text);
+    },
+
+    async thenPageNeverMentions(texts: ReadonlyArray<string>) {
+      const main = page.locator('main');
+      await expect(main).toBeVisible();
+      for (const text of texts) await expect(main).not.toContainText(text);
+    },
+
+    async thenVisitorIsTold(confirmation: string) {
+      await expect(page.getByText(confirmation, { exact: true })).toBeVisible();
+    },
+
+    async thenContactServiceReceived(message: Record<string, string>) {
+      await expect.poll(() => messagesReceived).toEqual([message]);
     },
 
     /** The page's sections (level-2 headings), in reading order. */

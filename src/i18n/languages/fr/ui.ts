@@ -193,12 +193,12 @@ export const uiLabels = {
     description:
       'Un poste, un projet ou une question technique : le plus simple est de réserver 15 minutes. Tu préfères écrire ? Le formulaire est juste en dessous.',
     freelanceLine: 'Disponible aussi en mission freelance.',
-    calendarTitle: 'Réserver un appel',
-    calendarDescription: "15 minutes en visio, à l'horaire qui t'arrange.",
-    calendarLinkLabel: 'Réserver 15 min',
-    writeToMeHeader: "M'écrire",
-    badgeResponseTime: 'Réponse sous 24 h.',
-    socialLinksTitle: 'Aussi sur',
+    bookingTitle: 'Réserver un appel',
+    bookingDescription: "15 minutes en visio, à l'horaire qui t'arrange.",
+    bookingLinkLabel: 'Réserver 15 min',
+    formHeading: "M'écrire",
+    responseTime: 'Réponse sous 24 h.',
+    elsewhereLabel: 'Aussi sur',
     linkedInLabel: 'LinkedIn',
     githubLabel: 'GitHub',
 
