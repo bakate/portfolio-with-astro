@@ -1,142 +1,35 @@
-<!-- GSD:project-start source:PROJECT.md -->
-## Project
+# Portfolio (Astro)
 
-**Portfolio Astro (Freelance Focus)**
+Bilingual (FR/EN) freelance portfolio and technical blog for a senior full-stack developer positioned on Angular SaaS. Its job is to convince recruiters and clients: the UI must feel premium, and content quality matters as much as code.
 
-Un portfolio professionnel haute performance conçu avec Astro 5 pour mettre en valeur l'expertise technique d'un Senior FullStack Developer. Le projet sert de vitrine pour attirer des missions freelance en démontrant une maîtrise des architectures modernes, de la performance et de l'expérience utilisateur.
+Stack: Astro 7 with React 19 islands, Tailwind 4, shadcn/ui (Radix), MDX, deployed on Vercel. Versions and scripts live in `package.json`.
 
-**Core Value:** Démontrer l'expertise technique à travers un contenu riche (Blog/Tips) et une interface premium pour convaincre les recruteurs/clients potentiels.
+## Commands
 
-### Constraints
+pnpm is the only package manager (version pinned by `packageManager`; run `corepack enable`). One-off tools go through `pnpm dlx`.
 
-- **Tech Stack** : Astro 5, React 19, Tailwind 4.
-- **Aesthetic** : "Premium & Wow factor" obligatoire (règle Antigravity).
-<!-- GSD:project-end -->
+- `pnpm build` is the check that a change works; `pnpm astro check` typechecks.
+- `pnpm preview` does not work: the Vercel adapter refuses it. Serve `.vercel/output/static` or use `vercel dev`.
+- There is no test suite.
 
-<!-- GSD:stack-start source:codebase/STACK.md -->
-## Technology Stack
+## Bilingual by construction
 
-## Languages
-- TypeScript 5.x - Core logic and type safety across the application.
-- Astro - Component framework and routing.
-- JavaScript (ESM) - Build scripts and configuration files (e.g., `astro.config.mjs`).
-## Runtime
-- Node.js - Development and build environment.
-- pnpm - Package manager, version pinned via `packageManager` in `package.json`.
-- Lockfile: present (`pnpm-lock.yaml`).
-## Frameworks
-- Astro 5.15.6 - Static site generator and web framework.
-- React 19.1.0 - Used for interactive components (islands).
-- Playwright 1.52.0 - E2E testing framework (dependency present).
-- Vite (Internal to Astro) - Development server and bundling.
-- Tailwind CSS 4.1.7 - Utility-first CSS framework.
-## Key Dependencies
-- `zod` 3.25.7 - Schema validation for data and forms.
-- `resend` 4.5.1 - Client for sending emails.
-- `@astrojs/vercel` 9.0.0 - Deployment adapter for Vercel.
-- `lucide-react` - Icon library.
-- `nanostores` - Lightweight state management.
-- `radix-ui` - Headless UI components for accessibility.
-## Configuration
-- Configured via `.env` files (e.g., `.env`).
-- Key configs required: Resend API keys, deployment settings.
-- `astro.config.mjs` - Main Astro configuration.
-- `tsconfig.json` - TypeScript compiler settings.
-- `components.json` - shadcn/ui configuration.
-## Platform Requirements
-- Node.js runtime with pnpm (via Corepack).
-- Vercel (Primary target).
-<!-- GSD:stack-end -->
+French is the default locale, served without prefix; English lives under `/en`. Every user-facing change lands in both languages:
 
-<!-- GSD:conventions-start source:CONVENTIONS.md -->
-## Conventions
+- **Pages**: each route exists twice, `src/pages/<route>` and `src/pages/en/<route>`, as thin files that read `Astro.currentLocale` and pass translated strings to a feature screen. Edit both.
+- **UI strings**: `src/i18n/languages/{fr,en}/`, read through `useTranslations(lang, feature)` from `@/i18n/ui`. Keys are typed against French only, and a key missing in English silently falls back to French, so the compiler will not catch a forgotten translation.
+- **Content**: blog and tips articles are MDX under `src/features/{blog,tips}/content/{fr,en}/`, schemas in `src/content.config.ts`.
 
-## Naming Patterns
-- Astro Components: PascalCase (`HomeSection.astro`)
-- React Components: PascalCase (`ContactForm.tsx`)
-- TypeScript Modules: camelCase (`service.ts`, `utils.ts`)
-- camelCase (`formatDate`, `useTranslations`)
-- camelCase (`userProfile`, `isSubmitting`)
-- PascalCase (`LanguageCode`, `ProjectData`)
-## Code Style
-- Prettier - Enforced via `.prettierrc.json`.
-- Settings: singleQuote: true, semi: true, tabWidth: 2.
-- Astro plugin used for `.astro` files.
-- Not explicitly configured in root (likely internal to Astro/TSE).
-## Import Organization
-- `@/`: Points to `src/` (configured in `tsconfig.json`).
-## Error Handling
-- Schema validation with Zod.
-- Toast notifications using Sonner (`sonner`).
-- Return objects for service results.
-## Function Design
-## Module Design
-<!-- GSD:conventions-end -->
+## Code layout
 
-<!-- GSD:architecture-start source:ARCHITECTURE.md -->
-## Architecture
+- Feature modules in `src/features/<feature>/` (`screens/`, `components/`, `service.ts`, `index.ts` as public API). Pages import from the feature's `index.ts`.
+- Shared UI in `src/components/` (shadcn primitives in `src/components/ui/`), helpers in `src/lib/`, nanostores in `src/stores/`.
+- Import via the `@/` alias for `src/`.
+- Interactive parts are React islands; everything else stays static `.astro`.
 
-## Pattern Overview
-- **Co-location:** Business logic, components, and types are co-located within feature directories.
-- **Astro Islands:** Interactive elements are isolated as React components within a primarily static Astro site.
-- **Content-Driven:** heavy use of Astro Content Collections for blog-like data.
-## Layers
-- Purpose: Render views and handle user interaction.
-- Location: `src/features/` (screens), `src/components/` (shared).
-- Contains: `.astro` files (Astro), `.tsx` files (React).
-- Depends on: Feature services and shared lib.
-- Purpose: Specific business logic and data fetching.
-- Location: `src/features/[feature]/service.ts`.
-- Contains: Data fetching logic, transformations.
-- Depends on: External APIs (Resend).
-- Purpose: Lightweight cross-component state.
-- Location: `src/stores/`.
-- Contains: Store definitions for UI state.
-- Purpose: Multi-language support.
-- Location: `src/i18n/`.
-- Contains: Dictionary definitions and utility functions.
-## Data Flow
-## Key Abstractions
-- Purpose: Represents a full page layout within a feature.
-- Examples: `src/features/projects/screens/ProjectScreen.astro`
-- Pattern: Astro components acting as view controllers.
-- Purpose: Low-level reusable UI primitives.
-- Examples: `src/components/ui/button.tsx`
-- Pattern: Radix UI primitives with Tailwind styling.
-## Entry Points
-- Location: `src/pages/index.astro`
-- Responsibilities: Main landing page.
-- Location: `src/pages/api/`
-- Responsibilities: Server-side handling (e.g., form submissions).
-## Error Handling
-- Zod schema validation for input.
-- Sonner notifications for user feedback.
-<!-- GSD:architecture-end -->
+## Conventions and gotchas
 
-<!-- GSD:skills-start source:skills/ -->
-## Project Skills
-
-No project skills found. Add skills to any of: `.agent/skills/`, `.agents/skills/`, `.cursor/skills/`, or `.github/skills/` with a `SKILL.md` index file.
-<!-- GSD:skills-end -->
-
-<!-- GSD:workflow-start source:GSD defaults -->
-## GSD Workflow Enforcement
-
-Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
-
-Use these entry points:
-- `/gsd-quick` for small fixes, doc updates, and ad-hoc tasks
-- `/gsd-debug` for investigation and bug fixing
-- `/gsd-execute-phase` for planned phase work
-
-Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
-<!-- GSD:workflow-end -->
-
-
-
-<!-- GSD:profile-start -->
-## Developer Profile
-
-> Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
-> This section is managed by `generate-claude-profile` -- do not edit manually.
-<!-- GSD:profile-end -->
+- Formatting is Prettier (`pnpm format`).
+- Validate input with Zod at the boundary; user feedback goes through Sonner toasts.
+- Brand/social icons come from `react-icons` (lucide 1.x dropped brand icons); lucide stays for generic icons.
+- The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`; the contact page also reads `PUBLIC_GOOGLE_CALENDAR_URL`.
