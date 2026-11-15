@@ -38,12 +38,16 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Built in its own step: a failed build fails the run without being
+      # reported as broken links, and its log stays out of the issue body.
+      - run: pnpm build
+
       - name: Check external links
         id: check
         continue-on-error: true
         run: |
           set -o pipefail
-          pnpm check:links | tee link-report.md
+          node scripts/check-external-links.mjs | tee link-report.md
 
       - name: Open or update the broken-links issue
         if: steps.check.outcome == 'failure'

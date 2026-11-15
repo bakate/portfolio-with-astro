@@ -12,6 +12,12 @@ import path from 'node:path';
 
 const siteDir = path.resolve(process.argv[2] ?? '.vercel/output/static');
 const timeoutMs = Number(process.env.LINK_CHECK_TIMEOUT_MS ?? 15_000);
+if (!Number.isInteger(timeoutMs) || timeoutMs <= 0) {
+  console.error(
+    'LINK_CHECK_TIMEOUT_MS must be a positive number of milliseconds'
+  );
+  process.exit(2);
+}
 const maxRedirects = 10;
 const concurrency = 8;
 const userAgent = 'Mozilla/5.0 (compatible; portfolio-link-checker)';
@@ -37,7 +43,7 @@ const looksLikeLogin = (url) =>
   loginHost.test(url.hostname) || loginPath.test(url.pathname);
 
 const withoutWww = (hostname) => hostname.replace(/^www\./, '');
-const isSameDomain = (from, to) =>
+const isAcceptedRedirect = (from, to) =>
   withoutWww(from.hostname) === withoutWww(to.hostname) ||
   (expectedRedirects[from.hostname] ?? []).includes(to.hostname);
 
@@ -56,6 +62,7 @@ function describeNetworkError(error) {
 }
 
 const broken = (problem) => ({ verdict: 'broken', problem });
+const unverified = (problem) => ({ verdict: 'unverified', problem });
 const ok = { verdict: 'ok' };
 
 /** Follows redirects one hop at a time, so each hop can be judged. */
@@ -84,7 +91,7 @@ async function checkOnce(href) {
           `redirects to a login page (${next.origin}${next.pathname})`
         );
       }
-      if (!isSameDomain(current, next))
+      if (!isAcceptedRedirect(current, next))
         return broken(
           `redirects to another domain (${next.origin}${next.pathname})`
         );
@@ -93,10 +100,7 @@ async function checkOnce(href) {
     }
 
     if (refusesRobots(current, response.status))
-      return {
-        verdict: 'unverified',
-        problem: `HTTP ${response.status}, the site refuses robots`,
-      };
+      return unverified(`HTTP ${response.status}, the site refuses robots`);
     if (response.status >= 400)
       return {
         ...broken(`HTTP ${response.status}`),
@@ -109,8 +113,10 @@ async function checkOnce(href) {
 
 /** Network failures and 5xx answers get a second chance before being reported. */
 async function check(href) {
-  const first = await checkOnce(href);
-  return first.retry ? checkOnce(href) : first;
+  const { retry, ...first } = await checkOnce(href);
+  if (!retry) return first;
+  const { retry: _, ...second } = await checkOnce(href);
+  return second;
 }
 
 async function htmlFilesIn(dir) {

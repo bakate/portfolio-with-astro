@@ -11,17 +11,21 @@ import path from 'node:path';
  * the scenario never depends on the real internet. `localhost` and `127.0.0.1`
  * play two different domains.
  */
+type Answer = { status: number; location?: string } | 'never';
+
 const thirdParty = {
   '/healthy': { status: 200 },
   '/failing-demo': { status: 500 },
+  '/removed-page': { status: 404 },
+  '/silent-demo': 'never',
   '/private-demo': { status: 302, location: '/login?next=/private-demo' },
   '/login': { status: 200 },
-  '/expired-domain': {
+  '/moved-demo': {
     status: 301,
     location: 'http://127.0.0.1:{port}/parked',
   },
   '/parked': { status: 200 },
-} as const satisfies Record<string, { status: number; location?: string }>;
+} as const satisfies Record<string, Answer>;
 
 type ThirdPartyPath = keyof typeof thirdParty;
 
@@ -46,6 +50,9 @@ export function createLinkCheckerUnderTest({
     return run;
   };
 
+  /** One entry per flagged link, each starting with the link. */
+  const reportEntries = () => ran().report.split('\n- ').slice(1);
+
   return {
     /** A third-party address played by the local stand-in server. */
     thirdPartyAddress(standIn: ThirdPartyPath) {
@@ -69,7 +76,7 @@ export function createLinkCheckerUnderTest({
         execFile(
           process.execPath,
           ['scripts/check-external-links.mjs', siteDir],
-          { env: { ...process.env, LINK_CHECK_TIMEOUT_MS: '5000' } },
+          { env: { ...process.env, LINK_CHECK_TIMEOUT_MS: '1000' } },
           (error, stdout, stderr) =>
             resolve({
               exitCode: error ? Number(error.code ?? 1) : 0,
@@ -91,16 +98,19 @@ export function createLinkCheckerUnderTest({
 
     /** The report names the link, why it is broken and the page it is on. */
     thenReportFlags(href: string, problem: string, { on }: { on: string }) {
-      const entry = ran()
-        .report.split('\n- ')
-        .find((block) => block.includes(href));
+      const entry = reportEntries().find((block) =>
+        block.startsWith(`${href} `)
+      );
       expect(entry, `report entry for ${href}\n${ran().report}`).toBeDefined();
       expect(entry).toContain(problem);
       expect(entry).toContain(on);
     },
 
-    thenReportDoesNotFlag(href: string) {
-      expect(ran().report).not.toContain(`${href} `);
+    thenReportDoesNotFlag(hrefs: ReadonlyArray<string>) {
+      const flagged = reportEntries().filter((entry) =>
+        hrefs.some((href) => entry.startsWith(`${href} `))
+      );
+      expect(flagged, ran().report).toEqual([]);
     },
   };
 }
@@ -115,9 +125,9 @@ export const test = base.extend<{ linkChecker: LinkCheckerUnderTest }>({
     let port = 0;
     const server: Server = createServer((req, res) => {
       const { pathname } = new URL(req.url ?? '/', 'http://localhost');
-      const answer: { status: number; location?: string } | undefined =
-        thirdParty[pathname as ThirdPartyPath];
+      const answer: Answer | undefined = thirdParty[pathname as ThirdPartyPath];
       if (!answer) return res.writeHead(404).end();
+      if (answer === 'never') return; // keeps the connection open, never answers
       const headers = answer.location
         ? { location: answer.location.replace('{port}', String(port)) }
         : undefined;
@@ -128,6 +138,7 @@ export const test = base.extend<{ linkChecker: LinkCheckerUnderTest }>({
 
     await use(createLinkCheckerUnderTest({ siteDir, port }));
 
+    server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
     await rm(siteDir, { recursive: true, force: true });
   },

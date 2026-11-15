@@ -29,7 +29,7 @@ test('Given a built site linking to a domain that no longer resolves, a demo ans
 test('Given a built site linking to an address that now redirects to another domain, when the link checker runs, then it fails and reports the redirect', async ({
   linkChecker,
 }) => {
-  const movedAddress = linkChecker.thirdPartyAddress('/expired-domain');
+  const movedAddress = linkChecker.thirdPartyAddress('/moved-demo');
   linkChecker.givenBuiltPageLinksTo('projects/code-haven', [movedAddress]);
 
   await linkChecker.whenTheLinkCheckerRuns();
@@ -49,5 +49,24 @@ test('Given a built site whose external links all answer, when the link checker 
   await linkChecker.whenTheLinkCheckerRuns();
 
   linkChecker.thenTheCheckPasses();
-  linkChecker.thenReportDoesNotFlag(healthyDemo);
+  linkChecker.thenReportDoesNotFlag([healthyDemo, '/projects', '#hero']);
+});
+
+test('Given a built site linking to a page that was removed and to a demo that never answers, when the link checker runs, then it fails and reports the 404 and the timeout', async ({
+  linkChecker,
+}) => {
+  const removedPage = linkChecker.thirdPartyAddress('/removed-page');
+  const silentDemo = linkChecker.thirdPartyAddress('/silent-demo');
+  linkChecker.givenBuiltPageLinksTo('blog/fr/objets', [removedPage]);
+  linkChecker.givenBuiltPageLinksTo('en/projects/avionics', [silentDemo]);
+
+  await linkChecker.whenTheLinkCheckerRuns();
+
+  linkChecker.thenTheCheckFails();
+  linkChecker.thenReportFlags(removedPage, 'HTTP 404', {
+    on: '/blog/fr/objets',
+  });
+  linkChecker.thenReportFlags(silentDemo, 'no answer within 1s', {
+    on: '/en/projects/avionics',
+  });
 });
