@@ -34,7 +34,8 @@ Welcome to the repository for my personal portfolio and technical blog, develope
 2.  **Install dependencies:**
 
     ```bash
-    corepack enable   # uses the pnpm version pinned in package.json
+    npm install -g corepack   # only on Node.js 25+, which no longer bundles Corepack
+    corepack enable           # uses the pnpm version pinned in package.json
     pnpm install
     ```
 
