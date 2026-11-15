@@ -1,0 +1,72 @@
+---
+/**
+ * Fades its content in when the visitor scrolls it into view. The content is
+ * fully shown by default: without JavaScript, with reduced motion, or when the
+ * page is laid out at once (a full-page capture resizes, it does not scroll),
+ * nothing is ever hidden. Only an actual scroll plays the fade.
+ */
+---
+
+<div data-reveal>
+  <slot />
+</div>
+
+<script>
+  let stop: (() => void) | undefined;
+
+  function revealOnScroll() {
+    stop?.();
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let visitorHasScrolled = false;
+    const markScrolled = () => (visitorHasScrolled = true);
+    addEventListener('scroll', markScrolled, { once: true, passive: true });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const { isIntersecting, target } of entries) {
+          if (!isIntersecting) continue;
+          observer.unobserve(target);
+          if (!visitorHasScrolled) continue;
+          target.classList.add('reveal-entering');
+          target.addEventListener(
+            'animationend',
+            () => target.classList.remove('reveal-entering'),
+            { once: true }
+          );
+        }
+      },
+      // Starts the fade just before the section's top edge comes into view.
+      { rootMargin: '0px 0px 10% 0px' }
+    );
+    for (const element of document.querySelectorAll('[data-reveal]')) {
+      observer.observe(element);
+    }
+
+    stop = () => {
+      observer.disconnect();
+      removeEventListener('scroll', markScrolled);
+    };
+  }
+
+  document.addEventListener('astro:page-load', revealOnScroll);
+</script>
+
+<style is:global>
+  @keyframes reveal-entering {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+
+  .reveal-entering {
+    animation: reveal-entering 0.5s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-entering {
+      animation: none;
+    }
+  }
+</style>

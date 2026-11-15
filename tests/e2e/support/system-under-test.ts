@@ -111,6 +111,46 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       expect(response?.status(), path).toBe(200);
     },
 
+    async visitorPrefersReducedMotion() {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+    },
+
+    async visitorAllowsMotion() {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+    },
+
+    /**
+     * Wheels down to the bottom of the page, the way a visitor reads it,
+     * counting the animations the page starts on the way.
+     */
+    async visitorScrollsToTheBottom() {
+      await page.evaluate(() => {
+        const started = { count: 0 };
+        (
+          window as unknown as { animationsStarted: typeof started }
+        ).animationsStarted = started;
+        document.addEventListener('animationstart', () => started.count++);
+      });
+      await page.mouse.move(1, 1);
+      const atTheBottom = () =>
+        page.evaluate(
+          () =>
+            Math.ceil(window.scrollY + window.innerHeight) >=
+            document.documentElement.scrollHeight
+        );
+      while (!(await atTheBottom())) {
+        const before = await page.evaluate(() => window.scrollY);
+        await page.mouse.wheel(0, 400);
+        await expect
+          .poll(() => page.evaluate(() => window.scrollY))
+          .toBeGreaterThan(before);
+      }
+      // Lets the last section's fade, if any, start.
+      await page.evaluate(
+        () => new Promise((resolve) => requestAnimationFrame(resolve))
+      );
+    },
+
     async visitorOpensMissingPage(path: string) {
       const response = await page.goto(path);
       expect(response?.status(), path).toBe(404);
@@ -557,6 +597,73 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       ).toBeLessThan(section.x + section.width * 0.75);
       expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
       expect(sharesRows(photo, name), 'photo shares the title rows').toBe(true);
+    },
+
+    /** Counted by `visitorScrollsToTheBottom`. */
+    async thenAnimationsStartedOnTheWay({ some }: { some: boolean }) {
+      const count = await page.evaluate(
+        () =>
+          (window as unknown as { animationsStarted?: { count: number } })
+            .animationsStarted?.count ?? 0
+      );
+      if (some) expect(count, 'animations started').toBeGreaterThan(0);
+      else expect(count, 'animations started').toBe(0);
+    },
+
+    /**
+     * Captures the whole page at once, without scrolling, as a link preview or
+     * an audit tool does, then reads the capture's pixels band by band: each
+     * section's band must hold more than one colour, i.e. not be blank.
+     */
+    async thenFullPageCaptureShowsEverySection(anchors: ReadonlyArray<string>) {
+      const capture = (await page.screenshot({ fullPage: true })).toString(
+        'base64'
+      );
+      const bands = await page.evaluate((anchors) => {
+        return anchors.map((anchor) => {
+          const box = document.getElementById(anchor)!.getBoundingClientRect();
+          return {
+            anchor,
+            top: box.top + window.scrollY,
+            left: box.left + window.scrollX,
+            width: box.width,
+            height: box.height,
+          };
+        });
+      }, anchors);
+      const blank = await page.evaluate(
+        async ({ capture, bands }) => {
+          const image = new Image();
+          image.src = `data:image/png;base64,${capture}`;
+          await image.decode();
+          const scale = image.width / document.documentElement.clientWidth;
+          const canvas = new OffscreenCanvas(image.width, image.height);
+          const context = canvas.getContext('2d')!;
+          context.drawImage(image, 0, 0);
+          return bands
+            .filter(({ top, left, width, height }) => {
+              const { data } = context.getImageData(
+                Math.floor(left * scale),
+                Math.floor(top * scale),
+                Math.max(1, Math.floor(width * scale)),
+                Math.max(1, Math.floor(height * scale))
+              );
+              for (let i = 4; i < data.length; i += 4) {
+                if (
+                  data[i] !== data[0] ||
+                  data[i + 1] !== data[1] ||
+                  data[i + 2] !== data[2]
+                ) {
+                  return false;
+                }
+              }
+              return true;
+            })
+            .map(({ anchor }) => anchor);
+        },
+        { capture, bands }
+      );
+      expect(blank, 'sections blank in the full-page capture').toEqual([]);
     },
 
     async thenPageHasButton(name: string) {
