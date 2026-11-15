@@ -1,0 +1,100 @@
+---
+title: 'Go vu par un dev TypeScript : des ports et adaptateurs sans implements'
+description: "En Go, un type satisfait une interface sans jamais la nommer. Appliqué à l'architecture hexagonale, ça change l'endroit où tu déclares tes ports."
+pubDate: 2026-11-15
+lang: 'fr'
+isDraft: true
+tags: ['go', 'typescript', 'architecture-hexagonale', 'ddd']
+difficulty: 'intermediate'
+---
+
+Quand tu viens de TypeScript, ton réflexe pour un adaptateur ressemble à ça : `class PostgresInvoices implements InvoiceRepository`. En Go, ce mot-clé n'existe pas. Un type satisfait une interface dès qu'il possède les bonnes méthodes, point.
+
+Ça paraît anecdotique. En architecture hexagonale, ça change pourtant qui dépend de qui.
+
+### Le port vit chez celui qui l'utilise
+
+Dans le domaine, on déclare le port dont le service a besoin, rien de plus :
+
+```go
+// domaine
+type InvoiceRepository interface {
+	Save(inv Invoice) error
+	FindByID(id string) (Invoice, error)
+}
+
+type BillingService struct {
+	repo InvoiceRepository
+}
+
+func (s BillingService) Issue(id string, amount int) error {
+	if amount <= 0 {
+		return errors.New("amount must be positive")
+	}
+	return s.repo.Save(Invoice{ID: id, Amount: amount})
+}
+```
+
+L'adaptateur, lui, ne mentionne jamais `InvoiceRepository` :
+
+```go
+// infrastructure
+type InMemoryInvoices struct {
+	items map[string]Invoice
+}
+
+func (r *InMemoryInvoices) Save(inv Invoice) error {
+	r.items[inv.ID] = inv
+	return nil
+}
+
+func (r *InMemoryInvoices) FindByID(id string) (Invoice, error) {
+	inv, ok := r.items[id]
+	if !ok {
+		return Invoice{}, errors.New("invoice not found")
+	}
+	return inv, nil
+}
+
+// Garde-fou : la compilation échoue si l'adaptateur ne respecte plus le port.
+var _ InvoiceRepository = (*InMemoryInvoices)(nil)
+```
+
+C'est l'idiome Go « accepte des interfaces, retourne des structs » : le consommateur définit le contrat minimal dont il a besoin, et n'importe quel type qui a ces méthodes fait l'affaire. Pas de package `ports` partagé, pas d'interface géante pensée à l'avance.
+
+### Et en TypeScript ?
+
+Surprise : TypeScript est lui aussi typé structurellement. Le `implements` y est facultatif.
+
+```typescript
+interface InvoiceRepository {
+  save(invoice: Invoice): Promise<void>;
+  findById(id: string): Promise<Invoice | undefined>;
+}
+
+class InMemoryInvoices {
+  private readonly items = new Map<string, Invoice>();
+
+  async save(invoice: Invoice): Promise<void> {
+    this.items.set(invoice.id, invoice);
+  }
+
+  async findById(id: string): Promise<Invoice | undefined> {
+    return this.items.get(id);
+  }
+}
+
+// Compile sans `implements`.
+const service = new BillingService(new InMemoryInvoices());
+
+// L'équivalent du garde-fou Go.
+const _check = new InMemoryInvoices() satisfies InvoiceRepository;
+```
+
+La différence n'est donc pas technique, elle est culturelle. En TypeScript, on écrit `implements` par habitude héritée de Java et C#, ce qui pousse l'adaptateur à importer le port. Go t'oblige à t'en passer, et tu découvres que tu n'en avais pas besoin.
+
+### À retenir
+
+- Déclare le port dans le module qui le **consomme**, pas dans celui qui l'implémente.
+- Garde tes interfaces petites : une ou deux méthodes, celles que le service appelle vraiment.
+- Pour vérifier qu'un adaptateur respecte un port, utilise `var _ Port = (*Adapter)(nil)` en Go et `satisfies` en TypeScript.
