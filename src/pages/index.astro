@@ -9,7 +9,7 @@ import {
 } from '@/i18n/ui';
 import {
   PortfolioScreen,
-  getTranslatedProjects,
+  getHomePageProjects,
   getTranslatedProofs,
   type TranslatedProject,
 } from '@/features/projects';
@@ -22,11 +22,11 @@ const { experience, howIWork } = ui[lang].homePage;
 const pageTitle = t('pageTitle');
 const pageDescription = t('pageDescription');
 
-const projects: Array<TranslatedProject> = getTranslatedProjects(lang);
+const featuredProjects: Array<TranslatedProject> = getHomePageProjects(lang);
 
 const layoutProps = {
   lang,
-  projects,
+  featuredProjects,
   heroPitch: t('heroPitch'),
   heroAvailability: t('heroAvailability'),
   heroBookCallButton: t('heroBookCallButton'),
@@ -34,10 +34,8 @@ const layoutProps = {
   heroImageAlt: t('heroImageAlt'),
   proofTitle: t('proofTitle'),
   proofs: getTranslatedProofs(lang),
-  imageNotAvailable: t('imageNotAvailable'),
   featuredProjectsTitle: t('featuredProjectsTitle'),
   featuredProjectsDescription: t('featuredProjectsDescription'),
-  projectPreviewCtaText: t('projectCardViewProject'),
   experience,
   howIWork,
 };

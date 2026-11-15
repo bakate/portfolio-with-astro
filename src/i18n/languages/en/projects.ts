@@ -119,52 +119,89 @@ export const projectsContent = {
     learnings:
       'Clerk Organizations significantly reduce security middleware complexity and clarify data ownership.',
   },
-  bloomflow: {
-    title: 'Bloomflow - B2B Open Innovation SaaS',
+  resumeStudio: {
+    title: 'Resume Studio',
     description:
-      '4 years of Angular development on a complex B2B SaaS used by large enterprise groups.',
-    imageAltText: 'Bloomflow platform preview',
-    categoryText: 'B2B SaaS',
-    dateText: 'November 2020 - November 2024',
+      'A resume tailored to each job posting, without inventing a single skill: AI serving an isolated, tested business domain.',
     detailedDescription:
-      'At Bloomflow, I worked for 4 years on a B2B open innovation SaaS platform used by large enterprise groups to manage startup ecosystems, challenges, internal programs, and collaboration workflows. My work focused heavily on the Angular ecosystem: critical modules, NgRx state management, RxJS, design system, frontend industrialization, and TypeScript migration.',
+      'Resume Studio turns the professional evidence a candidate declares into an explainable match analysis, then into a resume tailored to one job posting, without ever fabricating a qualification. The domain (requirements, coverage, score, evidence) is modelled with DDD in separate packages for the domain, the application and the matching engine. The language model is just an adapter behind a port, and it is only used once it has been qualified by recorded evaluations.',
+    categoryText: 'AI and DDD',
+    dateText: 'Since September 2026',
+    imageAltText: 'Resume Studio landing page',
+    galleryImages: {},
     keyFeatures: {
-      angularModules: {
-        title: 'Critical Angular Modules',
+      explainableMatchScore: {
+        title: 'Explainable match score',
         description:
-          'Built and evolved data-heavy business modules for enterprise workflows.',
+          "Each requirement of the posting is weighted (critical, central or complementary) and judged covered, partially covered or not covered, with the candidate's facts that support it.",
       },
-      stateManagement: {
-        title: 'NgRx State Management',
+      noFabrication: {
+        title: 'No invented qualification',
         description:
-          'Managed complex UI states with NgRx, RxJS, and reactive patterns to keep screens predictable.',
+          'Every value on the resume traces back to a fact the candidate supplied. A related skill is shown next to the gap, never used to fill it.',
       },
-      designSystem: {
-        title: 'Design System',
+      modelQualification: {
+        title: 'Model qualified by evaluation',
         description:
-          'Contributed to a shared Angular component library to align product UX across modules.',
+          'A model and its settings are only used after a recorded evaluation: extraction recall, multilingual fidelity, latency, cost and provenance safety.',
       },
-      typescriptMigration: {
-        title: 'TypeScript Migration',
+      processingConsent: {
+        title: 'Versioned consent',
         description:
-          'Helped secure the codebase progressively through TypeScript, tests, and CI pipelines.',
+          'The candidate accepts a versioned processing policy before the first model operation; any material change asks for consent again.',
       },
-      customerSuccessAutomation: {
-        title: 'Operational Industrialization',
+      dailyQuota: {
+        title: 'Daily quota',
         description:
-          'Automated internal workflows to reduce manual operations for Customer Success teams.',
+          'A number of free resumes per network and per day, under a global ceiling, reset at midnight Paris time.',
       },
-      enterpriseScale: {
-        title: 'Enterprise Context',
+      architectureRules: {
+        title: 'Enforced architecture',
         description:
-          'Worked on a product used by complex organizations with reliability and maintainability constraints.',
+          'Dependency rules between domain, application and adapters are checked automatically by dependency-cruiser.',
       },
     },
-    galleryImages: [],
     challenges:
-      'Scaling a rich B2B SaaS application without degrading frontend readability, UI consistency, or critical workflow stability.',
+      "Using a language model without letting it invent: every proposed match must cite text found both in the posting and in the candidate's facts.",
     learnings:
-      'A mature Angular application requires strong discipline: module boundaries, explicit state, strict typing, reusable components, and technical debt handled before it blocks the product.',
+      'Treat the AI model as a dependency: qualify it with recorded evaluations, like any other adapter, and changing the model or a setting means qualifying it again.',
+  },
+  b2bOrderPlatform: {
+    title: 'b2b-order-platform',
+    description:
+      'Foundation of a B2B ordering platform: a NestJS API built with DDD and hexagonal architecture, and an OpenAPI contract shared with the front end.',
+    detailedDescription:
+      'A Turborepo monorepo laying the foundations of a B2B ordering platform. On the API side, each NestJS module separates domain, application, infrastructure and presentation: the domain and use cases stay plain TypeScript, with no dependency on Nest. On the front end, a React and Vite app whose flows are orchestrated by XState machines, with types generated from the API’s OpenAPI contract.',
+    categoryText: 'B2B platform',
+    dateText: 'July 2026',
+    imageAltText: 'b2b-order-platform preview',
+    galleryImages: {},
+    keyFeatures: {
+      isolatedDomain: {
+        title: 'Isolated domain',
+        description:
+          'The domain and use cases import nothing from NestJS; controllers stay thin: they validate, call a use case and map errors.',
+      },
+      apiContract: {
+        title: 'Verified API contract',
+        description:
+          'The API owns the OpenAPI contract; front-end types are generated from it, and a check fails as soon as they are stale.',
+      },
+      hardenedApi: {
+        title: 'Hardened API',
+        description:
+          'Helmet security headers, rate limiting, Zod request validation, a stable error format and configuration validated at startup.',
+      },
+      frontendStateMachines: {
+        title: 'Flows as state machines',
+        description:
+          'Front-end flows are framework-agnostic XState machines, wired to React through hooks.',
+      },
+    },
+    challenges:
+      'Keeping NestJS at the edge: decorators and injection stay in presentation and infrastructure, so business rules are tested without starting the framework.',
+    learnings:
+      'A generated, then verified, API contract removes a whole class of bugs between front end and back end.',
   },
   codeHaven: {
     title: 'Code Haven',
@@ -355,7 +392,7 @@ export const projectsContent = {
       'Caching and progressive loading techniques are crucial for e-commerce.',
   },
   cms: {
-    title: 'Content Management System (CMS)',
+    title: 'CMS e-commerce',
     description: 'A platform where you can create, edit, and delete content.',
     imageAltText: 'CMS project image',
     categoryText: 'Productivity Tool',
@@ -381,7 +418,7 @@ export const projectsContent = {
       'A well-thought-out API design is essential for extensibility and third-party integration.',
   },
   terralhub: {
-    title: 'TerralHub - Agricultural Logistics Platform',
+    title: 'Terral Hub',
     description:
       'TerralHub is an innovative platform designed for Senegalese farmers. It enables them to easily find secure, nearby warehouses to store their harvests post-collection, significantly helping to reduce post-harvest losses. The platform also facilitates connections with reliable transporters to move agricultural products to storage locations. Farmers can make down payments for warehouse and transport bookings via PayDunya, and track available warehouse capacity in real-time.',
     imageAltText: 'TerralHub platform preview',

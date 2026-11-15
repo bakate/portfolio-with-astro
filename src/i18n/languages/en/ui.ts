@@ -140,12 +140,9 @@ export const uiLabels = {
     proofExperienceFigure: '5 years',
     proofExperienceContext:
       'of SaaS in production, including 4 at Bloomflow for Bayer, Unilever, HSBC',
-    featuredProjectsTitle: 'Core SaaS projects',
+    featuredProjectsTitle: 'Featured projects',
     featuredProjectsDescription:
-      'SaaS products shipped to production, from design to deployment.',
-    projectCardViewProject: 'View Project',
-    projectCardViewCode: 'View Code',
-    imageNotAvailable: 'Image not available for now',
+      'Products delivered end to end, around an isolated, tested business domain.',
     experience: {
       title: 'Experience',
       description:
@@ -292,21 +289,23 @@ export const uiLabels = {
     learningsTitle: 'Learnings',
     visitProjectButton: 'Visit Project',
     viewCodeButton: 'View Code',
+    videoTitle: 'Video walkthrough',
   },
   projectsPage: {
-    title: 'SaaS Projects',
-    metaTitle: 'Full-Stack TypeScript SaaS Projects | Bakate Idrissa Ba',
+    title: 'Projects',
+    metaTitle: 'Full-Stack TypeScript Projects | Bakate Idrissa Ba',
     metaDescription:
-      'Parent Up, Bloomflow, and Terral Hub: B2B SaaS, Full-Stack TypeScript, and product architecture projects.',
+      'Resume Studio, Parent Up, Terral Hub and Avionics: products delivered end to end, around an isolated, tested business domain.',
     featuredTitle: 'Featured projects',
     featuredDescription:
-      'The three strongest proofs for my Full-Stack TypeScript and B2B SaaS positioning.',
-    archivesTitle: 'Other projects',
-    archivesDescription:
-      'Archive and secondary projects that show FullStack range without diluting the main message.',
-    noProjects: 'No projects to display at the moment.',
-    noProjectsDescription:
-      "It seems that you don't have any projects to display at the moment.",
+      'Products delivered end to end, around an isolated, tested business domain.',
+    archivesTitle: 'Archives',
+    archivesDescription: 'Older projects, kept for the record.',
+  },
+  projectCard: {
+    viewProject: 'View project',
+    viewDemo: 'Demo',
+    viewCode: 'Source code',
   },
   notFoundPage: {
     pageTitle: 'Page Not Found',

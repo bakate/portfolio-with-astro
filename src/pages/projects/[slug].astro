@@ -8,7 +8,7 @@ import {
 import { ui, type LanguageCode } from '@/i18n/ui';
 
 export async function getStaticPaths() {
-  const lang : LanguageCode = "en";
+  const lang: LanguageCode = 'en';
   const paths = [];
 
   const projects = getTranslatedProjects(lang);

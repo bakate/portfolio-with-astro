@@ -139,12 +139,9 @@ export const uiLabels = {
     proofExperienceFigure: '5 ans',
     proofExperienceContext:
       'de SaaS en production, dont 4 ans chez Bloomflow pour Bayer, Unilever, HSBC',
-    featuredProjectsTitle: 'Projets SaaS principaux',
+    featuredProjectsTitle: 'Projets phares',
     featuredProjectsDescription:
-      'Des produits SaaS livrés en production, de la conception au déploiement.',
-    projectCardViewProject: 'Voir le projet',
-    projectCardViewCode: 'Voir le code',
-    imageNotAvailable: 'Image bientôt disponible',
+      'Des produits livrés de bout en bout, avec un domaine métier isolé et testé.',
     experience: {
       title: 'Expérience',
       description:
@@ -297,21 +294,23 @@ export const uiLabels = {
     learningsTitle: 'Leçons Apprises',
     visitProjectButton: 'Visiter le Projet',
     viewCodeButton: 'Voir le Code',
+    videoTitle: 'Vidéo de présentation',
   },
   projectsPage: {
-    title: 'Projets SaaS',
-    metaTitle: 'Projets SaaS Full-Stack TypeScript | Bakate Idrissa Ba',
+    title: 'Projets',
+    metaTitle: 'Projets Full-Stack TypeScript | Bakate Idrissa Ba',
     metaDescription:
-      'Parent Up, Bloomflow et Terral Hub : projets SaaS B2B, Full-Stack TypeScript et architecture produit.',
+      'Resume Studio, Parent Up, Terral Hub et Avionics : des produits livrés de bout en bout, avec un domaine métier isolé et testé.',
     featuredTitle: 'Projets mis en avant',
     featuredDescription:
-      'Les trois preuves les plus cohérentes avec mon positionnement Full-Stack TypeScript et SaaS B2B.',
-    archivesTitle: 'Autres projets',
-    archivesDescription:
-      'Archives et projets secondaires, utiles pour montrer la polyvalence FullStack sans diluer le message principal.',
-    noProjects: 'Aucun projet à afficher pour le moment.',
-    noProjectsDescription:
-      "Il semble que tu n'aies pas encore de projets à afficher.",
+      'Des produits livrés de bout en bout, avec un domaine métier isolé et testé.',
+    archivesTitle: 'Archives',
+    archivesDescription: 'Des projets plus anciens, gardés pour mémoire.',
+  },
+  projectCard: {
+    viewProject: 'Voir le projet',
+    viewDemo: 'Démo',
+    viewCode: 'Code source',
   },
   notFoundPage: {
     pageTitle: 'Page Non Trouvée',

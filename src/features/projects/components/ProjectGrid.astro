@@ -1,0 +1,49 @@
+---
+import type { LanguageCode } from '@/i18n/ui';
+import type { ShowcaseLevel, TranslatedProject } from '../type';
+import ProjectCard from './ProjectCard.astro';
+
+export type Props = {
+  projects: Array<TranslatedProject>;
+  lang: LanguageCode;
+};
+
+const { projects, lang } = Astro.props;
+
+/** The list puts large cards before compact ones, so grouping keeps its order. */
+const levels = [
+  'large',
+  'compact',
+  'archive',
+] as const satisfies ReadonlyArray<ShowcaseLevel>;
+
+/** Three compact cards share a row on wide screens; two keep half the width each. */
+const columnsFor = (level: ShowcaseLevel, count: number) =>
+  level === 'compact' && count >= 3
+    ? 'md:grid-cols-2 lg:grid-cols-3'
+    : 'md:grid-cols-2';
+
+const groups = levels
+  .map((level) => ({
+    level,
+    projects: projects.filter((project) => project.showcase === level),
+  }))
+  .filter((group) => group.projects.length > 0);
+---
+
+<div class="flex flex-col gap-6">
+  {
+    groups.map((group) => (
+      <div
+        class:list={[
+          'grid grid-cols-1 gap-6',
+          columnsFor(group.level, group.projects.length),
+        ]}
+      >
+        {group.projects.map((project) => (
+          <ProjectCard project={project} lang={lang} />
+        ))}
+      </div>
+    ))
+  }
+</div>

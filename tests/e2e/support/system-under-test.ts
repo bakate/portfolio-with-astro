@@ -129,6 +129,52 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       expect(mentions).toEqual([]);
     },
 
+    /** Fails on an empty crawl, so an unreachable site never passes. */
+    thenNoVisitedPageHasAnEmptyLink({
+      visitedAtLeast,
+    }: {
+      visitedAtLeast: ReadonlyArray<string>;
+    }) {
+      for (const path of visitedAtLeast) {
+        expect(crawled.has(path), `crawl reached ${path}`).toBe(true);
+      }
+      const emptyLinks = [...crawled].flatMap(([path, html]) =>
+        hrefsIn(html)
+          .filter((href) => href.trim() === '' || href === '#')
+          .map((href) => `${path} → href="${href}"`)
+      );
+      expect(emptyLinks).toEqual([]);
+    },
+
+    /** Project cards are read through their titles, in the order shown. */
+    async thenSectionListsProjects(
+      anchor: string,
+      projects: ReadonlyArray<string>
+    ) {
+      await expect(
+        page.locator(anchor).getByRole('heading', { level: 3 })
+      ).toHaveText([...projects]);
+    },
+
+    async thenSectionIsTitled(anchor: string, heading: string) {
+      await expect(
+        page.locator(anchor).getByRole('heading', { level: 2 })
+      ).toHaveText(heading);
+    },
+
+    async thenProjectCardHasNoLinkNamed(
+      project: string,
+      names: ReadonlyArray<string>
+    ) {
+      const card = page.getByRole('article').filter({
+        has: page.getByRole('heading', { level: 3, name: project }),
+      });
+      await expect(card).toHaveCount(1);
+      for (const name of names) {
+        await expect(card.getByRole('link', { name })).toHaveCount(0);
+      }
+    },
+
     async thenHeroShows({
       heading,
       texts,
