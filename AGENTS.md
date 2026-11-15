@@ -1,6 +1,10 @@
 # Portfolio (Astro)
 
-Bilingual (FR/EN) freelance portfolio and technical blog for a senior full-stack developer positioned on Angular SaaS. Its job is to convince recruiters and clients: the UI must feel premium, and content quality matters as much as code.
+Bilingual (FR/EN) portfolio and technical blog of Bakate Idrissa Ba, _Software Engineer Full-Stack TypeScript_. Its job is to convince recruiters (a permanent position comes first) and, second, freelance clients. Content quality matters as much as code.
+
+- **Positioning**: the method (isolated, tested business domain: DDD, hexagonal architecture, TDD), not a framework. Angular is one skill among others, never the title. Name in the interface: "Bakate Idrissa"; full name "Bakate Idrissa Ba" for SEO, sharing and structured data. Identity and links live in `src/lib/profile.ts`.
+- **Visual direction**: restraint. Generous whitespace, one accent colour, a strong heading font; no radial gradients, blurred blobs, over-rounded cards or tilt-on-hover effects. Content stays visible without JavaScript and honours `prefers-reduced-motion`.
+- The full redesign spec is GitHub issue #1.
 
 Stack: Astro 7 with React 19 islands, Tailwind 4, shadcn/ui (Radix), MDX, deployed on Vercel. Versions and scripts live in `package.json`.
 
@@ -10,7 +14,7 @@ pnpm is the only package manager (version pinned by `packageManager`; run `corep
 
 - `pnpm build` is the check that a change works; `pnpm astro check` typechecks.
 - `pnpm preview` does not work: the Vercel adapter refuses it. Use `vercel dev` to test the contact form (`/api/contact`); serving `.vercel/output/static` only shows the prerendered pages.
-- There is no test suite.
+- `pnpm test:e2e` builds, then runs the Playwright suite (`tests/e2e/`) against the build served by `scripts/serve-static.mjs`. `pnpm exec playwright test <file>` re-runs on the last build. It is the only test level, and every test is a `Given …, when …, then …` behaviour scenario: read `CODING_STANDARDS.md` before writing one. CI runs it on every PR.
 
 ## Bilingual by construction
 
@@ -32,4 +36,14 @@ French is the default locale, served without prefix; English lives under `/en`. 
 - Formatting is Prettier (`pnpm format`).
 - Validate input with Zod at the boundary; user feedback goes through Sonner toasts.
 - Brand/social icons come from `react-icons` (lucide 1.x dropped brand icons); lucide stays for generic icons.
-- The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`; the contact page also reads `PUBLIC_GOOGLE_CALENDAR_URL`.
+- The contact form posts to `src/pages/api/contact.ts` (the only server route) and sends mail via Resend. It needs `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `CONTACT_FORM_TO_EMAIL`. The booking link and CV paths are constants in `src/lib/profile.ts`; the CV PDFs live in `public/cv/` under stable names.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues (`bakate/portfolio-with-astro`), managed through the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root, created lazily. See `docs/agents/domain.md`.

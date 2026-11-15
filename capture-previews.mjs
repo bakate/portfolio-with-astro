@@ -7,28 +7,12 @@ const __dirname = path.dirname(__filename);
 
 const targets = [
   {
-    url: 'https://staging.parentup.eu/',
-    dest: 'src/assets/projects/parentup/landing.png',
-  },
-  {
-    url: 'https://staging.codehaven.eu/',
-    dest: 'src/assets/projects/all-previews/p0.png',
-  },
-  {
     url: 'https://africazon.vercel.app/',
     dest: 'src/assets/projects/all-previews/p1.png',
   },
   {
     url: 'https://e-commerce-cms-ney3.vercel.app/',
     dest: 'src/assets/projects/all-previews/p2.png',
-  },
-  {
-    url: 'https://e-commerce-cms-ebon.vercel.app/',
-    dest: 'src/assets/projects/all-previews/p3.png',
-  },
-  {
-    url: 'https://terral-hub-senegal.vercel.app/',
-    dest: 'src/assets/projects/all-previews/p4.png',
   },
   {
     url: 'https://avionics-effect.vercel.app/',

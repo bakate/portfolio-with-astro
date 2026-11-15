@@ -1,8 +1,9 @@
 ---
-import heroImage from '@/assets/bakate-hero.jpeg';
+import heroImage from '@/assets/bakate-portrait.png';
 import Heading from '@/components/Heading.astro';
 import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
+import { profile } from '@/lib/profile';
 import { cn } from '@/lib/utils';
 import { Image } from 'astro:assets';
 import { Calendar, Clock } from 'lucide-react';
@@ -138,7 +139,7 @@ const {
 
         <div class="flex flex-col gap-4">
           <a
-            href="https://www.linkedin.com/in/bakate-ba"
+            href={profile.links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             class="flex items-center justify-between p-4 rounded-md bg-card border border-border hover:border-primary/50 transition-colors group"
@@ -162,7 +163,7 @@ const {
           </a>
 
           <a
-            href="https://github.com/bakate"
+            href={profile.links.github}
             target="_blank"
             rel="noopener noreferrer"
             class="flex items-center justify-between p-4 rounded-md bg-card border border-border hover:border-primary/50 transition-colors group"

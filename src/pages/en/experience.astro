@@ -1,5 +1,5 @@
 ---
-import cvFile from '@/assets/cv/cv-bakate-en.pdf';
+import { profile } from '@/lib/profile';
 import type {
   Achievement,
   ExperienceEntry,
@@ -55,7 +55,7 @@ const experiences: ExperienceEntry[] = [
     stackLabel={t('stackLabel')}
     seekingLabel={t('seekingLabel')}
     downloadLabel={t('downloadCV')}
-    cvUrl={cvFile}
+    cvUrl={profile.cvPathByLanguage.en}
     experiences={experiences}
   />
 </BaseLayout>

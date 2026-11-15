@@ -12,6 +12,8 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://bakateba.tech',
+
   integrations: [
     react(),
     mdx({

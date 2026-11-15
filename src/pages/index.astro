@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import PersonStructuredData from '@/components/PersonStructuredData.astro';
 import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
 import {
   PortfolioScreen,
@@ -23,12 +24,10 @@ const layoutProps = {
   lang,
   projects,
   skills,
-  heroGreeting: t('heroGreeting'),
-  heroSubtitlePart1: t('heroSubtitlePart1'),
-  heroSubtitlePart2: t('heroSubtitlePart2'),
-  heroIntroduction: t('heroIntroduction'),
-  heroViewWorkButton: t('heroViewWorkButton'),
-  heroContactButton: t('heroContactButton'),
+  heroPitch: t('heroPitch'),
+  heroAvailability: t('heroAvailability'),
+  heroBookCallButton: t('heroBookCallButton'),
+  heroDownloadCvButton: t('heroDownloadCvButton'),
   imageNotAvailable: t('imageNotAvailable'),
   featuredProjectsTitle: t('featuredProjectsTitle'),
   featuredProjectsDescription: t('featuredProjectsDescription'),
@@ -38,10 +37,10 @@ const layoutProps = {
   mySkillsTitle: t('mySkillsTitle'),
   mySkillsDescription: t('mySkillsDescription'),
   projectPreviewCtaText: t('projectCardViewProject'),
-  heroIntroduction2: t('heroIntroduction2'),
 };
 ---
 
 <BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <PersonStructuredData slot="head" />
   <PortfolioScreen {...layoutProps} />
 </BaseLayout>

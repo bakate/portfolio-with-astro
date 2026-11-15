@@ -9,6 +9,7 @@ import {
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
 import BottomAppBar from '@/components/BottomAppBar.astro';
+import { profile } from '@/lib/profile';
 import {
   Home,
   Briefcase,
@@ -87,7 +88,7 @@ const languagesForSelector: Array<LanguageSelectorItem> =
       property="og:description"
       content={pageDescription || tSite('description')}
     />
-    <meta property="og:site_name" content="Bakate" />
+    <meta property="og:site_name" content={profile.fullName} />
     <meta
       property="og:image"
       content={new URL('/images/og-brand.png', Astro.url.origin)}
@@ -224,11 +225,10 @@ const languagesForSelector: Array<LanguageSelectorItem> =
         localStorage.setItem('theme', theme);
       }
     </script>
-    <title>{pageTitle || tSite('title')}</title>
-
     <Font cssVariable="--font-geist" preload={[{ subset: 'latin' }]} />
     <Font cssVariable="--font-bricolage" preload={[{ subset: 'latin' }]} />
     <ClientRouter />
+    <slot name="head" />
   </head>
   <body class="h-[100dvh] bg-background font-sans antialiased flex flex-col">
     {/* Tailwind classes for the body */}
