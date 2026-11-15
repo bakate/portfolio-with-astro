@@ -38,7 +38,7 @@ const pageTitle = post.title;
 const pageDescription = post.description;
 ---
 
-<BaseLayout {pageTitle} {pageDescription}>
+<BaseLayout {pageTitle} {pageDescription} noIndex={post.isDraft}>
   <div class="container mx-auto px-4 py-8 md:py-12">
     <div
       class="grid grid-cols-1 xl:grid-cols-[1fr_min(75ch,_100%)_250px] gap-12"

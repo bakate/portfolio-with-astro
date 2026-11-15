@@ -193,6 +193,27 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       await expect(page.getByRole('link', { name })).toHaveCount(0);
     },
 
+    async thenPageDoesNotLinkTo(path: string) {
+      await expect(page.locator(`a[href^="${path}"]`)).toHaveCount(0);
+    },
+
+    async thenPageHeadingIs(heading: string) {
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+    },
+
+    async thenSearchEnginesAreAskedNotToIndexThePage() {
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+        'content',
+        /noindex/
+      );
+    },
+
+    async thenSearchEnginesMayIndexThePage() {
+      await expect(
+        page.locator('meta[name="robots"][content*="noindex"]')
+      ).toHaveCount(0);
+    },
+
     async thenPageLinksTo(url: string) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
     },

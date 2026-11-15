@@ -1,0 +1,247 @@
+---
+lang: 'fr'
+title: "Qualifier un modèle d'IA comme une dépendance : évaluations enregistrées dans un projet DDD"
+description: 'Comment traiter un modèle de langage comme un adaptateur externe : un port du domaine, une configuration qualifiée par des évaluations enregistrées, et un serveur qui refuse tout le reste.'
+pubDate: 2026-11-15
+tags: ['ddd', 'architecture', 'ai', 'typescript']
+isDraft: true
+heroImage:
+  url: '../../../../assets/blog/montre-couteau-suisse.jpeg'
+  alt: 'Un couteau suisse, image provisoire'
+relatedPosts: []
+---
+
+import InfoAlert from '@/features/blog/components/InfoAlert.astro';
+
+Quand j'ajoute une bibliothèque à un projet, je fixe sa version, je lis son changelog et je fais tourner mes tests avant de la mettre à jour. Avec un modèle d'IA, on fait souvent l'inverse : on change le nom du modèle dans une variable d'environnement et on regarde ce qui se passe en production.
+
+Sur [resume-tailoring](https://github.com/bakate/resume-tailoring), une application qui adapte un CV à une offre d'emploi, j'ai pris le parti contraire : **un modèle d'IA est une dépendance externe comme une autre**. Il vit derrière un port du domaine, il n'entre en production que s'il a passé des évaluations enregistrées, et la moindre modification de ses réglages lui fait perdre ce statut.
+
+Voici comment c'est construit.
+
+## Le vocabulaire d'abord
+
+Le projet tient un glossaire, `CONTEXT.md`, qui fixe les mots du domaine. Quatre notions portent tout le sujet :
+
+- **Language Model Provider** : le sous-traitant externe déclaré qui exécute les opérations reposant sur un modèle. Un seul est actif à la fois, et une opération qui échoue ne bascule jamais vers un autre sous-traitant auquel le candidat n'a pas consenti.
+- **Processing Policy** : la déclaration versionnée du fournisseur actif, des finalités du traitement, des catégories de données transmises, de la durée de conservation et du stockage.
+- **Processing Consent** : la confirmation, par le candidat, de la Processing Policy en vigueur avant la première opération qui utilise son contenu. Une politique modifiée de façon substantielle exige un nouveau consentement.
+- **Qualified Model Configuration** : un modèle du fournisseur actif, avec les réglages exacts qui l'accompagnent, qui a passé l'évaluation enregistrée du rappel d'extraction, de la fidélité multilingue, de la latence, du coût et de la sûreté de provenance. Changer le modèle ou un seul réglage oblige à le qualifier de nouveau.
+
+Le glossaire liste aussi les mots à éviter : pas d'« OpenAI » dans le langage du domaine, pas de « fallback provider », pas de « approved model ». Ce n'est pas du purisme : si le domaine parle d'OpenAI, il finit par dépendre d'OpenAI.
+
+## Le modèle est un adaptateur, le domaine définit le port
+
+Le monorepo sépare trois paquets (`resume-tailoring-domain`, `resume-tailoring-application`, `resume-matching-engine`) et une application web. Le domaine et l'application ne connaissent aucun fournisseur. Ils exposent un port, et c'est l'application web qui branche les adaptateurs.
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ Domaine                                                     │
+│   ProcessingPolicy, ProcessingConsent                       │
+│   hasProcessingConsentForPolicy()                           │
+└──────────────────────────────▲──────────────────────────────┘
+                               │
+┌──────────────────────────────┴──────────────────────────────┐
+│ Application                                                 │
+│   port LanguageModelGatewayAdapter { structured, writing }  │
+│   createConsentBoundRole() : sans consentement, aucun appel │
+└──────────────────────────────▲──────────────────────────────┘
+                               │ implémente
+┌──────────────────────────────┴──────────────────────────────┐
+│ apps/web/src/adapters/server/  (seul endroit autorisé)      │
+│   openai-language-model-provider.ts                         │
+│   deepseek-language-model-provider.ts                       │
+│   AI SDK (ai, @ai-sdk/*)                                    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Le port, dans `packages/resume-tailoring-application/src/ports.ts`, ne contient aucun type du SDK :
+
+```typescript
+export type LanguageModelRole<TRequest, TValue> = Readonly<{
+  process: (request: TRequest) => Promise<LanguageModelResult<TValue>>;
+}>;
+
+export type LanguageModelGatewayAdapter<
+  TStructuredRequest,
+  TStructuredValue,
+  TWritingRequest = TStructuredRequest,
+  TWritingValue = TStructuredValue,
+> = Readonly<{
+  processingPolicy: ProcessingPolicy;
+  structured: LanguageModelRole<TStructuredRequest, TStructuredValue>;
+  writing: LanguageModelRole<TWritingRequest, TWritingValue>;
+}>;
+```
+
+Deux choses à remarquer. Le port raisonne en **rôles** (`structured` pour l'extraction et la validation, `writing` pour la rédaction), pas en modèles. Et chaque adaptateur apporte sa propre `processingPolicy` : brancher un autre fournisseur, c'est forcément changer la politique présentée au candidat.
+
+L'application enveloppe ensuite chaque rôle dans une vérification du consentement (`language-model-gateway.ts`) :
+
+```typescript
+function createConsentBoundRole<TRequest, TValue>({
+  processingPolicy,
+  readProcessingConsent,
+  role,
+}: Readonly<{
+  processingPolicy: ProcessingPolicy;
+  readProcessingConsent: () => ProcessingConsent | null;
+  role: LanguageModelRole<TRequest, TValue>;
+}>): LanguageModelRole<TRequest, TValue> {
+  return {
+    process: (request) =>
+      hasProcessingConsentForPolicy({
+        consent: readProcessingConsent(),
+        policy: processingPolicy,
+      })
+        ? role.process(request)
+        : Promise.resolve({
+            ok: false,
+            error: { type: 'processing-consent-required' },
+          }),
+  };
+}
+```
+
+La règle métier, elle, est dans le domaine : `hasProcessingConsentForPolicy` compare le fournisseur, le pays de traitement, la conservation, le stockage, la version, les finalités et les catégories de données. Si l'un d'eux change, le consentement ne vaut plus.
+
+### Une frontière vérifiée par l'outillage
+
+Une architecture hexagonale qui ne tient que par la discipline finit par fuir. Ici, `dependency-cruiser` fait échouer `pnpm check:architecture` dès qu'une flèche part dans le mauvais sens. Quelques règles de `dependency-cruiser.config.cjs` :
+
+- `domain-does-not-depend-outward` : le domaine n'importe ni l'application ni le web.
+- `core-does-not-import-runtime-adapters` : les trois paquets du cœur n'importent ni `openai`, ni `ai`, ni `@ai-sdk`.
+- `ai-sdk-stays-in-server-adapters` : seuls les fichiers de `apps/web/src/adapters/server/` touchent l'AI SDK.
+- `model-qualification-is-provider-neutral` : le code de qualification n'importe aucun adaptateur de fournisseur.
+
+## Qu'est-ce qu'une configuration, exactement ?
+
+Qualifier « GPT » ou « DeepSeek » ne veut rien dire. Ce qu'on qualifie, c'est un objet précis, défini dans `apps/web/src/language-model-configuration.ts` : un fournisseur, un modèle, un rôle, et des réglages figés **par opération** (délai maximal, budget de jetons de sortie, et pour DeepSeek le niveau de réflexion).
+
+```typescript
+const deepSeekOperationSettings = {
+  'explainable-job-posting-extraction': {
+    deadlineMilliseconds: 90_000,
+    maxOutputTokens: 31_000,
+    thinking: 'low',
+  },
+  'explainable-match-evidence': {
+    deadlineMilliseconds: 110_000,
+    maxOutputTokens: 32_000,
+    thinking: 'low',
+  },
+  // …
+  'structured-source-profile-extraction': {
+    deadlineMilliseconds: 90_000,
+    maxOutputTokens: 16_000,
+    thinking: 'disabled',
+  },
+};
+```
+
+Les budgets suivent une règle écrite en commentaire : le budget de réponse d'OpenAI plus les jetons de réflexion mesurés. Les écarts sont justifiés un par un. Le budget de 32 000 jetons de la recherche de preuves de correspondance (`explainable-match-evidence`) vient d'un essai où, à 8 000, 7 réponses sur 20 revenaient vides ou tronquées. L'extraction d'offre réfléchit en `low` parce que, sans réflexion, son rappel tombait à environ 60 % contre environ 94 %.
+
+La comparaison avec les configurations qualifiées est profonde et totale (`qualified-model-configurations.ts`) :
+
+```typescript
+/** A configuration is qualified only as a whole: the same provider, model, role, provider options and operation settings. */
+export function isQualifiedModelConfiguration({
+  configuration,
+  reports = recordedModelQualificationReports,
+}: Readonly<{
+  configuration: LanguageModelConfiguration;
+  reports?: readonly ModelQualificationReport[];
+}>) {
+  return reports.some(
+    (report) =>
+      report.qualified &&
+      isSameSetting({
+        qualified: readSettings(report.configuration),
+        requested: readSettings(configuration),
+      })
+  );
+}
+```
+
+Seul le prix est exclu de la comparaison : il pèse sur le coût évalué, ce n'est pas un réglage. Passer un budget de 20 000 à 20 001 jetons suffit à rendre la configuration non qualifiée.
+
+## Les évaluations enregistrées
+
+La qualification se lance en local, avec la clé du fournisseur :
+
+```bash
+DEEPSEEK_API_KEY=... pnpm test:evaluation:record deepseek-structured
+DEEPSEEK_API_KEY=... pnpm test:evaluation:record deepseek-writing
+```
+
+Le script exécute les évaluations « live » du pipeline de production, à travers les vrais adaptateurs, et écrit deux choses : les observations dans `recorded-live-model-evaluation-runs.ts`, et un rapport JSON dans `docs/evaluations/qualification-reports/`. Les deux sont versionnés avec le code. Les observations ne contiennent que des comptes, des latences, des jetons, des identifiants de fixtures et des valeurs sans contenu (issues, noms des vérifications échouées) : jamais un prompt, jamais une réponse du modèle, jamais de contenu ressemblant à un CV. La clé de l'API n'entre ni dans les observations ni dans le rapport.
+
+Cinq barrières indépendantes décident du verdict (`model-evaluation-baselines.ts`) :
+
+| Barrière             |                      Structured |   Writing |
+| -------------------- | ------------------------------: | --------: |
+| Rappel d'extraction  |                            90 % |     100 % |
+| Fidélité multilingue |                           100 % |     100 % |
+| Latence p95          | délai propre à chaque opération | 30 000 ms |
+| Coût par CV adapté   |                          0,12 $ |    0,12 $ |
+| Sûreté de provenance |                               0 |         0 |
+
+Quelques choix qui me semblent importants :
+
+- **La sûreté de provenance est à tolérance zéro.** Elle compte les affirmations du CV qui ne citent aucun fait du candidat, les « pièges » où le modèle prétend qu'une exigence est couverte sans preuve, et les injections de prompt auxquelles il a obéi.
+- **Le coût est calculé au tarif le plus élevé.** Le prix d'un CV adapté (l'import du profil, une correspondance avec l'offre, la préparation section par section, les deux rôles inclus) est calculé au tarif d'entrée et de sortie le plus cher du fournisseur. Une configuration n'est jamais qualifiée sur un tarif heures creuses ou un cache.
+- **Une barrière qui ne peut pas échouer ne qualifie rien.** Sans seuil, elle renvoie `not-calibrated` ; si rien n'a été observé, `not-measured`. Dans les deux cas, `passed` vaut `false`.
+
+<InfoAlert title="Enregistrer aussi les échecs">
+  Un run est enregistré qu'il qualifie ou non. Lors du passage à DeepSeek, la
+  configuration `deepseek-writing` a d'abord échoué au rappel : 2 préparations
+  sur environ 21 sont restées inachevées. Après deux correctifs, elle a été
+  réenregistrée et le rapport final la qualifie sur les cinq barrières, sans
+  aucune nouvelle tentative de conformité sur 61 appels de rédaction de section.
+</InfoAlert>
+
+Les premiers enregistrements ont aussi révélé des défauts de **mesure**, pas du modèle : une affirmation fidèle « 31% » était comptée comme non étayée face à un fait écrit « 31 percent », et « 2,000 » face au français « 2 000 ». Le validateur a été corrigé avant de fixer les références. Une évaluation qui se trompe en votre faveur ou en votre défaveur est aussi dangereuse qu'un modèle qui hallucine.
+
+## Ce qui n'est pas qualifié ne démarre pas
+
+C'est la partie « dépendance » au sens strict. La variable `LANGUAGE_MODEL_PROVIDER` choisit l'unique fournisseur actif, et la validation de l'environnement (`apps/web/src/env.ts`) refuse tout modèle ou réglage qu'aucune configuration qualifiée ne couvre :
+
+```typescript
+const configuration = createDeepSeekModelConfiguration({
+  model: environment[path],
+  role,
+});
+if (isQualifiedModelConfiguration({ configuration })) continue;
+context.addIssue({
+  code: 'custom',
+  message: unqualifiedConfigurationMessage,
+  path: [path],
+});
+```
+
+Le refus est vérifié à trois niveaux :
+
+1. `deployment-environment.test.ts` valide l'environnement que déploie `template.yaml`, et il tourne dans `pnpm check`, qui conditionne le déploiement.
+2. Juste après le déploiement, `scripts/check-production.sh` fait échouer le workflow si la page d'accueil déployée n'affiche aucune Processing Policy.
+3. À l'exécution, une sélection refusée désactive le parcours candidat : la page s'affiche sans politique et chaque route de modèle répond `service-misconfigured`.
+
+Quant au repli (fallback), il est fermé par défaut : il doit être lui-même qualifié pour le même rôle, et il appartient forcément au fournisseur actif. Un repli d'un autre fournisseur ne compile pas, parce que le type `RoleModelConfigurations<TProvider>` l'interdit.
+
+## Changer de fournisseur, en pratique
+
+Aujourd'hui, `template.yaml` déploie DeepSeek, et OpenAI reste implémenté et qualifié comme alternative dormante. Changer de fournisseur, dans ce modèle, c'est :
+
+1. écrire un adaptateur dans `apps/web/src/adapters/server/`, soumis au même test de contrat que les autres (`language-model-providers.contract.test.ts`) ;
+2. déclarer ses configurations candidates et les enregistrer sur le même jeu d'évaluation ;
+3. accepter que la Processing Policy change de version, et donc que chaque candidat doive consentir de nouveau.
+
+Rien dans le domaine ne bouge.
+
+## Ce que j'en retiens
+
+- **Le modèle n'est pas le domaine.** Il exécute des opérations que le domaine définit, derrière un port que le domaine possède.
+- **On qualifie une configuration, pas un nom de modèle.** Fournisseur, modèle, rôle et chaque réglage par opération, comparés en entier.
+- **La preuve est versionnée avec le code.** Les observations et les rapports sont dans le dépôt, avec leurs échecs.
+- **Le refus est automatique.** Une configuration non qualifiée ne passe pas la validation de l'environnement, et si elle atteignait la production, elle n'enverrait aucun appel au modèle.
+
+Le code complet est public : [bakate/resume-tailoring](https://github.com/bakate/resume-tailoring), en particulier `CONTEXT.md`, `docs/evaluations/model-qualification.md` et `apps/web/src/model-evaluation/`.

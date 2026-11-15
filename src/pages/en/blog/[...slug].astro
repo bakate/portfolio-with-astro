@@ -6,8 +6,10 @@ import { getCollection, getEntries, render } from 'astro:content';
 let lang = 'en' as LanguageCode;
 
 export async function getStaticPaths() {
+  // Drafts are built at their final address but never listed (see index.astro),
+  // so they can be reviewed through a hidden URL; the layout marks them noindex.
   const blogEntries = await getCollection('blog', ({ data }) => {
-    return data.isDraft !== true && data.lang === 'en';
+    return data.lang === 'en';
   });
   return blogEntries.map((post) => ({
     params: { slug: post.id },
