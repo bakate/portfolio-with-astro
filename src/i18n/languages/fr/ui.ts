@@ -147,8 +147,15 @@ export const uiLabels = {
     heroAvailability: 'Disponible · Hybride Île-de-France / remote',
     heroBookCallButton: 'Réserver 15 min',
     heroDownloadCvButton: 'Télécharger mon CV',
-    heroImageAlt:
-      'Illustration représentant Bakate ou un concept de développement',
+    heroImageAlt: 'Portrait de Bakate Idrissa, souriant',
+    proofTitle: 'En production, en chiffres',
+    proofLoadTimeFigure: '7-8 s → moins de 2 s',
+    proofLoadTimeContext: 'Chargement du module analytique chez Bloomflow',
+    proofBackOfficeFigure: '2 jours → quelques clics',
+    proofBackOfficeContext:
+      'Une opération de back-office, grâce à un outil interne',
+    proofExperienceFigure: '5 ans',
+    proofExperienceContext: 'de SaaS en production chez Bayer, Unilever, HSBC',
     featuredProjectsTitle: 'Projets SaaS principaux',
     featuredProjectsDescription:
       'Des produits SaaS livrés en production, de la conception au déploiement.',

@@ -90,3 +90,9 @@ export type TranslatedSkill = SkillData & {
   // iconName is already part of SkillData
   // technologies is already part of SkillData
 };
+
+/** A measured outcome shown under the hero: the figure, then what it measures. */
+export type Proof = {
+  figure: string;
+  context: string;
+};

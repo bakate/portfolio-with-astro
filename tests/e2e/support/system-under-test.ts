@@ -1,4 +1,9 @@
-import { expect, type APIRequestContext, type Page } from '@playwright/test';
+import {
+  expect,
+  type APIRequestContext,
+  type Locator,
+  type Page,
+} from '@playwright/test';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 
@@ -22,6 +27,13 @@ const withoutQueryOrTrailingSlash = (href: string) =>
 export function createSystemUnderTest({ page, request }: Fixtures) {
   const crawled = new Map<string, string>();
   const hero = page.locator('#hero');
+  const proof = page.locator('#proof');
+
+  async function boxOf(locator: Locator) {
+    const box = await locator.boundingBox();
+    expect(box, 'element is laid out').not.toBeNull();
+    return box!;
+  }
 
   async function statusOf(path: string): Promise<number> {
     return (await request.get(path)).status();
@@ -216,6 +228,88 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenPageLinksTo(url: string) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
+    },
+
+    async thenProofSectionShows(
+      proofs: ReadonlyArray<{ figure: string; context: string }>
+    ) {
+      const items = proof.getByRole('listitem');
+      await expect(items).toHaveCount(proofs.length);
+      for (const [index, { figure, context }] of proofs.entries()) {
+        await expect(items.nth(index)).toContainText(figure);
+        await expect(items.nth(index)).toContainText(context);
+      }
+    },
+
+    async thenProofSectionHasNoImage() {
+      await expect(proof).toBeVisible();
+      await expect(proof.locator('img, svg, picture')).toHaveCount(0);
+    },
+
+    /** Reads every image's description and address for the given names. */
+    async thenNoImageOnThePageShows(names: ReadonlyArray<string>) {
+      const images = await page
+        .locator('img')
+        .evaluateAll((elements) =>
+          elements.map(
+            (image) =>
+              `${image.getAttribute('alt') ?? ''} ${image.getAttribute('src') ?? ''}`
+          )
+        );
+      expect(images.length, 'images on the page').toBeGreaterThan(0);
+      const matches = images.filter((image) =>
+        names.some((name) => image.toLowerCase().includes(name.toLowerCase()))
+      );
+      expect(matches).toEqual([]);
+    },
+
+    async thenHeroPhotoIsDescribedAs(alt: string) {
+      await expect(hero.getByRole('img', { name: alt })).toBeVisible();
+    },
+
+    async visitorUsesAScreenWide(width: number) {
+      await page.setViewportSize({ width, height: 800 });
+    },
+
+    async thenPageDoesNotScrollSideways() {
+      const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }));
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    },
+
+    /** Beside: overlapping rows. Above: photo ends before the name starts. */
+    async thenHeroPhotoIsNextToTheName() {
+      const photo = await boxOf(hero.getByRole('img'));
+      const name = await boxOf(hero.getByRole('heading', { level: 1 }));
+      const beside =
+        photo.y < name.y + name.height && name.y < photo.y + photo.height;
+      const above = photo.y + photo.height <= name.y;
+      expect(beside || above, 'photo beside or above the name').toBe(true);
+      expect(photo.height, 'compact photo').toBeLessThan(200);
+    },
+
+    /**
+     * Text starts on the left, the photo stays compact and shares the title
+     * block's rows instead of filling a column of its own.
+     */
+    async thenHeroIsAsymmetric() {
+      const section = await boxOf(hero);
+      const name = await boxOf(hero.getByRole('heading', { level: 1 }));
+      const photo = await boxOf(hero.getByRole('img'));
+      const pitch = await boxOf(hero.locator('p').last());
+      expect(name.x - section.x, 'name starts on the left').toBeLessThan(
+        section.width / 4
+      );
+      expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
+      expect(
+        photo.y < name.y + name.height && name.y < photo.y + photo.height,
+        'photo shares the title rows'
+      ).toBe(true);
+      expect(pitch.x - section.x, 'pitch starts on the left').toBeLessThan(
+        section.width / 4
+      );
     },
 
     async thenPageHasButton(name: string) {

@@ -1,0 +1,31 @@
+---
+import type { Proof } from '../type';
+
+export type Props = {
+  title: string;
+  proofs: Array<Proof>;
+};
+
+const { title, proofs } = Astro.props;
+---
+
+<section id="proof" aria-labelledby="proof-title" class="py-12 md:py-16">
+  <h2
+    id="proof-title"
+    class="mb-8 text-sm font-medium uppercase tracking-wider text-muted-foreground"
+  >
+    {title}
+  </h2>
+  <ul class="grid gap-8 border-t border-border pt-8 md:grid-cols-3 md:gap-12">
+    {
+      proofs.map(({ figure, context }) => (
+        <li class="space-y-2">
+          <p class="font-heading text-2xl font-bold tracking-tight text-primary md:text-3xl">
+            {figure}
+          </p>
+          <p class="text-muted-foreground leading-relaxed">{context}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>
