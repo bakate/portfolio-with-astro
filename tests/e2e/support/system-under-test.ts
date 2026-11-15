@@ -55,6 +55,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     return [...new Set(slugs)].sort();
   }
 
+  const projectCard = (project: string) =>
+    page.getByRole('article').filter({
+      has: page.getByRole('heading', { level: 3, name: project, exact: true }),
+    });
+
   const meta = (property: string) =>
     page.locator(`meta[property="${property}"]`).getAttribute('content');
 
@@ -64,6 +69,11 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     async visitorOpens(path: string) {
       const response = await page.goto(path);
       expect(response?.status(), path).toBe(200);
+    },
+
+    /** Lands wherever the address leads, redirects included. */
+    async visitorFollowsLinkTo(path: string) {
+      await page.goto(path);
     },
 
     /** Follows every internal link, breadth-first, from the given home pages. */
@@ -156,6 +166,32 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       ).toHaveText([...projects]);
     },
 
+    async thenVisitorIsOn(path: string) {
+      await expect(page).toHaveURL(
+        (url) => withoutQueryOrTrailingSlash(url.pathname) === path
+      );
+    },
+
+    /** Compares the area each card takes on screen. */
+    async thenProjectCardsAreShownLarger(
+      larger: ReadonlyArray<string>,
+      smaller: ReadonlyArray<string>
+    ) {
+      const areaOf = async (project: string) => {
+        const box = await projectCard(project).boundingBox();
+        expect(box, `${project} card is on screen`).not.toBeNull();
+        return (box?.width ?? 0) * (box?.height ?? 0);
+      };
+      for (const big of larger) {
+        for (const small of smaller) {
+          expect(
+            await areaOf(big),
+            `${big} is shown larger than ${small}`
+          ).toBeGreaterThan(await areaOf(small));
+        }
+      }
+    },
+
     async thenSectionIsTitled(anchor: string, heading: string) {
       await expect(
         page.locator(anchor).getByRole('heading', { level: 2 })
@@ -166,9 +202,7 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       project: string,
       names: ReadonlyArray<string>
     ) {
-      const card = page.getByRole('article').filter({
-        has: page.getByRole('heading', { level: 3, name: project }),
-      });
+      const card = projectCard(project);
       await expect(card).toHaveCount(1);
       for (const name of names) {
         await expect(card.getByRole('link', { name })).toHaveCount(0);

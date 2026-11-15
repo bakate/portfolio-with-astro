@@ -17,20 +17,25 @@ const { project, lang } = Astro.props;
 const t = useTranslations(lang, 'projectCard');
 const detailUrl = getRelativeLocaleUrl(lang, `/projects/${project.slug}`);
 
+/** A large card lays its image beside the text on wide screens; an archive shows none. */
 const look = {
   large: {
-    image: 'aspect-[16/10]',
+    card: 'bg-card md:flex-row',
+    image:
+      'aspect-[16/10] border-b md:w-1/2 md:shrink-0 md:border-b-0 md:border-r',
     title: 'text-2xl',
     description: '',
     tags: 6,
   },
   compact: {
-    image: 'aspect-[16/9]',
+    card: 'bg-card',
+    image: 'aspect-[16/9] border-b',
     title: 'text-xl',
     description: 'line-clamp-3',
     tags: 4,
   },
   archive: {
+    card: 'bg-muted/30',
     image: undefined,
     title: 'text-lg',
     description: 'line-clamp-2',
@@ -38,28 +43,40 @@ const look = {
   },
 } as const satisfies Record<
   ShowcaseLevel,
-  { image?: string; title: string; description: string; tags: number }
+  {
+    card: string;
+    image?: string;
+    title: string;
+    description: string;
+    tags: number;
+  }
 >;
 const style = look[project.showcase];
-const showsImage = style.image !== undefined && project.imageUrl !== undefined;
+const image = style.image === undefined ? undefined : project.imageUrl;
+
+/** Only the links the project actually has: an absent link renders no button. */
+const externalLinks = [
+  { href: project.projectUrl, label: t('viewDemo'), Icon: ExternalLink },
+  { href: project.codeUrl, label: t('viewCode'), Icon: Code },
+].filter((link) => link.href !== undefined);
 ---
 
 <article
   class={cn(
-    'flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card',
-    project.showcase === 'archive' && 'bg-muted/30'
+    'flex h-full flex-col overflow-hidden rounded-lg border border-border',
+    style.card
   )}
 >
   {
-    showsImage && project.imageUrl && (
+    image && (
       <a
         href={detailUrl}
         tabindex="-1"
         aria-hidden="true"
-        class={cn('block overflow-hidden border-b border-border', style.image)}
+        class={cn('block overflow-hidden border-border', style.image)}
       >
         <Image
-          src={project.imageUrl}
+          src={image}
           alt=""
           class="h-full w-full object-cover object-top"
           widths={[400, 800, 1200]}
@@ -88,7 +105,7 @@ const showsImage = style.image !== undefined && project.imageUrl !== undefined;
     </p>
     {
       project.tags.length > 0 && (
-        <ul class="flex flex-wrap gap-2" aria-label="Technologies">
+        <ul class="flex flex-wrap gap-2" aria-label={t('technologies')}>
           {project.tags.slice(0, style.tags).map((tag) => (
             <li>
               <Badge variant="secondary">{tag}</Badge>
@@ -106,32 +123,18 @@ const showsImage = style.image !== undefined && project.imageUrl !== undefined;
         <span class="sr-only"> · {project.title}</span>
       </a>
       {
-        project.projectUrl && (
+        externalLinks.map(({ href, label, Icon }) => (
           <a
-            href={project.projectUrl}
+            href={href}
             target="_blank"
             rel="noopener noreferrer"
             class={buttonVariants({ variant: 'outline', size: 'sm' })}
           >
-            <ExternalLink className="mr-1.5 size-4" />
-            {t('viewDemo')}
+            <Icon className="mr-1.5 size-4" />
+            {label}
             <span class="sr-only"> · {project.title}</span>
           </a>
-        )
-      }
-      {
-        project.codeUrl && (
-          <a
-            href={project.codeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class={buttonVariants({ variant: 'outline', size: 'sm' })}
-          >
-            <Code className="mr-1.5 size-4" />
-            {t('viewCode')}
-            <span class="sr-only"> · {project.title}</span>
-          </a>
-        )
+        ))
       }
     </div>
   </div>

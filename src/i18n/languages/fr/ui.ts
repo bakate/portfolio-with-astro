@@ -311,6 +311,7 @@ export const uiLabels = {
     viewProject: 'Voir le projet',
     viewDemo: 'Démo',
     viewCode: 'Code source',
+    technologies: 'Technologies',
   },
   notFoundPage: {
     pageTitle: 'Page Non Trouvée',
