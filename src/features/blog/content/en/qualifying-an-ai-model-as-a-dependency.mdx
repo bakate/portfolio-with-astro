@@ -1,0 +1,247 @@
+---
+lang: 'en'
+title: 'Qualifying an AI Model as a Dependency: Recorded Evaluations in a DDD Project'
+description: 'How to treat a language model as an external adapter: a domain port, a configuration qualified by recorded evaluations, and a server that refuses everything else.'
+pubDate: 2026-11-15
+tags: ['ddd', 'architecture', 'ai', 'typescript']
+isDraft: true
+heroImage:
+  url: '../../../../assets/blog/montre-couteau-suisse.jpeg'
+  alt: 'A Swiss army knife, placeholder image'
+relatedPosts: []
+---
+
+import InfoAlert from '@/features/blog/components/InfoAlert.astro';
+
+When I add a library to a project, I pin its version, read its changelog and run my tests before upgrading it. With an AI model, we often do the opposite: change the model name in an environment variable and see what happens in production.
+
+On [resume-tailoring](https://github.com/bakate/resume-tailoring), an application that tailors a resume to a job posting, I took the opposite stance: **an AI model is an external dependency like any other**. It lives behind a domain port, it only reaches production once it has passed recorded evaluations, and changing a single one of its settings takes that status away.
+
+Here is how it is built.
+
+## Vocabulary first
+
+The project keeps a glossary, `CONTEXT.md`, that pins down the domain's words. Four terms carry the whole topic:
+
+- **Language Model Provider**: the disclosed external processor that performs model-backed operations. Exactly one is active at a time, and a failing operation never moves to another processor the Candidate has not consented to.
+- **Processing Policy**: the versioned disclosure of the active provider, processing purposes, transmitted data categories, retention policy and storage behavior.
+- **Processing Consent**: the Candidate's confirmation of the current Processing Policy before the first model operation that uses their content. A materially changed policy requires new consent.
+- **Qualified Model Configuration**: a model of the active provider, with the exact settings it runs with, that has passed the recorded evaluation of extraction recall, multilingual fidelity, latency, cost and provenance safety. Changing the model or any setting requires qualifying it again.
+
+The glossary also lists the words to avoid: no "OpenAI" in domain language, no "fallback provider", no "approved model". This is not purism: if the domain talks about OpenAI, it ends up depending on OpenAI.
+
+## The model is an adapter, the domain owns the port
+
+The monorepo splits three packages (`resume-tailoring-domain`, `resume-tailoring-application`, `resume-matching-engine`) from a web application. The domain and the application know no provider. They expose a port, and the web application wires in the adapters.
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ Domain                                                      │
+│   ProcessingPolicy, ProcessingConsent                       │
+│   hasProcessingConsentForPolicy()                           │
+└──────────────────────────────▲──────────────────────────────┘
+                               │
+┌──────────────────────────────┴──────────────────────────────┐
+│ Application                                                 │
+│   port LanguageModelGatewayAdapter { structured, writing }  │
+│   createConsentBoundRole(): no consent, no call             │
+└──────────────────────────────▲──────────────────────────────┘
+                               │ implements
+┌──────────────────────────────┴──────────────────────────────┐
+│ apps/web/src/adapters/server/  (the only place allowed)     │
+│   openai-language-model-provider.ts                         │
+│   deepseek-language-model-provider.ts                       │
+│   AI SDK (ai, @ai-sdk/*)                                    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+The port, in `packages/resume-tailoring-application/src/ports.ts`, holds no SDK type:
+
+```typescript
+export type LanguageModelRole<TRequest, TValue> = Readonly<{
+  process: (request: TRequest) => Promise<LanguageModelResult<TValue>>;
+}>;
+
+export type LanguageModelGatewayAdapter<
+  TStructuredRequest,
+  TStructuredValue,
+  TWritingRequest = TStructuredRequest,
+  TWritingValue = TStructuredValue,
+> = Readonly<{
+  processingPolicy: ProcessingPolicy;
+  structured: LanguageModelRole<TStructuredRequest, TStructuredValue>;
+  writing: LanguageModelRole<TWritingRequest, TWritingValue>;
+}>;
+```
+
+Two things stand out. The port reasons in **roles** (`structured` for extraction and validation, `writing` for prose), not in models. And each adapter brings its own `processingPolicy`: plugging in another provider necessarily changes the policy shown to the Candidate.
+
+The application then wraps each role in a consent check (`language-model-gateway.ts`):
+
+```typescript
+function createConsentBoundRole<TRequest, TValue>({
+  processingPolicy,
+  readProcessingConsent,
+  role,
+}: Readonly<{
+  processingPolicy: ProcessingPolicy;
+  readProcessingConsent: () => ProcessingConsent | null;
+  role: LanguageModelRole<TRequest, TValue>;
+}>): LanguageModelRole<TRequest, TValue> {
+  return {
+    process: (request) =>
+      hasProcessingConsentForPolicy({
+        consent: readProcessingConsent(),
+        policy: processingPolicy,
+      })
+        ? role.process(request)
+        : Promise.resolve({
+            ok: false,
+            error: { type: 'processing-consent-required' },
+          }),
+  };
+}
+```
+
+The business rule itself lives in the domain: `hasProcessingConsentForPolicy` compares the provider, the processing country, retention, storage, version, purposes and data categories. If any of them changes, the consent no longer holds.
+
+### A boundary the tooling enforces
+
+A hexagonal architecture held together by discipline alone eventually leaks. Here, `dependency-cruiser` fails `pnpm check:architecture` as soon as an arrow points the wrong way. A few rules from `dependency-cruiser.config.cjs`:
+
+- `domain-does-not-depend-outward`: the domain imports neither the application nor the web app.
+- `core-does-not-import-runtime-adapters`: the three core packages import neither `openai`, nor `ai`, nor `@ai-sdk`.
+- `ai-sdk-stays-in-server-adapters`: only files under `apps/web/src/adapters/server/` touch the AI SDK.
+- `model-qualification-is-provider-neutral`: the qualification code imports no provider adapter.
+
+## What exactly is a configuration?
+
+Qualifying "GPT" or "DeepSeek" means nothing. What gets qualified is a precise object, defined in `apps/web/src/language-model-configuration.ts`: a provider, a model, a role, and settings frozen **per operation** (deadline, output token budget, and for DeepSeek the thinking mode).
+
+```typescript
+const deepSeekOperationSettings = {
+  'explainable-job-posting-extraction': {
+    deadlineMilliseconds: 90_000,
+    maxOutputTokens: 31_000,
+    thinking: 'low',
+  },
+  'explainable-match-evidence': {
+    deadlineMilliseconds: 110_000,
+    maxOutputTokens: 32_000,
+    thinking: 'low',
+  },
+  // …
+  'structured-source-profile-extraction': {
+    deadlineMilliseconds: 90_000,
+    maxOutputTokens: 16_000,
+    thinking: 'disabled',
+  },
+};
+```
+
+The budgets follow a rule written in a code comment: the OpenAI answer budget plus the measured reasoning tokens. The exceptions are justified one by one. The 32,000-token budget for match evidence comes from a spike where, at 8,000, 7 answers out of 20 came back empty or truncated. Job posting extraction thinks at `low` because, without thinking, its recall dropped to about 60% against about 94%.
+
+The comparison with qualified configurations is deep and total (`qualified-model-configurations.ts`):
+
+```typescript
+/** A configuration is qualified only as a whole: the same provider, model, role, provider options and operation settings. */
+export function isQualifiedModelConfiguration({
+  configuration,
+  reports = recordedModelQualificationReports,
+}: Readonly<{
+  configuration: LanguageModelConfiguration;
+  reports?: readonly ModelQualificationReport[];
+}>) {
+  return reports.some(
+    (report) =>
+      report.qualified &&
+      isSameSetting({
+        qualified: readSettings(report.configuration),
+        requested: readSettings(configuration),
+      })
+  );
+}
+```
+
+Only pricing is left out of the comparison: it weighs on the evaluated cost, it is not a setting. Moving a budget from 20,000 to 20,001 tokens is enough to make the configuration unqualified.
+
+## Recorded evaluations
+
+Qualification runs locally, with the provider's key:
+
+```bash
+DEEPSEEK_API_KEY=... pnpm test:evaluation:record deepseek-structured
+DEEPSEEK_API_KEY=... pnpm test:evaluation:record deepseek-writing
+```
+
+The script runs the live evaluations of the production pipeline, through the real adapters, and writes two things: the observations into `recorded-live-model-evaluation-runs.ts`, and a JSON report into `docs/evaluations/qualification-reports/`. Both are versioned with the code. Observations hold only counts, latencies, token usage, fixture identifiers and content-free values (outcomes, names of failed checks): never a prompt, never a model answer, never resume-like content. The API key enters neither the observations nor the report.
+
+Five independent gates decide the verdict (`model-evaluation-baselines.ts`):
+
+| Gate                     |                    Structured |   Writing |
+| ------------------------ | ----------------------------: | --------: |
+| Extraction recall        |                           90% |      100% |
+| Multilingual fidelity    |                          100% |      100% |
+| p95 latency              | each operation's own deadline | 30,000 ms |
+| Cost per Tailored Resume |                         $0.12 |     $0.12 |
+| Provenance safety        |                             0 |         0 |
+
+A few choices I find important:
+
+- **Provenance safety is zero tolerance.** It counts resume claims citing no Candidate fact, "traps" where the model claims a requirement is covered without proof, and prompt injections it obeyed.
+- **Cost is priced at the highest rate.** The cost of one Tailored Resume (the profile intake, a job match, the section-by-section preparation, both roles included) is computed at the provider's most expensive input and output rates. A configuration is never qualified on an off-peak or cached price.
+- **A gate that cannot fail qualifies nothing.** Without a threshold it reports `not-calibrated`; when nothing was observed, `not-measured`. Either way, `passed` is `false`.
+
+<InfoAlert title="Record the failures too">
+  A run is recorded whether it qualifies or not. When moving to DeepSeek, the
+  `deepseek-writing` configuration first failed recall: 2 of about 21
+  preparations ended unprepared. After two fixes it was recorded again, and the
+  final report qualifies it on all five gates, with no conformance retry across
+  61 section writing calls.
+</InfoAlert>
+
+The first recordings also surfaced **measurement** defects, not model ones: a faithful claim "31%" was counted as unsupported against a fact stating "31 percent", and "2,000" against the French "2 000". The validator was fixed before the baselines were set. An evaluation that is wrong in either direction is as dangerous as a model that hallucinates.
+
+## What is not qualified does not start
+
+This is the "dependency" part in the strict sense. `LANGUAGE_MODEL_PROVIDER` selects the one active provider, and environment validation (`apps/web/src/env.ts`) rejects any model or setting that no qualified configuration backs:
+
+```typescript
+const configuration = createDeepSeekModelConfiguration({
+  model: environment[path],
+  role,
+});
+if (isQualifiedModelConfiguration({ configuration })) continue;
+context.addIssue({
+  code: 'custom',
+  message: unqualifiedConfigurationMessage,
+  path: [path],
+});
+```
+
+The refusal is checked at three levels:
+
+1. `deployment-environment.test.ts` validates the environment `template.yaml` deploys, and it runs in `pnpm check`, which gates the deployment.
+2. Right after deployment, `scripts/check-production.sh` fails the workflow when the deployed landing page states no Processing Policy.
+3. At runtime, a refused selection disables the Candidate Journey: the landing renders without a policy and every model route answers `service-misconfigured`.
+
+As for fallbacks, they are fail-closed: a fallback must itself be qualified for the same role, and it always belongs to the active provider. A fallback from another provider does not type-check, because `RoleModelConfigurations<TProvider>` forbids it.
+
+## Switching providers in practice
+
+Today, `template.yaml` deploys DeepSeek, and OpenAI stays implemented and qualified as a dormant alternative. Switching providers, in this model, means:
+
+1. writing an adapter in `apps/web/src/adapters/server/`, held to the same contract test as the others (`language-model-providers.contract.test.ts`);
+2. declaring its candidate configurations and recording them on the same evaluation dataset;
+3. accepting that the Processing Policy changes version, so every Candidate has to consent again.
+
+Nothing in the domain moves.
+
+## What I take away
+
+- **The model is not the domain.** It performs operations the domain defines, behind a port the domain owns.
+- **You qualify a configuration, not a model name.** Provider, model, role and every per-operation setting, compared as a whole.
+- **The proof is versioned with the code.** Observations and reports live in the repository, failures included.
+- **Refusal is automatic.** An unqualified configuration fails environment validation, and if it ever reached production, it would send no model call.
+
+The full code is public: [bakate/resume-tailoring](https://github.com/bakate/resume-tailoring), in particular `CONTEXT.md`, `docs/evaluations/model-qualification.md` and `apps/web/src/model-evaluation/`.
