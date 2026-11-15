@@ -1,9 +1,9 @@
 name: External links
 
 # Weekly check that every external link of the site still answers. Kept out of
-# the PR workflow: it depends on third-party sites. On failure it opens a single
-# issue labelled `broken-links`, or updates it when one is already open; it
-# closes that issue once the links answer again.
+# the PR workflow: it depends on third-party sites. When links break it opens a
+# single issue labelled `broken-links`, updates it only when the report changes,
+# and closes it once the links answer again.
 on:
   schedule:
     - cron: '0 6 * * 1' # Mondays, 06:00 UTC
@@ -42,33 +42,52 @@ jobs:
       # reported as broken links, and its log stays out of the issue body.
       - run: pnpm build
 
+      # Exit code 1 means broken links; any other failure is the checker's own
+      # and fails the run without touching the issue.
       - name: Check external links
         id: check
-        continue-on-error: true
         run: |
-          set -o pipefail
-          node scripts/check-external-links.mjs | tee link-report.md
+          set +e
+          node scripts/check-external-links.mjs > link-report.md
+          status=$?
+          cat link-report.md
+          case $status in
+            0) echo "broken=false" >> "$GITHUB_OUTPUT" ;;
+            1) echo "broken=true" >> "$GITHUB_OUTPUT" ;;
+            *) exit $status ;;
+          esac
 
+      # The issue only changes, and only notifies, when the report does: a link
+      # breaks or gets repaired. A known, unchanged report leaves it untouched.
       - name: Open or update the broken-links issue
-        if: steps.check.outcome == 'failure'
+        if: steps.check.outputs.broken == 'true'
         run: |
-          gh label create "$LABEL" --color d93f0b --description "An external link of the site is broken" --force
+          fingerprint=$(sha256sum link-report.md | cut -d' ' -f1)
+          marker="<!-- report-sha256: $fingerprint -->"
           {
             cat link-report.md
             echo
             echo "_Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}_"
+            echo
+            echo "$marker"
           } > issue-body.md
+
+          gh label create "$LABEL" --color d93f0b --description "An external link of the site is broken" --force
           issue=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number')
-          if [ -n "$issue" ]; then
-            gh issue edit "$issue" --body-file issue-body.md
-            gh issue comment "$issue" --body "Still broken on $(date -u +%F). Report updated above."
-          else
+          if [ -z "$issue" ]; then
             gh issue create --title "Broken external links" --label "$LABEL" --body-file issue-body.md
+          # Read into a variable first: under pipefail, `gh … | grep -q` can fail on SIGPIPE.
+          elif current=$(gh issue view "$issue" --json body --jq .body) && grep -qF "$marker" <<< "$current"; then
+            echo "::notice::Same broken links as already reported in #$issue, issue left unchanged."
+            exit 0
+          else
+            gh issue edit "$issue" --body-file issue-body.md
+            gh issue comment "$issue" --body "The broken links changed on $(date -u +%F). Report updated above."
           fi
           exit 1
 
       - name: Close the broken-links issue
-        if: steps.check.outcome == 'success'
+        if: steps.check.outputs.broken == 'false'
         run: |
           issue=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number')
           if [ -n "$issue" ]; then
