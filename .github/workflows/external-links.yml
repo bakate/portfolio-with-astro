@@ -1,0 +1,72 @@
+name: External links
+
+# Weekly check that every external link of the site still answers. Kept out of
+# the PR workflow: it depends on third-party sites. On failure it opens a single
+# issue labelled `broken-links`, or updates it when one is already open; it
+# closes that issue once the links answer again.
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: external-links
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      LABEL: broken-links
+    steps:
+      - uses: actions/checkout@v7
+
+      # Reads the pnpm version from the `packageManager` field.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check external links
+        id: check
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          pnpm check:links | tee link-report.md
+
+      - name: Open or update the broken-links issue
+        if: steps.check.outcome == 'failure'
+        run: |
+          gh label create "$LABEL" --color d93f0b --description "An external link of the site is broken" --force
+          {
+            cat link-report.md
+            echo
+            echo "_Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}_"
+          } > issue-body.md
+          issue=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number')
+          if [ -n "$issue" ]; then
+            gh issue edit "$issue" --body-file issue-body.md
+            gh issue comment "$issue" --body "Still broken on $(date -u +%F). Report updated above."
+          else
+            gh issue create --title "Broken external links" --label "$LABEL" --body-file issue-body.md
+          fi
+          exit 1
+
+      - name: Close the broken-links issue
+        if: steps.check.outcome == 'success'
+        run: |
+          issue=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number')
+          if [ -n "$issue" ]; then
+            gh issue close "$issue" --comment "Every external link answers again on $(date -u +%F)."
+          fi

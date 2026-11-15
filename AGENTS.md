@@ -15,6 +15,7 @@ pnpm is the only package manager (version pinned by `packageManager`; run `corep
 - `pnpm build` is the check that a change works; `pnpm astro check` typechecks.
 - `pnpm preview` does not work: the Vercel adapter refuses it. Use `vercel dev` to test the contact form (`/api/contact`); serving `.vercel/output/static` only shows the prerendered pages.
 - `pnpm test:e2e` builds, then runs the Playwright suite (`tests/e2e/`) against the build served by `scripts/serve-static.mjs`. `pnpm exec playwright test <file>` re-runs on the last build. It is the only test level, and every test is a `Given …, when …, then …` behaviour scenario: read `CODING_STANDARDS.md` before writing one. CI runs it on every PR.
+- `pnpm check:links` builds, then checks every external link of the site (DNS, timeouts, 4xx/5xx, redirects to a login page or another domain) and prints a Markdown report. It hits third-party sites, so it is not part of the PR suite: `.github/workflows/external-links.yml` runs it weekly and keeps a single `broken-links` issue open while something is broken. Expected cross-domain redirects and sign-in-by-design links are listed at the top of `scripts/check-external-links.mjs`.
 
 ## Bilingual by construction
 
