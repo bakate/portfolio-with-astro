@@ -1,5 +1,7 @@
 ---
 import { buttonVariants } from '@/components/ui/button';
+import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
+import { profile } from '@/lib/profile';
 import { ExternalLink, FileDown } from 'lucide-react';
 
 export type ExperienceEntry = {
@@ -13,24 +15,27 @@ export type ExperienceEntry = {
   technologies: ReadonlyArray<string>;
 };
 
-export type Props = {
-  pageHeading: string;
-  stackLabel: string;
-  seekingLabel: string;
-  downloadLabel: string;
-  cvUrl: string;
+/**
+ * Every string of the experience page, keyed like the French copy: passing
+ * `ui[lang].experiencePage` fails to compile when a language misses a key.
+ */
+export type ExperiencePageCopy = Record<
+  Exclude<
+    keyof (typeof ui)[typeof defaultLanguage]['experiencePage'],
+    'entries'
+  >,
+  string
+> & {
   /** Most recent first, as on the CV. */
-  experiences: ReadonlyArray<ExperienceEntry>;
+  entries: ReadonlyArray<ExperienceEntry>;
 };
 
-const {
-  pageHeading,
-  stackLabel,
-  seekingLabel,
-  downloadLabel,
-  cvUrl,
-  experiences,
-} = Astro.props;
+export type Props = {
+  lang: LanguageCode;
+  copy: ExperiencePageCopy;
+};
+
+const { lang, copy } = Astro.props;
 ---
 
 <section class="py-12 md:py-16">
@@ -38,20 +43,20 @@ const {
     <header
       class="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
     >
-      <h1 class="text-3xl font-bold sm:text-4xl">{pageHeading}</h1>
+      <h1 class="text-3xl font-bold sm:text-4xl">{copy.pageHeading}</h1>
       <a
-        href={cvUrl}
+        href={profile.cvPathByLanguage[lang]}
         download
         class={buttonVariants({ variant: 'outline', size: 'lg' })}
       >
         <FileDown className="size-4" aria-hidden="true" />
-        {downloadLabel}
+        {copy.downloadCV}
       </a>
     </header>
 
     <ol class="space-y-12">
       {
-        experiences.map((experience) => (
+        copy.entries.map((experience) => (
           <li class="border-t border-border pt-8">
             <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
               <h2 class="text-2xl font-semibold">
@@ -81,8 +86,8 @@ const {
               ))}
             </ul>
             <p class="mt-6 text-sm text-muted-foreground">
-              <span class="font-medium text-foreground">{stackLabel}</span> ·{' '}
-              {experience.technologies.join(' · ')}
+              <span class="font-medium text-foreground">{copy.stackLabel}</span>{' '}
+              · {experience.technologies.join(' · ')}
             </p>
           </li>
         ))
@@ -90,7 +95,7 @@ const {
     </ol>
 
     <p class="mt-12 border-t border-border pt-8 text-muted-foreground">
-      {seekingLabel}
+      {copy.seekingLabel}
     </p>
   </div>
 </section>

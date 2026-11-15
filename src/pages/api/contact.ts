@@ -5,7 +5,10 @@ export const prerender = false;
 import { contactFormSchema as ContactFormSchema } from '@/features/contact/type'; // Using alias for clarity if needed, or direct import
 import { sendEmail } from '@/lib/email';
 import { ui, type LanguageCode } from '@/i18n/ui';
-import type { ContactFormApiResponse } from '@/features/contact/type';
+import type {
+  ContactFormApiResponse,
+  ContactPageCopy,
+} from '@/features/contact/type';
 
 // Initialize Resend with the API key from environment variables
 const resendApiKey = import.meta.env.RESEND_API_KEY;
@@ -25,8 +28,7 @@ if (!contactFormToEmail) {
 
 export const POST: APIRoute = async ({ request }) => {
   let lang: LanguageCode = 'en'; // Default language
-  let currentTranslations: (typeof ui)[LanguageCode]['contactPage'] =
-    ui[lang].contactPage; // Default translations
+  let currentTranslations: ContactPageCopy = ui[lang].contactPage; // Default translations
   if (!resendApiKey || !resendFromEmail || !contactFormToEmail) {
     return new Response(
       JSON.stringify({

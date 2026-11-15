@@ -1,26 +1,13 @@
 ---
 import { ExperienceScreen } from '@/features/experience';
-import {
-  defaultLanguage,
-  ui,
-  useTranslations,
-  type LanguageCode,
-} from '@/i18n/ui';
+import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { profile } from '@/lib/profile';
 
 const lang =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
-const t = useTranslations(lang, 'experiencePage');
+const copy = ui[lang].experiencePage;
 ---
 
-<BaseLayout pageTitle={t('pageTitle')} pageDescription={t('pageDescription')}>
-  <ExperienceScreen
-    pageHeading={t('pageHeading')}
-    stackLabel={t('stackLabel')}
-    seekingLabel={t('seekingLabel')}
-    downloadLabel={t('downloadCV')}
-    cvUrl={profile.cvPathByLanguage[lang]}
-    experiences={ui[lang].experiencePage.entries}
-  />
+<BaseLayout pageTitle={copy.pageTitle} pageDescription={copy.pageDescription}>
+  <ExperienceScreen lang={lang} copy={copy} />
 </BaseLayout>

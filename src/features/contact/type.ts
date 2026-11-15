@@ -1,23 +1,34 @@
 import { z } from 'zod';
+import type { defaultLanguage, ui } from '@/i18n/ui';
 
-/** Strings the message form reads; the rest of the contact page is passed as screen props. */
-export type ContactFormTranslations = {
-  firstNameLabel: string;
-  lastNameLabel: string;
-  emailLabel: string;
-  companyLabel: string;
-  messageLabel: string;
-  firstNamePlaceholder: string;
-  lastNamePlaceholder: string;
-  emailPlaceholder: string;
-  companyPlaceholder: string;
-  messagePlaceholder: string;
-  sendButtonLabel: string;
-  toastSuccessMessageSent: string;
-  toastErrorFailedToSend: string;
-  toastErrorUnexpected: string;
-  toastErrorDetails: string;
-};
+/**
+ * Every string of the contact page, keyed like the French copy: passing
+ * `ui[lang].contactPage` fails to compile when a language misses a key.
+ */
+export type ContactPageCopy = Record<
+  keyof (typeof ui)[typeof defaultLanguage]['contactPage'],
+  string
+>;
+
+/** Strings the message form reads. */
+export type ContactFormTranslations = Pick<
+  ContactPageCopy,
+  | 'firstNameLabel'
+  | 'lastNameLabel'
+  | 'emailLabel'
+  | 'companyLabel'
+  | 'messageLabel'
+  | 'firstNamePlaceholder'
+  | 'lastNamePlaceholder'
+  | 'emailPlaceholder'
+  | 'companyPlaceholder'
+  | 'messagePlaceholder'
+  | 'sendButtonLabel'
+  | 'toastSuccessMessageSent'
+  | 'toastErrorFailedToSend'
+  | 'toastErrorUnexpected'
+  | 'toastErrorDetails'
+>;
 
 const stringFieldSchema = (minLength = 2, maxLength = 50) =>
   z

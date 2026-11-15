@@ -5,41 +5,14 @@ import { profile } from '@/lib/profile';
 import { Calendar } from 'lucide-react';
 
 import { ContactForm } from '../components/ContactForm.tsx';
-import type { ContactFormTranslations } from '../type';
+import type { ContactPageCopy } from '../type';
 
 interface Props {
   lang: LanguageCode;
-  heading: string;
-  description: string;
-  freelanceLine: string;
-  bookingTitle: string;
-  bookingDescription: string;
-  bookingLinkLabel: string;
-  bookingUrl: string;
-  formHeading: string;
-  responseTime: string;
-  formTranslations: ContactFormTranslations;
-  elsewhereLabel: string;
-  linkedInLabel: string;
-  githubLabel: string;
+  copy: ContactPageCopy;
 }
 
-const {
-  lang,
-  heading,
-  description,
-  freelanceLine,
-  bookingTitle,
-  bookingDescription,
-  bookingLinkLabel,
-  bookingUrl,
-  formHeading,
-  responseTime,
-  formTranslations,
-  elsewhereLabel,
-  linkedInLabel,
-  githubLabel,
-} = Astro.props;
+const { lang, copy } = Astro.props;
 
 const linkClass =
   'font-medium text-foreground underline underline-offset-4 hover:text-primary';
@@ -47,18 +20,18 @@ const linkClass =
 
 <section class="py-12 md:py-16">
   <div class="mx-auto max-w-2xl px-4">
-    <h1 class="text-3xl font-bold sm:text-4xl">{heading}</h1>
+    <h1 class="text-3xl font-bold sm:text-4xl">{copy.title}</h1>
     <p class="mt-4 text-lg leading-relaxed text-muted-foreground">
-      {description}
+      {copy.description}
     </p>
-    <p class="mt-2 font-medium">{freelanceLine}</p>
+    <p class="mt-2 font-medium">{copy.freelanceLine}</p>
 
     {/* Booking first: the fastest way to talk. */}
     <div class="mt-10 rounded-lg border border-border bg-card p-6 md:p-8">
-      <h2 class="text-2xl font-semibold">{bookingTitle}</h2>
-      <p class="mt-2 text-muted-foreground">{bookingDescription}</p>
+      <h2 class="text-2xl font-semibold">{copy.bookingTitle}</h2>
+      <p class="mt-2 text-muted-foreground">{copy.bookingDescription}</p>
       <a
-        href={bookingUrl}
+        href={profile.bookingUrl}
         target="_blank"
         rel="noopener noreferrer"
         class:list={[
@@ -67,37 +40,37 @@ const linkClass =
         ]}
       >
         <Calendar className="size-4" aria-hidden="true" />
-        {bookingLinkLabel}
+        {copy.bookingLinkLabel}
       </a>
     </div>
 
     <div class="mt-10 rounded-lg border border-border bg-card p-6 md:p-8">
       <h2 id="contact-form-heading" class="text-2xl font-semibold">
-        {formHeading}
+        {copy.formHeading}
       </h2>
-      <p class="mt-2 mb-8 text-muted-foreground">{responseTime}</p>
+      <p class="mt-2 mb-8 text-muted-foreground">{copy.responseTime}</p>
       <ContactForm
         client:load
         {lang}
-        {formTranslations}
+        formTranslations={copy}
         labelledBy="contact-form-heading"
       />
     </div>
 
     <p class="mt-10 text-sm text-muted-foreground">
-      {elsewhereLabel}{' '}
+      {copy.elsewhereLabel}{' '}
       <a
         href={profile.links.linkedin}
         target="_blank"
         rel="noopener noreferrer"
-        class={linkClass}>{linkedInLabel}</a
+        class={linkClass}>{copy.linkedInLabel}</a
       >
       ·
       <a
         href={profile.links.github}
         target="_blank"
         rel="noopener noreferrer"
-        class={linkClass}>{githubLabel}</a
+        class={linkClass}>{copy.githubLabel}</a
       >
     </p>
   </div>

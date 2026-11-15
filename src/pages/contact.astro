@@ -1,47 +1,13 @@
 ---
 import { ContactScreen } from '@/features/contact';
-import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
+import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { profile } from '@/lib/profile';
 
 const lang =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
-const t = useTranslations(lang, 'contactPage');
-
-const formTranslations = {
-  firstNameLabel: t('firstNameLabel'),
-  lastNameLabel: t('lastNameLabel'),
-  emailLabel: t('emailLabel'),
-  companyLabel: t('companyLabel'),
-  messageLabel: t('messageLabel'),
-  firstNamePlaceholder: t('firstNamePlaceholder'),
-  lastNamePlaceholder: t('lastNamePlaceholder'),
-  emailPlaceholder: t('emailPlaceholder'),
-  companyPlaceholder: t('companyPlaceholder'),
-  messagePlaceholder: t('messagePlaceholder'),
-  sendButtonLabel: t('sendButtonLabel'),
-  toastSuccessMessageSent: t('toastSuccessMessageSent'),
-  toastErrorFailedToSend: t('toastErrorFailedToSend'),
-  toastErrorUnexpected: t('toastErrorUnexpected'),
-  toastErrorDetails: t('toastErrorDetails'),
-};
+const copy = ui[lang].contactPage;
 ---
 
-<BaseLayout pageTitle={t('pageTitle')} pageDescription={t('pageDescription')}>
-  <ContactScreen
-    lang={lang}
-    heading={t('title')}
-    description={t('description')}
-    freelanceLine={t('freelanceLine')}
-    bookingTitle={t('bookingTitle')}
-    bookingDescription={t('bookingDescription')}
-    bookingLinkLabel={t('bookingLinkLabel')}
-    bookingUrl={profile.bookingUrl}
-    formHeading={t('formHeading')}
-    responseTime={t('responseTime')}
-    formTranslations={formTranslations}
-    elsewhereLabel={t('elsewhereLabel')}
-    linkedInLabel={t('linkedInLabel')}
-    githubLabel={t('githubLabel')}
-  />
+<BaseLayout pageTitle={copy.pageTitle} pageDescription={copy.pageDescription}>
+  <ContactScreen lang={lang} copy={copy} />
 </BaseLayout>
