@@ -71,26 +71,6 @@ export type TranslatedProject = ProjectData & {
   // technologiesUsed.name will be translated if needed, or could be kept as is if they are proper names
 };
 
-// Skills
-export type Technology = {
-  id: string; // e.g., 'react', 'angular', 'typescript' (will map to react-icons)
-  name: string; // e.g., 'React', 'Angular', 'TypeScript'
-};
-
-export type SkillData = {
-  id: string; // Unique identifier for the skill, used for i18n keys
-  iconName: string; // Name of the Lucide icon
-  technologies: Array<Technology>;
-};
-
-// Define the type for a skill once its content is translated
-export type TranslatedSkill = SkillData & {
-  title: string;
-  description: string;
-  // iconName is already part of SkillData
-  // technologies is already part of SkillData
-};
-
 /** A measured outcome shown under the hero: the figure, then what it measures. */
 export type Proof = {
   figure: string;
