@@ -1,38 +1,41 @@
-import { expect, test } from '@playwright/test';
-import { defaultLanguage } from '@/i18n/ui';
-import {
-  localePath,
-  locales,
-  projectRoutes,
-  sectionRoutes,
-} from './support/site';
+import { test } from '@playwright/test';
+import { createSystemUnderTest } from './support/system-under-test';
 
-test.describe('language parity', () => {
-  for (const lang of locales) {
-    for (const route of sectionRoutes) {
-      const path = localePath(lang, route);
-      test(`${path} responds 200`, async ({ request }) => {
-        expect((await request.get(path)).status()).toBe(200);
-      });
-    }
-  }
+const sectionAddresses = [
+  { fr: '/', en: '/en' },
+  { fr: '/experience', en: '/en/experience' },
+  { fr: '/projects', en: '/en/projects' },
+  { fr: '/blog', en: '/en/blog' },
+  { fr: '/tips', en: '/en/tips' },
+  { fr: '/contact', en: '/en/contact' },
+];
 
-  test('every French project page has an English counterpart', async ({
-    request,
-  }) => {
-    const frenchProjects = await projectRoutes(request, defaultLanguage);
-    expect(frenchProjects.length).toBeGreaterThan(0);
+test('Given every section of the site, when a visitor requests it in French and in English, then both pages respond', async ({
+  page,
+  request,
+}) => {
+  const site = createSystemUnderTest({ page, request });
+  await site.thenEachAddressResponds(
+    sectionAddresses.flatMap(({ fr, en }) => [fr, en]),
+    200
+  );
+});
 
-    for (const lang of locales) {
-      expect(await projectRoutes(request, lang)).toEqual(frenchProjects);
-      for (const route of frenchProjects) {
-        const path = localePath(lang, route);
-        expect((await request.get(path)).status(), path).toBe(200);
-      }
-    }
+test('Given the projects listed in French, when a visitor opens each project in English, then the same projects are listed and every page responds', async ({
+  page,
+  request,
+}) => {
+  const site = createSystemUnderTest({ page, request });
+  await site.thenEveryProjectPageHasACounterpart({
+    fr: '/projects',
+    en: '/en/projects',
   });
+});
 
-  test('an unknown page responds 404', async ({ request }) => {
-    expect((await request.get('/this-page-does-not-exist')).status()).toBe(404);
-  });
+test('Given an address the site does not have, when a visitor requests it, then the site answers not found', async ({
+  page,
+  request,
+}) => {
+  const site = createSystemUnderTest({ page, request });
+  await site.thenEachAddressResponds(['/this-page-does-not-exist'], 404);
 });

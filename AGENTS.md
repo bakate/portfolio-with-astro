@@ -14,7 +14,7 @@ pnpm is the only package manager (version pinned by `packageManager`; run `corep
 
 - `pnpm build` is the check that a change works; `pnpm astro check` typechecks.
 - `pnpm preview` does not work: the Vercel adapter refuses it. Use `vercel dev` to test the contact form (`/api/contact`); serving `.vercel/output/static` only shows the prerendered pages.
-- `pnpm test:e2e` builds, then runs the Playwright suite (`tests/e2e/`) against the build served by `scripts/serve-static.mjs`. `pnpm exec playwright test <file>` re-runs on the last build. It is the only test level: assert what a visitor sees (HTML, links, HTTP status), never component internals. CI runs it on every PR.
+- `pnpm test:e2e` builds, then runs the Playwright suite (`tests/e2e/`) against the build served by `scripts/serve-static.mjs`. `pnpm exec playwright test <file>` re-runs on the last build. It is the only test level, and every test is a `Given …, when …, then …` behaviour scenario: read `CODING_STANDARDS.md` before writing one. CI runs it on every PR.
 
 ## Bilingual by construction
 

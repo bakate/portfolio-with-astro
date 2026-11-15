@@ -1,70 +1,79 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { test } from '@playwright/test';
 import type { LanguageCode } from '@/i18n/ui';
-import { localePath, locales } from './support/site';
+import { createSystemUnderTest } from './support/system-under-test';
 
 /** Public booking page. Never the Google Calendar admin URL, which only works for its owner. */
-const bookingUrl = 'https://calendar.app.google/jQDVwUPrguURGuBH9';
+const bookingPage = 'https://calendar.app.google/jQDVwUPrguURGuBH9';
 
-const labelsByLocale = {
-  fr: { book: 'Réserver 15 min', cv: 'Télécharger mon CV' },
-  en: { book: 'Book a 15-min call', cv: 'Download my CV' },
-} as const satisfies Record<LanguageCode, { book: string; cv: string }>;
+const languages = {
+  fr: {
+    name: 'French',
+    home: '/',
+    contact: '/contact',
+    bookButton: 'Réserver 15 min',
+    cvButton: 'Télécharger mon CV',
+    cv: '/cv/bakate-idrissa-ba-cv-fr.pdf',
+    sendButton: 'Envoyer',
+  },
+  en: {
+    name: 'English',
+    home: '/en',
+    contact: '/en/contact',
+    bookButton: 'Book a 15-min call',
+    cvButton: 'Download my CV',
+    cv: '/cv/bakate-idrissa-ba-cv-en.pdf',
+    sendButton: 'Send',
+  },
+} as const satisfies Record<
+  LanguageCode,
+  {
+    name: string;
+    home: string;
+    contact: string;
+    bookButton: string;
+    cvButton: string;
+    cv: string;
+    sendButton: string;
+  }
+>;
 
-async function expectOpensBookingInNewTab(link: Locator) {
-  await expect(link).toHaveAttribute('href', bookingUrl);
-  await expect(link).toHaveAttribute('target', '_blank');
-  await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-}
+for (const language of Object.values(languages)) {
+  test(`Given the ${language.name} home page, when a visitor chooses "${language.bookButton}", then the public booking page opens in a new tab`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.home);
+    await site.thenHeroLinkOpensInNewTab(language.bookButton, bookingPage);
+  });
 
-for (const lang of locales) {
-  const labels = labelsByLocale[lang];
-
-  test.describe(`hero actions (${lang})`, () => {
-    test.beforeEach(async ({ page }) => {
-      await page.goto(localePath(lang, '/'));
-    });
-
-    test('"book a call" opens the public booking page in a new tab', async ({
-      page,
-    }) => {
-      const hero = page.locator('#hero');
-      await expectOpensBookingInNewTab(
-        hero.getByRole('link', { name: labels.book })
-      );
-    });
-
-    test('"download my CV" serves the PDF in the page language', async ({
-      page,
-      request,
-    }) => {
-      const link = page.locator('#hero').getByRole('link', { name: labels.cv });
-      const href = await link.getAttribute('href');
-      expect(href).toBe(`/cv/bakate-idrissa-ba-cv-${lang}.pdf`);
-
-      const pdf = await request.get(href!);
-      expect(pdf.status()).toBe(200);
-      expect(pdf.headers()['content-type']).toBe('application/pdf');
+  test(`Given the ${language.name} home page, when a visitor chooses "${language.cvButton}", then the ${language.name} CV downloads as a PDF`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.home);
+    await site.thenHeroLinkDownloads(language.cvButton, {
+      path: language.cv,
+      contentType: 'application/pdf',
     });
   });
 
-  test(`contact page links to the booking page (${lang})`, async ({ page }) => {
-    await page.goto(localePath(lang, '/contact'));
-    await expectOpensBookingInNewTab(
-      page.locator(`main a[href="${bookingUrl}"]`).first()
-    );
+  test(`Given the ${language.name} contact page, when a visitor looks for a call, then it links to the public booking page in a new tab`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.contact);
+    await site.thenPageLinksInNewTabTo(bookingPage);
   });
-}
 
-const sendButtonByLocale = {
-  fr: 'Envoyer',
-  en: 'Send',
-} as const satisfies Record<LanguageCode, string>;
-
-for (const lang of locales) {
-  test(`contact page keeps the message form (${lang})`, async ({ page }) => {
-    await page.goto(localePath(lang, '/contact'));
-    await expect(
-      page.getByRole('button', { name: sendButtonByLocale[lang], exact: true })
-    ).toBeVisible();
+  test(`Given the ${language.name} contact page, when a visitor prefers writing, then the message form is still there`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.contact);
+    await site.thenPageHasButton(language.sendButton);
   });
 }
