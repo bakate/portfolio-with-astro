@@ -63,12 +63,57 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
   const meta = (property: string) =>
     page.locator(`meta[property="${property}"]`).getAttribute('content');
 
+  /** The message form, by its role and the heading that names it. */
+  const form = page.getByRole('form');
+
+  /** Bodies posted to the contact service, once it is stubbed. */
+  const messagesReceived: Array<unknown> = [];
+
   return {
     // Given / When
+
+    /**
+     * The static build serves no API, so the contact service is stubbed. It
+     * answers success with no message of its own: the confirmation the visitor
+     * reads is the site's.
+     */
+    async givenTheContactServiceAcceptsMessages() {
+      await page.route('**/api/contact', async (route) => {
+        messagesReceived.push(route.request().postDataJSON());
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ status: 'success', message: '' }),
+        });
+      });
+    },
+
+    /** Fills each field by its visible label, then presses the send button. */
+    async visitorSendsMessage(
+      fields: Record<string, string>,
+      sendButton: string
+    ) {
+      for (const [label, value] of Object.entries(fields)) {
+        await form.getByLabel(label, { exact: true }).fill(value);
+      }
+      await form.getByRole('button', { name: sendButton, exact: true }).click();
+    },
+
+    /** Types in one field, then moves on without sending. */
+    async visitorFillsThenLeaves(label: string, value: string) {
+      const field = form.getByLabel(label, { exact: true });
+      await field.fill(value);
+      await field.blur();
+    },
 
     async visitorOpens(path: string) {
       const response = await page.goto(path);
       expect(response?.status(), path).toBe(200);
+    },
+
+    async visitorOpensMissingPage(path: string) {
+      const response = await page.goto(path);
+      expect(response?.status(), path).toBe(404);
     },
 
     /** Lands wherever the address leads, redirects included. */
@@ -376,6 +421,61 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenPageLinksTo(url: string) {
       await expect(page.locator(`main a[href="${url}"]`).first()).toBeVisible();
+    },
+
+    async thenPageShows(texts: ReadonlyArray<string>) {
+      const main = page.locator('main');
+      for (const text of texts) await expect(main).toContainText(text);
+    },
+
+    async thenPageNeverMentions(texts: ReadonlyArray<string>) {
+      const main = page.locator('main');
+      await expect(main).toBeVisible();
+      for (const text of texts) await expect(main).not.toContainText(text);
+    },
+
+    async thenVisitorIsTold(confirmation: string) {
+      await expect(page.getByText(confirmation, { exact: true })).toBeVisible();
+    },
+
+    async thenFormExplains(errors: ReadonlyArray<string>) {
+      for (const error of errors) {
+        await expect(form.getByText(error, { exact: true })).toBeVisible();
+      }
+    },
+
+    thenContactServiceReceivedNothing() {
+      expect(messagesReceived).toEqual([]);
+    },
+
+    async thenContactServiceReceived(message: Record<string, string>) {
+      await expect.poll(() => messagesReceived).toEqual([message]);
+    },
+
+    /** The page's sections (level-2 headings), in reading order. */
+    async thenSectionsAre(headings: ReadonlyArray<string>) {
+      await expect(
+        page.locator('main').getByRole('heading', { level: 2 })
+      ).toHaveText([...headings]);
+    },
+
+    async thenLinkComesBeforeButton(url: string, buttonName: string) {
+      const link = page.locator(`main a[href="${url}"]`).first();
+      const button = page.getByRole('button', {
+        name: buttonName,
+        exact: true,
+      });
+      await expect(link).toBeVisible();
+      await expect(button).toBeVisible();
+      const linkIsFirst = await link.evaluate(
+        (linkElement, buttonElement) =>
+          Boolean(
+            linkElement.compareDocumentPosition(buttonElement as Node) &
+            Node.DOCUMENT_POSITION_FOLLOWING
+          ),
+        await button.elementHandle()
+      );
+      expect(linkIsFirst, `${url} before "${buttonName}"`).toBe(true);
     },
 
     async thenProofSectionShows(proofs: ReadonlyArray<Proof>) {

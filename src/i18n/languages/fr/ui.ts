@@ -18,108 +18,91 @@ export const uiLabels = {
   experiencePage: {
     pageTitle: 'Expérience | Bakate Idrissa',
     pageDescription:
-      'Parcours professionnel de Bakate : 4 ans chez Bloomflow, puis fondateur de Teranga Pulse à Paris.',
-    pageHeading: 'Parcours Professionnel',
-    presentLabel: 'présent',
-    stackLabel: 'Stack utilisée',
-    seekingLabel: "À l'écoute de nouvelles opportunités",
+      'Parcours de Bakate Idrissa, Software Engineer Full-Stack TypeScript : leZèbre Tech, fondateur de Teranga Pulse, 4 ans chez Bloomflow.',
+    pageHeading: 'Parcours professionnel',
+    stackLabel: 'Stack',
+    seekingLabel: "À l'écoute de nouvelles opportunités.",
     downloadCV: 'Télécharger mon CV',
-    terangaPulse: {
-      company: 'Teranga Pulse',
-      role: 'Fondateur & Développeur Full-Stack',
-      period: "Novembre 2024 – Aujourd'hui",
-      location: 'Paris, France',
-      tagline: 'SaaS · Architecture · Ops',
-      about:
-        'Édition de plateformes SaaS critiques en solo. Maîtrise complète du cycle de vie : produit, infrastructure (CI/CD) et qualité logicielle.',
-      subRoles: [
-        {
-          project: 'Parent Up',
-          role: 'Fondateur & Développeur Full-Stack',
-          period: "Juillet 2025 – Aujourd'hui",
-        },
-        {
-          project: 'Terral Hub',
-          role: 'Fondateur & Développeur Full-Stack',
-          period: 'Novembre 2024 – Juin 2025',
-        },
-      ],
-      achievements: {
-        product: {
-          title: 'Ownership Produit 360°',
-          description:
-            'Roadmap, UX, architecture, sécurité, monitoring (Sentry) et pipeline CI/CD (GitHub Actions) intégralement définis et opérés en solo.',
-        },
-        backend: {
-          title: 'Backend Temps Réel & IA',
-          description:
-            'Messagerie sécurisée, sync Google Calendar, assistant juridique IA par RAG (Vercel AI SDK, OpenAI, embeddings), notifications email via Resend.',
-        },
-        quality: {
-          title: 'Design System & Tests',
-          description:
-            'Librairie UI interne, typage strict, tests Vitest et Convex Test. Auth avancée avec Clerk Organizations.',
-        },
+    entries: [
+      {
+        company: 'leZèbre Tech',
+        role: 'Software Engineer',
+        period: 'Juillet 2026 – octobre 2026',
+        location: 'Antony',
+        summary: 'Services backend NestJS en architecture hexagonale et DDD.',
+        highlights: [
+          "Domaine métier isolé de l'infrastructure par des ports et adaptateurs, pour un code testable et maintenable.",
+          "TDD au quotidien et tests d'acceptation Gherkin pour aligner produit et technique sur le comportement attendu.",
+          'Revues de code et accompagnement des développeurs juniors.',
+          'Spécifications assistées par LLM et Linear ; livraisons incrémentales.',
+        ],
+        technologies: [
+          'NestJS',
+          'TypeScript',
+          'Node.js',
+          'DDD',
+          'Architecture hexagonale',
+          'TDD',
+          'Gherkin',
+        ],
       },
-      technologies: [
-        'Next.js',
-        'TypeScript',
-        'Convex',
-        'Turborepo',
-        'Clerk',
-        'Vercel AI SDK',
-        'OpenAI',
-        'Resend',
-        'Vitest',
-        'Sentry',
-        'GitHub Actions',
-      ],
-    },
-    bloomflow: {
-      company: 'Bloomflow',
-      role: 'Développeur Full-Stack',
-      period: 'Novembre 2020 – Novembre 2024',
-      location: 'Paris, France · Hybride',
-      tagline: 'Scale-up B2B · SaaS · 4 ans',
-      about:
-        "Développement de l'outil d'open innovation utilisé par les groupes du CAC 40 pour piloter leur écosystème startup.",
-      achievements: {
-        designSystem: {
-          title: 'Industrialisation UI (Design System)',
-          description:
-            "Conception d'une librairie de composants Angular transverse via Storybook pour assurer la convergence visuelle et technique de plusieurs modules.",
-        },
-        migration: {
-          title: 'Migration TypeScript & Qualité',
-          description:
-            "Pilotage de la migration JS → TS d'un back-office Next.js critique. Sécurisation globale via tests unitaires, d'intégration et pipelines CI automatisés.",
-        },
-        automation: {
-          title: 'Impact Opérationnel & SaaS',
-          description:
-            "Création d'un module d'auto-service pour le Customer Success, transformant des workflows manuels complexes de 2 jours en validations instantanées.",
-        },
-        angular: {
-          title: 'State management Angular (NgRx, Signals)',
-          description:
-            "Gestion d'états complexes (NgRx, Signals) et implémentation de formulaires dynamiques sur des processus métier à forts volumes de données.",
-        },
+      {
+        company: 'Teranga Pulse',
+        role: 'Fondateur et Software Engineer Full-Stack',
+        period: 'Novembre 2024 – juin 2026',
+        location: 'Paris / Dakar',
+        summary: "Deux MVP livrés en solo, de l'architecture à la production.",
+        highlights: [
+          'Parent Up (coparentalité) : Next.js et TypeScript en monorepo Turborepo, backend temps réel Convex, messagerie sécurisée, synchronisation Google Calendar, documents à accès restreint et assistant juridique IA (RAG, embeddings, Vercel AI SDK, OpenAI).',
+          'Terral Hub (logistique agricole, Sénégal) : plateforme reliant agriculteurs, entrepôts et transporteurs, avec réservation, suivi des capacités en temps réel, paiements PayDunya et PWA offline-first pour les zones à faible connectivité.',
+          'UI en Tailwind et shadcn/ui, formulaires React Hook Form + Zod ; webhooks signés et idempotents (Clerk, Convex) ; tests Vitest, CI/CD GitHub Actions, Sentry.',
+        ],
+        technologies: [
+          'Next.js',
+          'TypeScript',
+          'Convex',
+          'Turborepo',
+          'Clerk',
+          'Vercel AI SDK',
+          'OpenAI',
+          'Tailwind CSS',
+          'Vitest',
+          'GitHub Actions',
+          'Sentry',
+        ],
       },
-      technologies: [
-        'Angular',
-        'Next.js',
-        'React',
-        'TypeScript',
-        'Node',
-        'Express',
-        'MongoDB',
-        'Elastic Search',
-        'PostgreSQL',
-        'SQLite',
-        'Jest',
-        'Docker',
-      ],
-    },
+      {
+        company: 'Bloomflow',
+        companyUrl: 'https://www.bloomflow.com/',
+        role: 'Software Engineer Full-Stack',
+        period: 'Novembre 2020 – novembre 2024',
+        location: 'Paris',
+        summary: "SaaS B2B d'open innovation pour grands groupes, 4 ans.",
+        highlights: [
+          'Écrans métier complexes à gros volumes de données pour des grands comptes (Bayer, Unilever, HSBC, Orange, Chanel), en Angular puis en React / Next.js.',
+          "Refonte du chargement du module analytique : chaque graphique et carte s'affiche dès qu'il est prêt, temps de chargement ramené de 7-8 s à moins de 2 s.",
+          'Outils internes TypeScript / Node.js : une tâche de 2 jours ramenée à quelques clics dans le back-office (Next.js).',
+          "Conception d'un design system et d'une librairie UI interne partagés entre les équipes produit.",
+          "Contribution à la mise en place d'un store NgRx côté front pour centraliser l'état et éviter les requêtes inutiles.",
+          'Tests Jest et Testing Library en CI ; environnement Kubernetes, instances clients sur AWS, OVH et Azure.',
+          'Astreinte mensuelle « Houston » : bugs de production, priorisation avec le PM, correctifs, mise en production et brief du Customer Success.',
+        ],
+        technologies: [
+          'Angular',
+          'NgRx',
+          'React',
+          'Next.js',
+          'TypeScript',
+          'Node.js',
+          'Express',
+          'MongoDB',
+          'PostgreSQL',
+          'Jest',
+          'Storybook',
+          'Kubernetes',
+        ],
+      },
+    ],
   },
   homePage: {
     pageTitle: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
@@ -237,46 +220,33 @@ export const uiLabels = {
     title: "Sommaire de l'article",
   },
   contactPage: {
-    pageTitle: 'Me Contacter',
+    pageTitle: 'Contact | Bakate Idrissa',
     pageDescription:
-      "Discutons de ton projet, d'une collaboration potentielle, ou simplement pour échanger sur la tech !",
-    title: 'Me Contacter',
+      'Réserver un appel de 15 minutes ou écrire à Bakate Idrissa, Software Engineer Full-Stack TypeScript. Disponible aussi en mission freelance.',
+    title: 'Me contacter',
     description:
-      "Discutons de ton projet, d'une collaboration potentielle, ou simplement pour échanger sur la tech !",
-
-    formTitle: 'Envoyer un message',
-    writeToMeHeader: "M'écrire",
-    letstalkHeader: 'Discutons',
-    badgeResponseTime: 'Réponse sous 24h',
-    consultingValueProp:
-      "Besoin d'avancer vite ? Réserve 15 min de consulting gratuit.",
-    contactName: 'Bakate Idrissa',
+      'Un poste, un projet ou une question technique : le plus simple est de réserver 15 minutes. Tu préfères écrire ? Le formulaire est juste en dessous.',
+    freelanceLine: 'Disponible aussi en mission freelance.',
+    bookingTitle: 'Réserver un appel',
+    bookingDescription: "15 minutes en visio, à l'horaire qui t'arrange.",
+    bookingLinkLabel: 'Réserver 15 min',
+    formHeading: "M'écrire",
+    responseTime: 'Réponse sous 24 h.',
+    elsewhereLabel: 'Aussi sur',
     linkedInLabel: 'LinkedIn',
-    professionalNetworkLabel: 'Réseau Professionnel',
     githubLabel: 'GitHub',
-    openSourceLabel: 'Open Source & Code',
-    socialLinksTitle: 'Où me trouver',
 
     firstNameLabel: 'Prénom',
     lastNameLabel: 'Nom',
     emailLabel: 'Email',
-    companyLabel: 'Société (Optionnel)',
+    companyLabel: 'Société (optionnel)',
     messageLabel: 'Message',
     sendButtonLabel: 'Envoyer',
     firstNamePlaceholder: 'Ton prénom',
-
     lastNamePlaceholder: 'Ton nom de famille',
     emailPlaceholder: 'Ton adresse e-mail',
     companyPlaceholder: 'Le nom de ton entreprise',
     messagePlaceholder: 'Ton message ici...',
-    calendarTitle: 'Planifier un RDV',
-    calendarDescription:
-      'Tu préfères discuter de vive voix ? Réservez directement un créneau dans mon agenda.',
-    calendarButtonLabel: 'Voir mes disponibilités',
-    calendarLinkLabel: 'Voir mon agenda',
-    calendarPlaceHolder:
-      "L'intégration avec Google Calendar se fera bientôt...",
-    orSeparatorText: 'OU',
     toastSuccessMessageSent: 'Message envoyé avec succès !',
     toastErrorFailedToSend: "Échec de l'envoi du message.",
     toastErrorUnexpected: "Une erreur inattendue s'est produite.",
@@ -314,11 +284,11 @@ export const uiLabels = {
     technologies: 'Technologies',
   },
   notFoundPage: {
-    pageTitle: 'Page Non Trouvée',
-    title: 'Oups ! Page Non Trouvée',
+    pageTitle: 'Page introuvable | Bakate Idrissa',
+    title: 'Page introuvable',
     message:
-      "Désolé, la page que tu recherches ne semble pas exister. Vérifie l'URL ou retourne à la page d'accueil.",
-    homeLink: "Retourner à l'Accueil",
+      'Cette adresse ne mène à aucune page. Elle a peut-être changé, ou contient une faute de frappe.',
+    homeLink: "Retour à l'accueil",
   },
 
   tipsPage: {
@@ -355,10 +325,10 @@ export const uiLabels = {
     // Common errors
     invalid_type: 'Type invalide.',
     invalid_type_received_undefined: 'Ce champ est requis.', // For required fields (fallback)
-    required_field_custom: '{fieldName} est requis.',
+    required_field_custom: 'Le {fieldName} est requis.',
     // String errors
     too_small_string_minimum:
-      '{fieldName} doit contenir au moins {minimum} caractère(s:minimum).',
+      'Le {fieldName} doit contenir au moins {minimum} caractère(s:minimum).',
     too_big_string_maximum: 'Ne doit pas dépasser {maximum} caractères.',
     invalid_string_email: 'Adresse e-mail invalide.',
     invalid_string_url: 'URL invalide.',

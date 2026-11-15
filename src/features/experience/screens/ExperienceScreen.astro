@@ -1,29 +1,8 @@
 ---
-import Heading from '@/components/Heading.astro';
-import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
-import type { LanguageCode } from '@/i18n/ui';
-import { cn } from '@/lib/utils';
-import {
-  Building,
-  Calendar,
-  CheckCircle,
-  CpuIcon,
-  ExternalLink,
-  FileDown,
-  MapPin,
-} from 'lucide-react';
-
-export type Achievement = {
-  title: string;
-  description: string;
-};
-
-export type SubRole = {
-  role: string;
-  period: string;
-  project: string;
-};
+import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
+import { profile } from '@/lib/profile';
+import { ExternalLink, FileDown } from 'lucide-react';
 
 export type ExperienceEntry = {
   company: string;
@@ -31,407 +10,92 @@ export type ExperienceEntry = {
   role: string;
   period: string;
   location: string;
-  tagline: string;
-  about: string;
-  subRoles?: SubRole[];
-  achievements: Achievement[];
-  technologies: string[];
-  isFounder?: boolean;
+  summary: string;
+  highlights: ReadonlyArray<string>;
+  technologies: ReadonlyArray<string>;
+};
+
+/**
+ * Every string of the experience page, keyed like the French copy: passing
+ * `ui[lang].experiencePage` fails to compile when a language misses a key.
+ */
+export type ExperiencePageCopy = Record<
+  Exclude<
+    keyof (typeof ui)[typeof defaultLanguage]['experiencePage'],
+    'entries'
+  >,
+  string
+> & {
+  /** Most recent first, as on the CV. */
+  entries: ReadonlyArray<ExperienceEntry>;
 };
 
 export type Props = {
   lang: LanguageCode;
-  pageHeading: string;
-  stackLabel: string;
-  seekingLabel: string;
-  downloadLabel: string;
-  cvUrl: string;
-  experiences: ExperienceEntry[];
+  copy: ExperiencePageCopy;
 };
 
-const {
-  lang,
-  pageHeading,
-  stackLabel,
-  seekingLabel,
-  downloadLabel,
-  cvUrl,
-  experiences,
-} = Astro.props;
+const { lang, copy } = Astro.props;
 ---
 
-<section class="py-12 md:py-16 relative overflow-hidden">
-  <div class="absolute inset-0 -z-10"></div>
+<section class="py-12 md:py-16">
+  <div class="mx-auto max-w-3xl px-4">
+    <header
+      class="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
+    >
+      <h1 class="text-3xl font-bold sm:text-4xl">{copy.pageHeading}</h1>
+      <a
+        href={profile.cvPathByLanguage[lang]}
+        download
+        class={buttonVariants({ variant: 'outline', size: 'lg' })}
+      >
+        <FileDown className="size-4" aria-hidden="true" />
+        {copy.downloadCV}
+      </a>
+    </header>
 
-  <div class="container mx-auto px-4 mb-16">
-    <div class="max-w-4xl mx-auto flex flex-col items-center">
-      <Heading title={pageHeading} />
-
-      <div class="mt-2 flex justify-center w-full max-w-sm mx-auto">
-        <a
-          href={cvUrl}
-          download
-          class={cn(
-            buttonVariants({ variant: 'default', size: 'lg' }),
-            'w-full sm:w-auto'
-          )}
-        >
-          <FileDown className="size-5" />
-          <span>{downloadLabel}</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  {/* Timeline container */}
-  <div class="relative max-w-4xl mx-auto py-4 sm:py-8 px-4 sm:px-6">
-    <div class="relative pl-8 md:pl-16">
-      {/* Vertical Rail */}
-      <div class="timeline-rail"></div>
-
+    <ol class="space-y-12">
       {
-        experiences.map((exp, index) => (
-          <div
-            class="relative mb-16 last:mb-0"
-            data-aos="fade-up"
-            data-aos-delay={index * 100}
-          >
-            {/* Timeline Dot */}
-            <div
-              class={cn(
-                'timeline-dot-container',
-                exp.isFounder ? 'founder' : 'employee'
-              )}
-            >
-              <div class="timeline-dot-inner" />
-            </div>
-
-            {/* Experience Card */}
-            <div class="experience-card">
-              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div>
-                  <div class="flex items-center gap-3 mb-2">
-                    {!exp.isFounder && (
-                      <div class="icon-box text-primary">
-                        <Building className="size-5" />
-                      </div>
-                    )}
-                    <h2 class="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                      {exp.company}
-                      {exp.companyUrl && (
-                        <a
-                          href={exp.companyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          class="link-external"
-                          aria-label={`Visit ${exp.company} website`}
-                        >
-                          <ExternalLink className="size-4" />
-                        </a>
-                      )}
-                    </h2>
-                  </div>
-                  <div class="space-y-1">
-                    <p class="text-lg font-semibold text-primary">{exp.role}</p>
-                    <p class="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
-                      {exp.tagline}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex flex-col items-start md:items-end gap-2 shrink-0">
-                  <Badge
-                    variant="secondary"
-                    className="badge-period h-auto py-1.5 px-3"
+        copy.entries.map((experience) => (
+          <li class="border-t border-border pt-8">
+            <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+              <h2 class="text-2xl font-semibold">
+                {experience.companyUrl ? (
+                  <a
+                    href={experience.companyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 underline-offset-4 hover:text-primary hover:underline"
                   >
-                    <Calendar className="size-4 text-muted-foreground mr-2" />
-                    <span>{exp.period}</span>
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    className="badge-location h-auto py-1 px-3 border-none bg-muted/30"
-                  >
-                    <MapPin className="size-3.5 mr-1.5" />
-                    <span>{exp.location}</span>
-                  </Badge>
-                </div>
-              </div>
-
-              {/* About */}
-              <div class="relative mb-8">
-                <div class="about-accent" />
-                <p class="text-muted-foreground leading-relaxed italic text-sm md:text-base">
-                  {exp.about}
-                </p>
-              </div>
-
-              {/* Sub-roles */}
-              {exp.subRoles && exp.subRoles.length > 0 && (
-                <div class="mb-8 grid gap-3">
-                  {exp.subRoles.map((sub) => (
-                    <div class="sub-role-item group/sub">
-                      <div class="flex items-center gap-3">
-                        <div class="sub-role-indicator" />
-                        <span class="font-bold text-foreground/90">
-                          {sub.project}
-                        </span>
-                        <span class="text-muted-foreground">—</span>
-                        <span class="text-muted-foreground">{sub.role}</span>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className="sub-role-period h-auto py-0.5 px-2 bg-background/50 border-border/30"
-                      >
-                        {sub.period}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Achievements grid */}
-              <div
-                class={`grid gap-4 mb-8 ${exp.achievements.length === 3 ? 'md:grid-cols-3' : 'sm:grid-cols-2'}`}
-              >
-                {exp.achievements.map((achievement) => (
-                  <div class="achievement-card group/item">
-                    <div class="flex items-start gap-3 mb-3">
-                      <div class="achievement-icon text-primary">
-                        <CheckCircle className="size-4" />
-                      </div>
-                      <h3 class="text-sm font-bold text-foreground leading-snug">
-                        {achievement.title}
-                      </h3>
-                    </div>
-                    <p class="text-xs text-muted-foreground leading-relaxed line-clamp-4">
-                      {achievement.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Stack Tags */}
-              <div class="pt-6 border-t border-border/50">
-                <div class="flex items-center gap-2 mb-3">
-                  <CpuIcon className="size-4 text-muted-foreground" />
-                  <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
-                    {stackLabel}
-                  </span>
-                </div>
-                <div class="flex flex-wrap gap-1.5">
-                  {exp.technologies.map((tech) => (
-                    <Badge
-                      variant="default"
-                      className="tech-tag bg-primary/5 text-primary border-primary/10 hover:bg-primary/10 transition-colors"
-                    >
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+                    {experience.company}
+                    <ExternalLink className="size-4" aria-hidden="true" />
+                  </a>
+                ) : (
+                  experience.company
+                )}
+              </h2>
+              <p class="shrink-0 text-sm text-muted-foreground">
+                {experience.period} · {experience.location}
+              </p>
             </div>
-          </div>
+            <p class="mt-1 font-medium text-primary">{experience.role}</p>
+            <p class="mt-4 text-muted-foreground">{experience.summary}</p>
+            <ul class="mt-4 list-disc space-y-2 pl-5 leading-relaxed marker:text-primary">
+              {experience.highlights.map((highlight) => (
+                <li>{highlight}</li>
+              ))}
+            </ul>
+            <p class="mt-6 text-sm text-muted-foreground">
+              <span class="font-medium text-foreground">{copy.stackLabel}</span>{' '}
+              · {experience.technologies.join(' · ')}
+            </p>
+          </li>
         ))
       }
+    </ol>
 
-      {/* Bottom Terminal Dot (Seeking) */}
-      <div class="relative mt-12 group flex items-center">
-        <div
-          class="absolute left-[-28px] md:left-[-44px] size-6 flex items-center justify-center"
-        >
-          <div
-            class="size-4 rounded-full border-2 border-border bg-background z-10"
-          >
-          </div>
-          <div class="absolute size-4 rounded-full bg-primary/20 animate-ping">
-          </div>
-        </div>
-        <div class="seeking-badge">
-          <div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
-          <span class="text-sm font-bold text-muted-foreground tracking-wide">
-            {seekingLabel}
-          </span>
-        </div>
-      </div>
-    </div>
+    <p class="mt-12 border-t border-border pt-8 text-muted-foreground">
+      {copy.seekingLabel}
+    </p>
   </div>
 </section>
-
-<style>
-  .timeline-rail {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    bottom: 1rem;
-    width: 1px;
-    background-color: var(--color-border);
-  }
-  @media (min-width: 768px) {
-    .timeline-rail {
-      left: 2rem;
-    }
-  }
-
-  .timeline-dot-container {
-    position: absolute;
-    left: -28px;
-    top: 1.5rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 9999px;
-    border-width: 2px;
-    background-color: var(--color-background);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: all 0.5s ease;
-  }
-  @media (min-width: 768px) {
-    .timeline-dot-container {
-      left: -44px;
-    }
-  }
-  .timeline-dot-container.founder {
-    border-color: var(--color-primary);
-  }
-  .timeline-dot-container.employee {
-    border-color: var(--color-border);
-  }
-
-  .timeline-dot-inner {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 9999px;
-    background-color: currentColor;
-  }
-  .founder .timeline-dot-inner {
-    background-color: var(--color-primary);
-  }
-  .employee .timeline-dot-inner {
-    background-color: var(--color-muted-foreground);
-  }
-
-  .experience-card {
-    background-color: var(--color-card);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    padding: 1.5rem;
-    transition: border-color 0.2s ease;
-  }
-  @media (min-width: 768px) {
-    .experience-card {
-      padding: 2rem;
-    }
-  }
-  .experience-card:hover {
-    border-color: color-mix(in oklch, var(--color-primary), transparent 60%);
-  }
-
-  .icon-box {
-    padding: 0.625rem;
-    border-radius: 0.75rem;
-    background-color: color-mix(in oklch, var(--color-muted), transparent 50%);
-    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
-  }
-
-  .link-external {
-    color: var(--color-muted-foreground);
-    transition: color 0.2s ease;
-    outline: none;
-  }
-  .link-external:hover {
-    color: var(--color-primary);
-  }
-
-  .about-accent {
-    position: absolute;
-    inset-block: 0;
-    left: -1rem;
-    width: 2px;
-    background-color: var(--color-primary);
-    border-radius: 9999px;
-  }
-
-  .sub-role-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    background-color: color-mix(in oklch, var(--color-muted), transparent 80%);
-    border-radius: 0.75rem;
-    padding: 0.75rem 1.25rem;
-    border: 1px solid color-mix(in oklch, var(--color-border), transparent 60%);
-    transition: background-color 0.2s ease;
-  }
-  @media (min-width: 640px) {
-    .sub-role-item {
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
-    }
-  }
-  .sub-role-item:hover {
-    background-color: color-mix(in oklch, var(--color-muted), transparent 60%);
-  }
-
-  .sub-role-indicator {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 9999px;
-    background-color: color-mix(
-      in oklch,
-      var(--color-primary),
-      transparent 60%
-    );
-    transition: all 0.2s ease;
-  }
-  .sub-role-item:hover .sub-role-indicator {
-    background-color: var(--color-primary);
-    transform: scale(1.1);
-  }
-
-  .achievement-card {
-    background-color: color-mix(in oklch, var(--color-muted), transparent 90%);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    border: 1px solid color-mix(in oklch, var(--color-border), transparent 60%);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-  }
-  .achievement-card:hover {
-    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
-    background-color: color-mix(in oklch, var(--color-muted), transparent 70%);
-    box-shadow: var(--shadow-md);
-  }
-
-  .achievement-icon {
-    padding: 0.375rem;
-    border-radius: 0.5rem;
-    background-color: var(--color-background);
-    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
-    transition: border-color 0.2s ease;
-    flex-shrink: 0;
-  }
-  .achievement-card:hover .achievement-icon {
-    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
-  }
-
-  .seeking-badge {
-    background-color: color-mix(in oklch, var(--color-muted), transparent 70%);
-    border: 1px solid color-mix(in oklch, var(--color-border), transparent 50%);
-    border-radius: 9999px;
-    padding: 0.5rem 1.5rem;
-    margin-left: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    box-shadow: var(--shadow-sm);
-    transition: background-color 0.2s ease;
-  }
-  .seeking-badge:hover {
-    background-color: color-mix(in oklch, var(--color-muted), transparent 50%);
-  }
-</style>

@@ -1,66 +1,13 @@
 ---
-import { profile } from '@/lib/profile';
-import type {
-  Achievement,
-  ExperienceEntry,
-} from '@/features/experience/screens/ExperienceScreen.astro';
-import ExperienceScreen from '@/features/experience/screens/ExperienceScreen.astro';
-import {
-  defaultLanguage,
-  ui,
-  useTranslations,
-  type LanguageCode,
-} from '@/i18n/ui';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { ExperienceScreen } from '@/features/experience';
+import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 
-const lang = defaultLanguage as LanguageCode;
-const t = useTranslations(lang, 'experiencePage');
-const expPage = ui[lang].experiencePage;
-
-const pageMeta = {
-  title: t('pageTitle'),
-  description: t('pageDescription'),
-};
-
-const { terangaPulse, bloomflow } = expPage;
-
-const experiences: ExperienceEntry[] = [
-  {
-    company: terangaPulse.company,
-    companyUrl: '',
-    role: terangaPulse.role,
-    period: terangaPulse.period,
-    location: terangaPulse.location,
-    tagline: terangaPulse.tagline,
-    about: terangaPulse.about,
-    subRoles: [...terangaPulse.subRoles],
-    achievements: Object.values(terangaPulse.achievements) as Achievement[],
-    technologies: [...terangaPulse.technologies],
-    isFounder: true,
-  },
-  {
-    company: bloomflow.company,
-    companyUrl: 'https://www.bloomflow.com/',
-    role: bloomflow.role,
-    period: bloomflow.period,
-    location: bloomflow.location,
-    tagline: bloomflow.tagline,
-    about: bloomflow.about,
-    achievements: Object.values(bloomflow.achievements) as Achievement[],
-    technologies: [...bloomflow.technologies],
-    subRoles: [],
-  },
-];
+const lang =
+  (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
+const copy = ui[lang].experiencePage;
 ---
 
-<BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.description}>
-  <ExperienceScreen
-    lang={lang}
-    pageHeading={t('pageHeading')}
-    stackLabel={t('stackLabel')}
-    seekingLabel={t('seekingLabel')}
-    downloadLabel={t('downloadCV')}
-    cvUrl={profile.cvPathByLanguage.fr}
-    experiences={experiences}
-  />
+<BaseLayout pageTitle={copy.pageTitle} pageDescription={copy.pageDescription}>
+  <ExperienceScreen lang={lang} copy={copy} />
 </BaseLayout>

@@ -1,189 +1,77 @@
 ---
-import heroImage from '@/assets/bakate-portrait.png';
-import Heading from '@/components/Heading.astro';
 import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
 import { profile } from '@/lib/profile';
-import { cn } from '@/lib/utils';
-import { Image } from 'astro:assets';
-import { Calendar, Clock } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { Calendar } from 'lucide-react';
 
 import { ContactForm } from '../components/ContactForm.tsx';
-import type { ContactFormTranslations } from '../type';
+import type { ContactPageCopy } from '../type';
 
 interface Props {
   lang: LanguageCode;
-  mainHeadingTitle: string;
-  mainHeadingDescription: string;
-  formTitle: string;
-  formTranslations: ContactFormTranslations;
-  orSeparatorText: string;
-  calendarTitle: string;
-  calendarDescription: string;
-  calendarLinkLabel: string;
-  calendarUrl: string;
+  copy: ContactPageCopy;
 }
 
-const {
-  lang,
-  mainHeadingTitle,
-  mainHeadingDescription,
-  formTitle,
-  formTranslations,
-  orSeparatorText,
-  calendarTitle,
-  calendarDescription,
-  calendarLinkLabel,
-  calendarUrl,
-} = Astro.props;
+const { lang, copy } = Astro.props;
+
+const linkClass =
+  'font-medium text-foreground underline underline-offset-4 hover:text-primary';
 ---
 
 <section class="py-12 md:py-16">
-  <Heading
-    title={mainHeadingTitle}
-    description={mainHeadingDescription}
-    showDivider={true}
-    className="animate-fade-in-down"
-  />
+  <div class="mx-auto max-w-2xl px-4">
+    <h1 class="text-3xl font-bold sm:text-4xl">{copy.title}</h1>
+    <p class="mt-4 text-lg leading-relaxed text-muted-foreground">
+      {copy.description}
+    </p>
+    <p class="mt-2 font-medium">{copy.freelanceLine}</p>
 
-  <div
-    class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-12 max-w-6xl mx-auto w-full"
-  >
-    {/* Colonne Gauche: Formulaire */}
-    <div class="lg:col-span-7 animate-fade-in-up [animation-delay:200ms]">
-      <div
-        class="bg-card p-6 md:p-10 rounded-lg shadow-sm border border-border relative overflow-hidden"
+    {/* Booking first: the fastest way to talk. */}
+    <div class="mt-10 rounded-lg border border-border bg-card p-6 md:p-8">
+      <h2 class="text-2xl font-semibold">{copy.bookingTitle}</h2>
+      <p class="mt-2 text-muted-foreground">{copy.bookingDescription}</p>
+      <a
+        href={profile.bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class:list={[
+          buttonVariants({ variant: 'default', size: 'lg' }),
+          'mt-6',
+        ]}
       >
-        <div class="absolute top-0 right-0 p-4">
-          <span
-            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"
-          >
-            <Clock className="mr-1.5 size-3" />
-            {formTranslations.badgeResponseTime}
-          </span>
-        </div>
-
-        <div class="mb-8">
-          <h2 class="text-2xl font-bold mb-2">
-            {formTranslations.writeToMeHeader}
-          </h2>
-          <p class="text-muted-foreground text-sm">{formTitle}</p>
-        </div>
-
-        <ContactForm client:load {lang} {formTranslations} />
-      </div>
+        <Calendar className="size-4" aria-hidden="true" />
+        {copy.bookingLinkLabel}
+      </a>
     </div>
 
-    {/* Colonne Droite: Appels & Social */}
-    <div
-      class="lg:col-span-5 space-y-8 animate-fade-in-up [animation-delay:400ms]"
-    >
-      {/* Section Calendar */}
-      <div class="bg-primary/5 p-8 rounded-lg border border-primary/20">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="p-3 rounded-md bg-primary text-primary-foreground">
-            <Calendar className="size-6" />
-          </div>
-          <h2 class="text-2xl font-bold">
-            {formTranslations.letstalkHeader}
-          </h2>
-        </div>
-
-        <h3 class="text-lg font-semibold mb-3">{calendarTitle}</h3>
-        <p class="text-muted-foreground mb-6 leading-relaxed">
-          {formTranslations.consultingValueProp}
-        </p>
-
-        <a
-          href={calendarUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class={cn(
-            'w-full group/btn',
-            buttonVariants({ variant: 'default', size: 'lg' })
-          )}
-        >
-          {calendarLinkLabel}
-          <Calendar
-            className="ml-2 size-4 group-hover/btn:scale-110 transition-transform"
-          />
-        </a>
-      </div>
-
-      {/* Section Social Trust */}
-      <div class="bg-muted/30 p-8 rounded-lg border border-border">
-        <div class="flex items-center gap-4 mb-6">
-          <div
-            class="size-12 rounded-md overflow-hidden border border-border bg-muted"
-          >
-            <Image
-              src={heroImage}
-              alt={formTranslations.contactName}
-              width={100}
-              height={100}
-              class="h-full w-full object-cover"
-            />
-          </div>
-          <div>
-            <h3
-              class="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-            >
-              {formTranslations.socialLinksTitle}
-            </h3>
-            <p class="text-sm font-bold truncate">
-              {formTranslations.contactName}
-            </p>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-4">
-          <a
-            href={profile.links.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-between p-4 rounded-md bg-card border border-border hover:border-primary/50 transition-colors group"
-          >
-            <div class="flex items-center gap-4">
-              <div
-                class="p-2.5 rounded-md bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-              >
-                <FaLinkedin className="size-5" />
-              </div>
-              <div>
-                <p class="font-semibold px-2">
-                  {formTranslations.linkedInLabel}
-                </p>
-                <p class="text-xs text-muted-foreground px-2">
-                  {formTranslations.professionalNetworkLabel}
-                </p>
-              </div>
-            </div>
-            <div class="size-2 rounded-full bg-green-500"></div>
-          </a>
-
-          <a
-            href={profile.links.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-between p-4 rounded-md bg-card border border-border hover:border-primary/50 transition-colors group"
-          >
-            <div class="flex items-center gap-4">
-              <div
-                class="p-2.5 rounded-md bg-foreground/10 text-foreground group-hover:bg-foreground group-hover:text-background transition-colors"
-              >
-                <FaGithub className="size-5" />
-              </div>
-              <div>
-                <p class="font-semibold px-2">{formTranslations.githubLabel}</p>
-                <p class="text-xs text-muted-foreground px-2">
-                  {formTranslations.openSourceLabel}
-                </p>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
+    <div class="mt-10 rounded-lg border border-border bg-card p-6 md:p-8">
+      <h2 id="contact-form-heading" class="text-2xl font-semibold">
+        {copy.formHeading}
+      </h2>
+      <p class="mt-2 mb-8 text-muted-foreground">{copy.responseTime}</p>
+      <ContactForm
+        client:load
+        {lang}
+        formTranslations={copy}
+        labelledBy="contact-form-heading"
+      />
     </div>
+
+    <p class="mt-10 text-sm text-muted-foreground">
+      {copy.elsewhereLabel}{' '}
+      <a
+        href={profile.links.linkedin}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={linkClass}>{copy.linkedInLabel}</a
+      >
+      ·
+      <a
+        href={profile.links.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={linkClass}>{copy.githubLabel}</a
+      >
+    </p>
   </div>
 </section>

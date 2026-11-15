@@ -1,58 +1,26 @@
 import { z } from 'zod';
 import { ui, type LanguageCode, defaultLanguage } from './ui';
 
-// Helper to get translations safely, falling back to default language or a generic message
+type ZodErrorKey = keyof (typeof ui)[typeof defaultLanguage]['zodErrors'];
+type ContactKey = keyof (typeof ui)[typeof defaultLanguage]['contactPage'];
+
+/** Translated message for `key`, with `{param}` and `(s:param)` filled in. */
 function getErrorMessage(
   lang: LanguageCode,
-  key: keyof (typeof ui)[LanguageCode]['zodErrors'],
-  params?: Record<string, string | number>
+  key: ZodErrorKey,
+  params: Record<string, string | number> = {}
 ): string {
   let message: string =
-    ui[lang]?.zodErrors?.[key] || ui[defaultLanguage]?.zodErrors?.[key] || ''; // Initialize with empty string if key not found
+    ui[lang].zodErrors[key] ?? ui[defaultLanguage].zodErrors[key];
 
-  if (!message) {
-    // Check if message is still empty after primary lookups
-    // Fallback for truly missing keys, though ideally all keys used should exist
-    switch (key) {
-      case 'invalid_type_received_undefined':
-        message = 'This field is required.';
-        break;
-      case 'invalid_string_email':
-        message = 'Invalid email.';
-        break;
-      case 'too_small_string_minimum':
-        message = 'Too short.';
-        break;
-      case 'too_big_string_maximum':
-        message = 'Too long.';
-        break;
-      default:
-        message = 'Invalid input.';
+  for (const [name, value] of Object.entries(params)) {
+    message = message.replaceAll(`{${name}}`, String(value));
+    if (typeof value === 'number') {
+      message = message.replaceAll(`(s:${name})`, value <= 1 ? '' : 's');
     }
   }
 
-  if (params) {
-    Object.keys(params).forEach((paramKey) => {
-      const val = params[paramKey];
-      message = message.replace(`{${paramKey}}`, String(val));
-
-      // Simple pluralization handling for "(s:paramName)" or deprecated global "(s)"
-      if (typeof val === 'number' || !isNaN(Number(val))) {
-        const num = Number(val);
-        const suffix = num <= 1 ? '' : 's';
-        
-        // Parameter-scoped marker replacement
-        message = message.replace(new RegExp(`\\(s:${paramKey}\\)`, 'g'), suffix);
-        
-        // Deprecated global marker replacement
-        if (message.includes('(s)')) {
-          message = message.replace(/\(s\)/g, suffix);
-        }
-      }
-    });
-  }
-
-  // handle elision in French (ex: "Le email" -> "L'email", "la adresse" -> "l'adresse")
+  // French elision: "Le email" -> "L'email".
   if (lang === 'fr') {
     message = message.replace(/\b([Ll])[ea] ([aeiouyéèêàâîïôû])/gi, "$1'$2");
   }
@@ -60,69 +28,56 @@ function getErrorMessage(
   return message;
 }
 
+/** The field's visible label, lower-cased to sit inside a sentence. */
+function fieldNameOf(lang: LanguageCode, path: ReadonlyArray<PropertyKey>) {
+  const field = String(path.at(-1) ?? '');
+  const key = `${field}Label` as ContactKey;
+  const label: string =
+    ui[lang].contactPage[key] ?? ui[defaultLanguage].contactPage[key] ?? field;
+  return label.toLowerCase();
+}
 
-// ...getErrorMessage inchangée...
-
+/**
+ * Zod 4 issue shapes: `origin` (not `type`), `input` (not `received`). An
+ * unhandled issue returns undefined and falls back to Zod's own English text.
+ */
 const customErrorMap =
   (lang: LanguageCode): z.core.$ZodErrorMap =>
   (issue) => {
     switch (issue.code) {
       case 'invalid_type':
-        if (issue.received === 'undefined') {
-          return getErrorMessage(lang, 'invalid_type_received_undefined');
-        }
-        return getErrorMessage(lang, 'invalid_type', {
-          received: String(issue.received),
-        });
+        return issue.input === undefined
+          ? getErrorMessage(lang, 'invalid_type_received_undefined')
+          : getErrorMessage(lang, 'invalid_type');
 
-case 'invalid_format':
-  if (issue.format === 'email') {
-    return getErrorMessage(lang, 'invalid_string_email');
-  }
-  if (issue.format === 'url') {
-    return getErrorMessage(lang, 'invalid_string_url');
-  }
-  if (issue.format === 'uuid') {
-    return getErrorMessage(lang, 'invalid_string_uuid');
-  }
-  return undefined;
+      case 'invalid_format': {
+        const keyByFormat: Partial<Record<string, ZodErrorKey>> = {
+          email: 'invalid_string_email',
+          url: 'invalid_string_url',
+          uuid: 'invalid_string_uuid',
+        };
+        const key = keyByFormat[issue.format];
+        return key && getErrorMessage(lang, key);
+      }
 
       case 'too_small': {
-  const path = issue.path ?? [];
-  const fieldPath = path.length > 0 ? String(path[path.length - 1]) : 'champ';
-        const fieldNameKey =
-          fieldPath !== 'champ'
-            ? (`${fieldPath}Label` as keyof (typeof ui)[LanguageCode]['contactPage'])
-            : undefined;
-        let rawFieldName = fieldPath;
-
-        if (fieldNameKey) {
-          rawFieldName =
-            ui[lang]?.contactPage?.[fieldNameKey] ||
-            ui[defaultLanguage]?.contactPage?.[fieldNameKey] ||
-            fieldPath;
-        }
-        const fieldName = String(rawFieldName).toLowerCase();
-
-        if (issue.type === 'string') {
-          if (issue.minimum === 1 && issue.exact === false) {
-            return getErrorMessage(lang, 'required_field_custom', { fieldName });
-          }
-          return getErrorMessage(lang, 'too_small_string_minimum', {
-            minimum: String(issue.minimum),
-            fieldName,
-          });
-        }
-        return undefined;
+        if (issue.origin !== 'string') return undefined;
+        const fieldName = fieldNameOf(lang, issue.path ?? []);
+        const minimum = Number(issue.minimum);
+        return minimum <= 1
+          ? getErrorMessage(lang, 'required_field_custom', { fieldName })
+          : getErrorMessage(lang, 'too_small_string_minimum', {
+              fieldName,
+              minimum,
+            });
       }
 
       case 'too_big':
-        if (issue.type === 'string') {
-          return getErrorMessage(lang, 'too_big_string_maximum', {
-            maximum: String(issue.maximum),
-          });
-        }
-        return undefined;
+        return issue.origin === 'string'
+          ? getErrorMessage(lang, 'too_big_string_maximum', {
+              maximum: Number(issue.maximum),
+            })
+          : undefined;
 
       default:
         return undefined;
@@ -130,5 +85,5 @@ case 'invalid_format':
   };
 
 export const setGlobalZodErrorMap = (lang: LanguageCode) => {
-  z.setErrorMap(customErrorMap(lang));
+  z.config({ customError: customErrorMap(lang) });
 };

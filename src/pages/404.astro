@@ -1,52 +1,55 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { defaultLanguage, useTranslations, type LanguageCode } from '@/i18n/ui';
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Image } from 'astro:assets';
-import errorIllustration from '@/assets/error.png';
-import errorIllustrationDark from '@/assets/error-dark.png';
 import { buttonVariants } from '@/components/ui/button';
-import Heading from '@/components/Heading.astro';
+import { useTranslations } from '@/i18n/ui';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { ArrowLeft } from 'lucide-react';
 
-const lang =
-  (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
-const t = useTranslations(lang, 'notFoundPage');
-
-const pageTitle = t('pageTitle');
-const pageDescription = t('message');
+// The static build has a single 404.html, served for every unknown address,
+// French or English, so the page speaks both languages.
+const tFr = useTranslations('fr', 'notFoundPage');
+const tEn = useTranslations('en', 'notFoundPage');
 ---
 
-<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
-  <section class="text-center py-12">
-    <div class="container mx-auto px-4 max-w-2xl">
-      <Image
-        src={errorIllustration}
-        alt="Error illustration - Light Mode"
-        class="w-64 h-auto mx-auto mb-8 block dark:hidden"
-        densities={[1, 1.5, 2]}
-        quality="mid"
-      />
-      <Image
-        src={errorIllustrationDark}
-        alt="Error illustration - Dark Mode"
-        class="w-64 h-auto mx-auto mb-8 hidden dark:block"
-        densities={[1, 1.5, 2]}
-        quality="mid"
-      />
-      <Heading
-        title={t('title')}
-        description={t('message')}
-        titleClassName="md:text-5xl"
-      />
+<BaseLayout
+  pageTitle={tFr('pageTitle')}
+  pageDescription={tFr('message')}
+  noIndex
+>
+  <section class="py-16 md:py-24">
+    <div class="mx-auto max-w-2xl px-4">
+      <p
+        class="font-heading text-6xl font-bold text-primary"
+        aria-hidden="true"
+      >
+        404
+      </p>
 
+      <h1 class="mt-6 text-3xl font-bold sm:text-4xl">{tFr('title')}</h1>
+      <p class="mt-4 text-lg leading-relaxed text-muted-foreground">
+        {tFr('message')}
+      </p>
       <a
-        href={getRelativeLocaleUrl(lang, '/')}
-        class={buttonVariants({ variant: 'default' })}
+        href={getRelativeLocaleUrl('fr', '/')}
+        class:list={[buttonVariants({ variant: 'default' }), 'mt-6']}
       >
-        <ArrowLeft className="mr-2 size-4" />
-        {t('homeLink')}</a
-      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        {tFr('homeLink')}
+      </a>
+
+      <div lang="en" class="mt-12 border-t border-border pt-8">
+        <h2 class="text-2xl font-semibold">{tEn('title')}</h2>
+        <p class="mt-4 leading-relaxed text-muted-foreground">
+          {tEn('message')}
+        </p>
+        <a
+          href={getRelativeLocaleUrl('en', '/')}
+          class:list={[buttonVariants({ variant: 'outline' }), 'mt-6']}
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          {tEn('homeLink')}
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>
