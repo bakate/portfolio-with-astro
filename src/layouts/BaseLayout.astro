@@ -19,6 +19,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { ClientRouter } from 'astro:transitions';
+import { Font } from 'astro:assets';
 
 import {
   prepareLanguagesForSelector,
@@ -224,13 +225,8 @@ const languagesForSelector: Array<LanguageSelectorItem> =
         localStorage.setItem('theme', theme);
       }
     </script>
-    {/* Font, for example Google Fonts - to adapt according to your choices */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <Font cssVariable="--font-geist" preload={[{ subset: 'latin' }]} />
+    <Font cssVariable="--font-bricolage" preload={[{ subset: 'latin' }]} />
     <ClientRouter />
     <slot name="head" />
   </head>
@@ -261,27 +257,30 @@ const languagesForSelector: Array<LanguageSelectorItem> =
     <script>
       function addCopyButtons() {
         const codeBlocks = document.querySelectorAll('pre.astro-code');
-        
+
         codeBlocks.forEach((codeBlock) => {
           // Prevent duplicate buttons on navigation
           if (codeBlock.querySelector('.copy-code-button')) return;
-          
+
           const button = document.createElement('button');
           button.className = 'copy-code-button';
           button.type = 'button';
-          button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
+          button.innerHTML =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
           button.setAttribute('aria-label', 'Copy code');
-          
+
           button.addEventListener('click', async () => {
             const code = (codeBlock as HTMLElement).innerText || '';
             await navigator.clipboard.writeText(code);
-            
-            button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: oklch(0.65 0.15 150)"><path d="M20 6L9 17l-5-5"/></svg>';
+
+            button.innerHTML =
+              '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: oklch(0.65 0.15 150)"><path d="M20 6L9 17l-5-5"/></svg>';
             setTimeout(() => {
-              button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
+              button.innerHTML =
+                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
             }, 2000);
           });
-          
+
           codeBlock.appendChild(button);
         });
       }

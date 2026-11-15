@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 import react from '@astrojs/react';
 
@@ -38,6 +38,26 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+
+  // Self-hosted at build time: the files ship with the site, no font CDN at runtime.
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Geist',
+      cssVariable: '--font-geist',
+      weights: ['300 700'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Bricolage Grotesque',
+      cssVariable: '--font-bricolage',
+      weights: ['500 800'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
+  ],
 
   vite: {
     plugins: [tailwindcss()],

@@ -24,7 +24,7 @@ const t = useTranslations(lang, 'tipsPage');
 ---
 
 <Card
-  className="group bg-card border border-border/50 rounded-xl hover:-translate-y-1 hover:shadow-xl hover:border-primary/30 transition-all duration-300 grid grid-rows-subgrid row-span-2 h-full relative overflow-hidden"
+  className="group bg-card border border-border/50 rounded-lg hover:border-primary/40 transition-colors duration-300 grid grid-rows-subgrid row-span-2 h-full relative overflow-hidden"
 >
   <!-- Badge TIP -->
   <div class="absolute top-4 right-4 z-10">
@@ -42,7 +42,9 @@ const t = useTranslations(lang, 'tipsPage');
       </a>
     </CardTitle>
 
-    <div class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:gap-3 text-xs text-muted-foreground pt-2">
+    <div
+      class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:gap-3 text-xs text-muted-foreground pt-2"
+    >
       <div class="flex items-center gap-1.5">
         <Calendar className="size-3.5" />
         <time datetime={tip.data.pubDate.toISOString()}>
@@ -85,7 +87,7 @@ const t = useTranslations(lang, 'tipsPage');
     >
       <a
         href={getRelativeLocaleUrl(lang, `/tips/${tip.id}/`)}
-        class="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors group/link"
+        class="flex items-center text-sm font-medium text-primary hover:underline underline-offset-4 group/link"
       >
         {t('readTip')}
         <ChevronRight
@@ -101,10 +103,4 @@ const t = useTranslations(lang, 'tipsPage');
       }
     </div>
   </CardContent>
-
-  <!-- Effect hover  -->
-  <div
-    class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
-  >
-  </div>
 </Card>
