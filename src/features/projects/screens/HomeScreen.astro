@@ -3,6 +3,7 @@ import Heading from '@/components/Heading.astro';
 import SkillCard from '@/components/SkillCard.astro';
 import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
+import { profile } from '@/lib/profile';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { Calendar, Dumbbell, ArrowRight, Building2 } from 'lucide-react';
 
@@ -15,11 +16,9 @@ export type Props = {
   lang: LanguageCode;
   projects: Array<TranslatedProject>;
   skills: Array<TranslatedSkill>;
-  heroGreeting: string;
-  heroSubtitlePart1: string;
-  heroSubtitlePart2: string;
-  heroIntroduction: string;
-  heroIntroduction2: string;
+  heroTitle: string;
+  heroPitch: string;
+  heroAvailability: string;
   heroViewWorkButton: string;
   heroContactButton: string;
   imageNotAvailable: string;
@@ -37,11 +36,9 @@ const {
   lang,
   projects,
   skills,
-  heroGreeting,
-  heroSubtitlePart1,
-  heroIntroduction2,
-  heroSubtitlePart2,
-  heroIntroduction,
+  heroTitle,
+  heroPitch,
+  heroAvailability,
   heroViewWorkButton,
   heroContactButton,
   featuredProjectsTitle,
@@ -72,7 +69,7 @@ const bloomflowHighlights = [
 ] as const;
 ---
 
-<section class="py-12 md:py-16 relative overflow-hidden">
+<section id="hero" class="py-12 md:py-16 relative overflow-hidden">
   <div
     class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/15 via-background to-background -z-10"
   >
@@ -82,25 +79,25 @@ const bloomflowHighlights = [
   >
     {/* Hero Text Column */}
     <div class="text-center md:text-left">
+      <p
+        class="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1 text-sm text-muted-foreground mb-6"
+      >
+        <span class="size-2 rounded-full bg-green-500" aria-hidden="true"
+        ></span>
+        {heroAvailability}
+      </p>
       <h1
         class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
       >
-        {heroGreeting}
+        {profile.displayName}
       </h1>
       <p class="text-xl md:text-2xl font-medium text-muted-foreground mb-4">
-        <span class="text-foreground/90">{heroSubtitlePart1}</span>
-        <span class="text-primary mx-2">|</span>
-        <span class="text-foreground/90">{heroSubtitlePart2}</span>
-      </p>
-      <p
-        class="text-lg text-muted-foreground/80 mb-2 max-w-2xl mx-auto md:mx-0 leading-relaxed"
-      >
-        {heroIntroduction}
+        <span class="text-foreground/90">{heroTitle}</span>
       </p>
       <p
         class="text-lg text-muted-foreground/80 mb-10 max-w-2xl mx-auto md:mx-0 leading-relaxed"
       >
-        {heroIntroduction2}
+        {heroPitch}
       </p>
       <div
         class="flex flex-col sm:flex-row gap-5 justify-center md:justify-start"

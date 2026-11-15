@@ -1,6 +1,10 @@
 # Portfolio (Astro)
 
-Bilingual (FR/EN) freelance portfolio and technical blog for a senior full-stack developer positioned on Angular SaaS. Its job is to convince recruiters and clients: the UI must feel premium, and content quality matters as much as code.
+Bilingual (FR/EN) portfolio and technical blog of Bakate Idrissa Ba, _Software Engineer Full-Stack TypeScript_. Its job is to convince recruiters (a permanent position comes first) and, second, freelance clients. Content quality matters as much as code.
+
+- **Positioning**: the method (isolated, tested business domain: DDD, hexagonal architecture, TDD), not a framework. Angular is one skill among others, never the title. Name in the interface: "Bakate Idrissa"; full name "Bakate Idrissa Ba" for SEO, sharing and structured data. Identity and links live in `src/lib/profile.ts`.
+- **Visual direction**: restraint. Generous whitespace, one accent colour, a strong heading font; no radial gradients, blurred blobs, over-rounded cards or tilt-on-hover effects. Content stays visible without JavaScript and honours `prefers-reduced-motion`.
+- The full redesign spec is GitHub issue #1.
 
 Stack: Astro 7 with React 19 islands, Tailwind 4, shadcn/ui (Radix), MDX, deployed on Vercel. Versions and scripts live in `package.json`.
 

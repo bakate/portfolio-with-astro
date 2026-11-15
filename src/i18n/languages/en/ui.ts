@@ -1,7 +1,7 @@
 export const uiLabels = {
   skillsContent: {
     angularExpertise: {
-      title: 'Angular Expertise',
+      title: 'Production Angular',
       description:
         'Production Angular development: components, RxJS, NgRx, Signals, performance, and state management.',
     },
@@ -17,9 +17,9 @@ export const uiLabels = {
     },
   },
   site: {
-    title: 'Bakate',
+    title: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     description:
-      'Portfolio of Bakate, Angular Engineer specialized in B2B SaaS applications with TypeScript, RxJS, and NgRx.',
+      'Portfolio of Bakate Idrissa Ba, Software Engineer Full-Stack TypeScript: SaaS products end to end, with an isolated, tested business domain (DDD, hexagonal architecture, TDD).',
   },
   nav: {
     home: 'Home',
@@ -117,7 +117,7 @@ export const uiLabels = {
             'Built a self-service module for Customer Success, slashing complex 2-day manual workflows into instant, one-click validations.',
         },
         angular: {
-          title: 'Angular Expertise (State Management)',
+          title: 'Angular State Management (NgRx, Signals)',
           description:
             'Managed complex states (NgRx, Signals) and implemented dynamic forms for professional processes with high data volumes.',
         },
@@ -140,22 +140,19 @@ export const uiLabels = {
   },
 
   homePage: {
-    pageTitle: 'Bakate | Angular Engineer for B2B SaaS',
+    pageTitle: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     pageDescription:
-      'Angular Engineer specialized in B2B SaaS: 4 years on a complex Angular application used by large companies, with TypeScript, RxJS, and NgRx.',
-    heroGreeting: "Hi, I'm Bakate Idrissa",
-    heroSubtitlePart1: 'Angular Engineer',
-    heroSubtitlePart2: 'B2B SaaS',
-    heroIntroduction:
-      'I help product teams build and scale complex Angular applications.',
-    heroIntroduction2:
-      '4 years of experience on a B2B SaaS used by large companies. I also keep the FullStack range needed to build a complete SaaS product end to end.',
+      'Bakate Idrissa Ba, Software Engineer Full-Stack TypeScript: I build SaaS products end to end, with an isolated, tested business domain (DDD, hexagonal architecture, TDD), Next.js and Angular interfaces, and AI where it actually helps.',
+    heroTitle: 'Software Engineer Full-Stack TypeScript',
+    heroPitch:
+      'I build SaaS products end to end: an isolated, tested business domain (DDD, hexagonal architecture, TDD), whatever the framework (NestJS, Express…), Next.js and Angular interfaces, and AI where it actually helps.',
+    heroAvailability: 'Available · Hybrid Île-de-France / remote',
     heroViewWorkButton: 'View My Work',
     heroContactButton: "Let's work together",
     heroImageAlt: 'Illustration representing Bakate or a development concept',
     featuredProjectsTitle: 'Core SaaS projects',
     featuredProjectsDescription:
-      'Production Angular, B2B SaaS, and complete product ownership.',
+      'SaaS products shipped to production, from design to deployment.',
     projectCardViewProject: 'View Project',
     projectCardViewCode: 'View Code',
     imageNotAvailable: 'Image not available for now',
@@ -166,7 +163,7 @@ export const uiLabels = {
     bloomflowCta: 'View my experience',
     mySkillsTitle: 'Core Skills',
     mySkillsDescription:
-      'Angular is the core message. FullStack remains the lever for shipping a complete SaaS product.',
+      'An isolated, tested business domain, solid interfaces, and a product shipped end to end.',
   },
   blogPage: {
     pageTitle: 'Angular, RxJS, and Frontend Architecture Blog',
@@ -262,12 +259,12 @@ export const uiLabels = {
   },
   projectsPage: {
     title: 'SaaS Projects',
-    metaTitle: 'Angular and FullStack SaaS Projects | Bakate',
+    metaTitle: 'Full-Stack TypeScript SaaS Projects | Bakate Idrissa Ba',
     metaDescription:
-      'Parent Up, Bloomflow, and Terral Hub: B2B SaaS, Angular, FullStack, and product architecture projects.',
+      'Parent Up, Bloomflow, and Terral Hub: B2B SaaS, Full-Stack TypeScript, and product architecture projects.',
     featuredTitle: 'Featured projects',
     featuredDescription:
-      'The three strongest proofs for my Angular and B2B SaaS positioning.',
+      'The three strongest proofs for my Full-Stack TypeScript and B2B SaaS positioning.',
     archivesTitle: 'Other projects',
     archivesDescription:
       'Archive and secondary projects that show FullStack range without diluting the main message.',

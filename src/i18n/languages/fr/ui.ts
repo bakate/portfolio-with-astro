@@ -1,7 +1,7 @@
 export const uiLabels = {
   skillsContent: {
     angularExpertise: {
-      title: 'Expertise Angular',
+      title: 'Angular en production',
       description:
         'Développement Angular en production : composants, RxJS, NgRx, Signals, performance et state management.',
     },
@@ -17,9 +17,9 @@ export const uiLabels = {
     },
   },
   site: {
-    title: 'Bakate',
+    title: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     description:
-      'Portfolio de Bakate, développeur Angular spécialisé dans les applications SaaS B2B avec TypeScript, RxJS et NgRx.',
+      'Portfolio de Bakate Idrissa Ba, Software Engineer Full-Stack TypeScript : produits SaaS de bout en bout, domaine métier isolé et testé (DDD, architecture hexagonale, TDD).',
   },
   nav: {
     home: 'Accueil',
@@ -117,7 +117,7 @@ export const uiLabels = {
             "Création d'un module d'auto-service pour le Customer Success, transformant des workflows manuels complexes de 2 jours en validations instantanées.",
         },
         angular: {
-          title: 'Expertise Angular (State Management)',
+          title: 'State management Angular (NgRx, Signals)',
           description:
             "Gestion d'états complexes (NgRx, Signals) et implémentation de formulaires dynamiques sur des processus métier à forts volumes de données.",
         },
@@ -139,23 +139,20 @@ export const uiLabels = {
     },
   },
   homePage: {
-    pageTitle: 'Bakate | Développeur Angular SaaS B2B',
+    pageTitle: 'Bakate Idrissa Ba | Software Engineer Full-Stack TypeScript',
     pageDescription:
-      'Développeur Angular spécialisé SaaS B2B : 4 ans sur une application Angular complexe utilisée par des grands groupes, avec TypeScript, RxJS et NgRx.',
-    heroGreeting: "Salut, c'est Bakate Idrissa",
-    heroSubtitlePart1: 'Développeur Angular',
-    heroSubtitlePart2: 'SaaS B2B',
-    heroIntroduction:
-      "J'aide les équipes produit à construire et faire évoluer des applications Angular complexes.",
-    heroIntroduction2:
-      "4 ans d'expérience sur un SaaS B2B utilisé par des grands groupes. Je garde une capacité FullStack pour construire un produit SaaS complet de bout en bout.",
+      'Bakate Idrissa Ba, Software Engineer Full-Stack TypeScript : je conçois des produits SaaS de bout en bout, avec un domaine métier isolé et testé (DDD, architecture hexagonale, TDD), des interfaces Next.js et Angular, et l’IA là où elle sert vraiment.',
+    heroTitle: 'Software Engineer Full-Stack TypeScript',
+    heroPitch:
+      "Je conçois des produits SaaS de bout en bout : un domaine métier isolé et testé (DDD, architecture hexagonale, TDD), quel que soit le framework (NestJS, Express…), des interfaces Next.js et Angular, et l'IA là où elle sert vraiment.",
+    heroAvailability: 'Disponible · Hybride Île-de-France / remote',
     heroViewWorkButton: 'Mes réalisations',
     heroContactButton: 'Travaillons ensemble',
     heroImageAlt:
       'Illustration représentant Bakate ou un concept de développement',
     featuredProjectsTitle: 'Projets SaaS principaux',
     featuredProjectsDescription:
-      'Angular en production, SaaS B2B et ownership produit complet.',
+      'Des produits SaaS livrés en production, de la conception au déploiement.',
     projectCardViewProject: 'Voir le projet',
     projectCardViewCode: 'Voir le code',
     imageNotAvailable: 'Image bientôt disponible',
@@ -165,7 +162,7 @@ export const uiLabels = {
     bloomflowCta: 'Voir mon expérience',
     mySkillsTitle: 'Compétences clés',
     mySkillsDescription:
-      'Angular est le coeur du positionnement. Le FullStack reste un levier pour livrer un produit SaaS complet.',
+      'Un domaine métier isolé et testé, des interfaces solides, et un produit livré de bout en bout.',
   },
   blogPage: {
     pageTitle: 'Blog Angular, RxJS et Architecture Frontend',
@@ -267,12 +264,12 @@ export const uiLabels = {
   },
   projectsPage: {
     title: 'Projets SaaS',
-    metaTitle: 'Projets SaaS Angular et FullStack | Bakate',
+    metaTitle: 'Projets SaaS Full-Stack TypeScript | Bakate Idrissa Ba',
     metaDescription:
-      'Parent Up, Bloomflow et Terral Hub : projets SaaS B2B, Angular, FullStack et architecture produit.',
+      'Parent Up, Bloomflow et Terral Hub : projets SaaS B2B, Full-Stack TypeScript et architecture produit.',
     featuredTitle: 'Projets mis en avant',
     featuredDescription:
-      'Les trois preuves les plus cohérentes avec mon positionnement Angular et SaaS B2B.',
+      'Les trois preuves les plus cohérentes avec mon positionnement Full-Stack TypeScript et SaaS B2B.',
     archivesTitle: 'Autres projets',
     archivesDescription:
       'Archives et projets secondaires, utiles pour montrer la polyvalence FullStack sans diluer le message principal.',

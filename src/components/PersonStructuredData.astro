@@ -1,0 +1,15 @@
+---
+import { profile } from '@/lib/profile';
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.fullName,
+  alternateName: profile.displayName,
+  jobTitle: profile.jobTitle,
+  url: new URL('/', Astro.site ?? Astro.url).href,
+  sameAs: [profile.links.github, profile.links.linkedin],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(person)} />
