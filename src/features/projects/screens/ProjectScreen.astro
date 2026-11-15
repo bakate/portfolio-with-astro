@@ -39,7 +39,7 @@ const { project, t, lang } = Astro.props;
 
     <Heading title={project.title} center={false} />
     <div
-      class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 dark:text-gray-400"
+      class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
     >
       <!-- Category -->
       {
@@ -68,11 +68,11 @@ const { project, t, lang } = Astro.props;
     <!-- Image -->
     {
       project.imageUrl && (
-        <div class="mb-12 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border/50 shadow-2xl shadow-primary/20">
+        <div class="mb-12 aspect-[16/9] w-full overflow-hidden rounded-lg border border-border">
           <Image
             src={project.imageUrl}
             alt={project.imageAltText}
-            class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
+            class="h-full w-full object-cover"
             widths={[400, 800, 1200]}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
@@ -135,9 +135,9 @@ const { project, t, lang } = Astro.props;
       (project.challenges || project.learnings) && (
         <div class="not-prose grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 mt-12">
           {project.challenges && (
-            <section class="rounded-2xl border border-border/50 bg-secondary/20 p-6 flex flex-col">
+            <section class="rounded-lg border border-border bg-secondary/20 p-6 flex flex-col">
               <div class="flex items-start gap-3 mb-4">
-                <AlertTriangle className="size-6 text-orange-500 shrink-0 mt-0.5" />
+                <AlertTriangle className="size-6 text-primary shrink-0 mt-0.5" />
                 <span class="m-0 text-xl font-bold tracking-tight">
                   {t.projectDetailPage?.challengesTitle ?? 'Challenges'}
                 </span>
@@ -149,7 +149,7 @@ const { project, t, lang } = Astro.props;
           )}
 
           {project.learnings && (
-            <section class="rounded-2xl border border-border/50 bg-primary/5 p-6 flex flex-col">
+            <section class="rounded-lg border border-border bg-primary/5 p-6 flex flex-col">
               <div class="flex items-start gap-3 mb-4">
                 <Lightbulb className="size-6 text-primary shrink-0 mt-0.5" />
                 <span class="m-0 text-xl font-bold tracking-tight">
@@ -175,7 +175,7 @@ const { project, t, lang } = Astro.props;
             rel="noopener noreferrer"
             class={
               buttonVariants({ variant: 'default', size: 'lg' }) +
-              ' sm:w-auto w-full no-underline shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/30'
+              ' sm:w-auto w-full no-underline'
             }
           >
             <ExternalLink className="mr-2 size-5" />

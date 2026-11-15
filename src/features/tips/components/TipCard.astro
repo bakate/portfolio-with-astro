@@ -87,7 +87,7 @@ const t = useTranslations(lang, 'tipsPage');
     >
       <a
         href={getRelativeLocaleUrl(lang, `/tips/${tip.id}/`)}
-        class="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors group/link"
+        class="flex items-center text-sm font-medium text-primary hover:text-primary transition-colors group/link"
       >
         {t('readTip')}
         <ChevronRight
@@ -103,10 +103,4 @@ const t = useTranslations(lang, 'tipsPage');
       }
     </div>
   </CardContent>
-
-  <!-- Effect hover  -->
-  <div
-    class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
-  >
-  </div>
 </Card>

@@ -181,7 +181,7 @@ export function ContactForm({
         />
         <Button
           type="submit"
-          className="w-full h-12 text-lg font-semibold shimmer-effect group"
+          className="w-full h-12 text-lg font-semibold group"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? (

@@ -110,15 +110,14 @@ const pageDescription = post.description;
 
           {
             post.heroImage && (
-              <div class="relative group mt-8">
+              <div class="mt-8">
                 <Image
                   src={post.heroImage.url}
                   alt={post.heroImage.alt}
-                  class="w-full h-auto object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.01]"
+                  class="w-full h-auto object-cover rounded-lg border border-border"
                   width={768}
                   height={432}
                 />
-                <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
               </div>
             )
           }
