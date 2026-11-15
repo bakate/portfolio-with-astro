@@ -136,4 +136,14 @@ for (const language of Object.values(languages)) {
     await site.thenFormExplains(language.errors);
     site.thenContactServiceReceivedNothing();
   });
+
+  test(`Given the ${language.name} contact page, when a visitor leaves the first name too short, then the mistake is explained in ${language.name} right away, before sending`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.contact);
+    await site.visitorFillsThenLeaves(language.labels.firstName, 'C');
+    await site.thenFormExplains([language.errors[0]]);
+  });
 }

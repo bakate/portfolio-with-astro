@@ -47,11 +47,9 @@ export function ContactForm({
       email: '',
       message: '',
     },
-    // Validate on submit, then live while correcting. Validating on blur
-    // inserts an error under the field being left, which pushes the send
-    // button away mid-click and swallows the submission.
-    mode: 'onSubmit',
-    reValidateMode: 'onChange',
+    // A field is checked when the visitor leaves it, then live while they
+    // correct it.
+    mode: 'onTouched',
   });
 
   async function onSubmit(values: ContactFormValues) {
@@ -191,6 +189,10 @@ export function ContactForm({
         />
         <Button
           type="submit"
+          // Keeps focus in the current field during the click: leaving it
+          // would show its error, push this button down mid-click and lose
+          // the submission. The submission then checks every field.
+          onMouseDown={(event) => event.preventDefault()}
           className="w-full h-12 text-lg font-semibold group"
           disabled={form.formState.isSubmitting}
         >

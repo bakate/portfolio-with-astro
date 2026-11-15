@@ -39,6 +39,17 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
   const meta = (property: string) =>
     page.locator(`meta[property="${property}"]`).getAttribute('content');
 
+  const form = page.locator('main form');
+
+  /**
+   * The form is a React island: typing before it hydrates is lost, as it
+   * would be for a visitor on a slow connection.
+   */
+  const formIsReady = () =>
+    page.waitForFunction(
+      () => !document.querySelector('main astro-island:has(form)[ssr]')
+    );
+
   /** Bodies posted to the contact service, once it is stubbed. */
   const messagesReceived: Array<unknown> = [];
 
@@ -66,16 +77,19 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       fields: Record<string, string>,
       sendButton: string
     ) {
-      const form = page.locator('main form');
-      // The form is a React island: typing before it hydrates is lost, as it
-      // would be for a visitor on a slow connection.
-      await page.waitForFunction(
-        () => !document.querySelector('main astro-island:has(form)[ssr]')
-      );
+      await formIsReady();
       for (const [label, value] of Object.entries(fields)) {
         await form.getByLabel(label, { exact: true }).fill(value);
       }
       await form.getByRole('button', { name: sendButton, exact: true }).click();
+    },
+
+    /** Types in one field, then moves on without sending. */
+    async visitorFillsThenLeaves(label: string, value: string) {
+      await formIsReady();
+      const field = form.getByLabel(label, { exact: true });
+      await field.fill(value);
+      await field.blur();
     },
 
     async visitorOpens(path: string) {
@@ -275,7 +289,6 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     },
 
     async thenFormExplains(errors: ReadonlyArray<string>) {
-      const form = page.locator('main form');
       for (const error of errors) {
         await expect(form.getByText(error, { exact: true })).toBeVisible();
       }
