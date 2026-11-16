@@ -1,7 +1,5 @@
 ---
-// src/features/blog/screens/BlogPostDetailScreen.astro
-import Heading from '@/components/Heading.astro';
-import { buttonVariants } from '@/components/ui/button';
+import TableOfContents from '@/components/TableOfContents.astro';
 import type { LanguageCode } from '@/i18n/ui';
 import { useTranslations } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -9,9 +7,8 @@ import { formatDate } from '@/lib/utils';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { ArrowLeft, Clock, Pencil } from 'lucide-react';
-import BlogPostCard from '../components/BlogPostCard.astro';
-import TableOfContents from '@/components/TableOfContents.astro';
+import { ArrowLeft } from 'lucide-react';
+import EditorialEntry from '@/components/EditorialEntry.astro';
 
 type Props = {
   post: CollectionEntry<'blog'>['data'] & { readingTimeMinutes: number };
@@ -23,157 +20,113 @@ type Props = {
 
 const { post, lang, headings, relatedPosts, filePath } = Astro.props;
 
-// Construct the GitHub edit URL
-const GITHUB_USER = 'bakate';
-const GITHUB_REPO = 'portfolio';
-const GITHUB_BRANCH = 'main';
-const editUrl = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/edit/${GITHUB_BRANCH}/${filePath}`;
-
-const pubDate = new Date(post.pubDate);
-const updatedDate = post.updatedDate ? new Date(post.updatedDate) : null;
-
+const editUrl = `https://github.com/bakate/portfolio/edit/main/${filePath}`;
 const t = useTranslations(lang, 'blogPost');
-
-const pageTitle = post.title;
-const pageDescription = post.description;
+const blogHref = getRelativeLocaleUrl(lang, '/blog');
+const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
 ---
 
-<BaseLayout {pageTitle} {pageDescription} noIndex={post.isDraft}>
-  <div class="container mx-auto px-4 py-8 md:py-12">
-    <div
-      class="grid grid-cols-1 xl:grid-cols-[1fr_min(75ch,_100%)_250px] gap-12"
-    >
-      {/* Sidebar Left: Back link & Navigation */}
-      <aside class="hidden xl:flex flex-col gap-6 sticky top-24 self-start">
-        <a
-          href={getRelativeLocaleUrl(lang, '/blog')}
-          class={buttonVariants({ variant: 'ghost', size: 'sm' }) +
-            ' justify-start px-2 group'}
+<BaseLayout
+  pageTitle={title}
+  pageDescription={description}
+  noIndex={post.isDraft}
+>
+  <div
+    class="grid grid-cols-1 gap-12 py-12 md:py-16 xl:grid-cols-[minmax(0,75ch)_250px] xl:justify-between"
+  >
+    <article class="min-w-0">
+      <a
+        href={blogHref}
+        class="inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        {t('backToList')}
+      </a>
+
+      <header class="mt-8 mb-12 border-b border-border pb-8">
+        <h1
+          class="font-heading text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl"
         >
-          <ArrowLeft
-            className="mr-2 size-4 group-hover:-translate-x-1 transition-transform"
-          />
-          {t('backToList')}
-        </a>
-      </aside>
-
-      {/* Main Content */}
-      <article>
-        <a
-          href={getRelativeLocaleUrl(lang, '/blog')}
-          class={buttonVariants({ variant: 'ghost', size: 'sm' }) +
-            ' mb-6 xl:hidden group'}
-        >
-          <ArrowLeft
-            className="mr-2 size-4 group-hover:-translate-x-1 transition-transform"
-          />
-          {t('backToList')}
-        </a>
-
-        <header class="mb-12">
-          <Heading
-            title={post.title}
-            titleClassName="md:text-5xl leading-tight"
-            center={false}
-          />
-
-          <div
-            class="mt-6 flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y border-border/50 py-4"
-          >
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-foreground/80"
-                >{t('publishedOn')}</span
-              >
-              <time datetime={pubDate.toISOString()}
-                >{formatDate(pubDate, lang)}</time
-              >
-            </div>
-
-            {
-              updatedDate && (
-                <div class="flex items-center gap-2">
-                  <span class="font-semibold text-foreground/80">
-                    {t('updatedOn')}
-                  </span>
-                  <time datetime={updatedDate.toISOString()}>
-                    {formatDate(updatedDate, lang)}
-                  </time>
-                </div>
-              )
-            }
-
-            <div class="flex items-center gap-1.5">
-              <Clock className="size-4" />
-              <span>{post.readingTimeMinutes} {t('readingTimeSuffix')}</span>
-            </div>
-          </div>
-
+          {title}
+        </h1>
+        <p class="mt-6 text-sm text-muted-foreground">
+          {t('publishedOn')}
+          <time datetime={pubDate.toISOString()}>
+            {formatDate(pubDate, lang)}
+          </time>
           {
-            post.heroImage && (
-              <div class="mt-8">
-                <Image
-                  src={post.heroImage.url}
-                  alt={post.heroImage.alt}
-                  class="w-full h-auto object-cover rounded-lg border border-border"
-                  width={768}
-                  height={432}
-                />
-              </div>
-            )
+            updatedDate ? (
+              <>
+                {' · '}
+                {t('updatedOn')}
+                <time datetime={updatedDate.toISOString()}>
+                  {formatDate(updatedDate, lang)}
+                </time>
+              </>
+            ) : null
           }
-
-          {
-            post.tags && post.tags.length > 0 && (
-              <div class="mt-6 flex flex-wrap gap-2">
-                {post.tags.map((tag: string) => (
-                  <span class="px-3 py-1 text-[10px] uppercase tracking-wider font-bold bg-primary/5 text-primary border border-primary/10 rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )
-          }
-        </header>
-
-        <div class="prose-content prose prose-lg dark:prose-invert max-w-none">
-          <slot />
-
-          <div class="mt-16 flex justify-end">
-            <a
-              href={editUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class={buttonVariants({ variant: 'outline', size: 'sm' }) +
-                ' gap-2 rounded-full border-border/50 hover:border-primary/50 transition-colors'}
-            >
-              <Pencil className="size-3.5" />
-              {t('editOnGithub')}
-            </a>
-          </div>
-        </div>
-
-        {/* Related Posts Section */}
+          {' · '}
+          {`${post.readingTimeMinutes} ${t('readingTimeSuffix')}`}
+        </p>
         {
-          relatedPosts.length > 0 && (
-            <section class="mt-20 pt-12 border-t border-border/50">
-              <Heading
-                title={t('relatedPostsTitle')}
-                titleClassName="md:text-2xl font-bold mb-8"
-              />
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {relatedPosts.map((relatedPost) => (
-                  <BlogPostCard post={relatedPost} lang={lang} />
-                ))}
-              </div>
-            </section>
-          )
+          tags.length > 0 ? (
+            <p class="mt-2 text-sm text-muted-foreground">{tags.join(' · ')}</p>
+          ) : null
         }
-      </article>
+        {
+          heroImage ? (
+            <Image
+              src={heroImage.url}
+              alt={heroImage.alt}
+              class="mt-8 h-auto w-full rounded-md border border-border object-cover"
+              width={768}
+              height={432}
+            />
+          ) : null
+        }
+      </header>
 
-      {/* Sidebar Right: TOC */}
-      <aside class="hidden xl:block">
-        <TableOfContents headings={headings} lang={lang} />
-      </aside>
-    </div>
+      <div class="prose prose-lg max-w-none dark:prose-invert">
+        <slot />
+      </div>
+
+      <p class="mt-16 border-t border-border pt-8 text-sm">
+        <a
+          href={editUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+        >
+          {t('editOnGithub')}
+        </a>
+      </p>
+
+      {
+        relatedPosts.length > 0 ? (
+          <section class="mt-16">
+            <h2 class="font-heading text-2xl font-bold tracking-tight">
+              {t('relatedPostsTitle')}
+            </h2>
+            <div class="mt-8 border-t border-border">
+              {relatedPosts.map((relatedPost) => (
+                <EditorialEntry
+                  title={relatedPost.data.title}
+                  href={getRelativeLocaleUrl(lang, `/blog/${relatedPost.id}`)}
+                  description={relatedPost.data.description}
+                  pubDate={relatedPost.data.pubDate}
+                  lang={lang}
+                  headingLevel={3}
+                  tags={relatedPost.data.tags}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null
+      }
+    </article>
+
+    <aside class="hidden xl:block">
+      <TableOfContents headings={headings} lang={lang} />
+    </aside>
   </div>
 </BaseLayout>

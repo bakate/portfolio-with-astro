@@ -60,13 +60,8 @@ import {
 import { z } from 'zod';
 
 // Import i18n utilities
-import {
-  defaultLanguage,
-  ui,
-  useTranslations,
-  type LanguageCode,
-} from '@/i18n/ui';
-import type { CaseStudy, Proof, ProjectData, TranslatedProject } from './type';
+import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
+import type { CaseStudy, ProjectData, TranslatedProject } from './type';
 
 /**
  * Every project, in the order a visitor sees them: highlighted projects first
@@ -640,25 +635,4 @@ export function getTranslatedProjectBySlug(
   }
   const currentLang = lang || defaultLanguage;
   return translateProject(project, currentLang);
-}
-
-/** The measured outcomes shown under the hero, in display order. */
-export function getTranslatedProofs(
-  lang: LanguageCode | undefined
-): Array<Proof> {
-  const t = useTranslations(lang, 'homePage');
-  return [
-    {
-      figure: t('proofLoadTimeFigure'),
-      context: t('proofLoadTimeContext'),
-    },
-    {
-      figure: t('proofBackOfficeFigure'),
-      context: t('proofBackOfficeContext'),
-    },
-    {
-      figure: t('proofExperienceFigure'),
-      context: t('proofExperienceContext'),
-    },
-  ];
 }

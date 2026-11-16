@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import type { Proof } from '@/features/projects';
+import type { Proof } from '@/features/home';
 import type { LanguageCode } from '@/i18n/ui';
 import { createSystemUnderTest } from './support/system-under-test';
 

@@ -1,17 +1,8 @@
 ---
-import AllTipsScreen from '@/features/tips/screens/AllTipsScreen.astro';
+import { AllTipsScreen } from '@/features/tips';
 import { defaultLanguage, type LanguageCode } from '@/i18n/ui';
-import { getCollection } from 'astro:content';
 
-const lang = (Astro.currentLocale as LanguageCode) || 'fr';
-
-const allTips = await getCollection('tips', ({ data, id }) => {
-  return data.isDraft !== true && id.startsWith(`${defaultLanguage}/`);
-});
-
-const sortedTips = allTips.sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+const lang = (Astro.currentLocale ?? defaultLanguage) as LanguageCode;
 ---
 
-<AllTipsScreen tips={sortedTips} lang={lang} />
+<AllTipsScreen lang={lang} />

@@ -4,7 +4,7 @@ import {
   type Locator,
   type Page,
 } from '@playwright/test';
-import type { Proof } from '@/features/projects';
+import type { Proof } from '@/features/home';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 
@@ -149,6 +149,17 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
         await form.getByLabel(label, { exact: true }).fill(value);
       }
       await form.getByRole('button', { name: sendButton, exact: true }).click();
+    },
+
+    /** Types in a search box found by its name, as a visitor would. */
+    async visitorSearches(searchBox: string, text: string) {
+      await page.getByRole('searchbox', { name: searchBox }).fill(text);
+    },
+
+    /** Opens a picker by its button, then chooses one of its options. */
+    async visitorPicksOption(picker: string, option: string) {
+      await page.getByRole('combobox', { name: picker }).click();
+      await page.getByRole('option', { name: option, exact: true }).click();
     },
 
     /** Types in one field, then moves on without sending. */
@@ -490,6 +501,30 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
 
     async thenPageDoesNotLinkTo(path: string) {
       await expect(page.locator(`a[href^="${path}"]`)).toHaveCount(0);
+    },
+
+    /** Entries are the articles a listing shows, read through their titles. */
+    async thenListedEntriesAre(titles: ReadonlyArray<string>) {
+      await expect(
+        page
+          .locator('main')
+          .getByRole('article')
+          .filter({ visible: true })
+          .getByRole('heading')
+      ).toHaveText([...titles]);
+    },
+
+    /** A visible link to the page, with or without its trailing slash. */
+    async thenPageLinksToPage(path: string) {
+      const link = page
+        .locator(`main a[href="${path}"], main a[href="${path}/"]`)
+        .first();
+      await expect(link, path).toBeVisible();
+    },
+
+    async thenPageHasNoSection(anchor: string) {
+      await expect(page.locator('main')).toBeVisible();
+      await expect(page.locator(`#${anchor}`)).toHaveCount(0);
     },
 
     async thenPageHeadingIs(heading: string) {

@@ -1,0 +1,75 @@
+---
+import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
+import EditorialEntry from '@/components/EditorialEntry.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { ArrowRight } from 'lucide-react';
+import type { LatestContentEntry, LatestContentKind } from '../latest-content';
+
+/**
+ * Every string of the section, keyed like the French copy: passing
+ * `ui[lang].homePage.latestContent` fails to compile when a language misses a key.
+ */
+export type LatestContentCopy = Record<
+  keyof (typeof ui)[typeof defaultLanguage]['homePage']['latestContent'],
+  string
+>;
+
+export type Props = {
+  lang: LanguageCode;
+  copy: LatestContentCopy;
+  entries: ReadonlyArray<LatestContentEntry>;
+};
+
+const { lang, copy, entries } = Astro.props;
+
+const kindLabel = {
+  article: copy.articleLabel,
+  tip: copy.tipLabel,
+} as const satisfies Record<LatestContentKind, string>;
+---
+
+{
+  entries.length > 0 ? (
+    <section id="latest" class="py-16 md:py-24">
+      <div class="max-w-3xl">
+        <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
+          {copy.title}
+        </h2>
+        <p class="mt-4 text-muted-foreground">{copy.description}</p>
+      </div>
+
+      <ol class="mt-12 border-t border-border">
+        {entries.map((entry) => (
+          <li>
+            <EditorialEntry
+              title={entry.title}
+              href={entry.href}
+              description={entry.description}
+              pubDate={entry.pubDate}
+              lang={lang}
+              headingLevel={3}
+              label={kindLabel[entry.kind]}
+            />
+          </li>
+        ))}
+      </ol>
+
+      <div class="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+        <a
+          href={getRelativeLocaleUrl(lang, '/blog')}
+          class="inline-flex items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+        >
+          {copy.blogLink}
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </a>
+        <a
+          href={getRelativeLocaleUrl(lang, '/tips')}
+          class="inline-flex items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+        >
+          {copy.tipsLink}
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  ) : null
+}

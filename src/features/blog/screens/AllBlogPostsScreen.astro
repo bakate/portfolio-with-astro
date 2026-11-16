@@ -1,240 +1,64 @@
 ---
-import Heading from '@/components/Heading.astro';
-import {
-  FilteredPostsList,
-  type PostDataForFilter,
-} from '@/features/blog/components/FilteredPostsList';
-import { BlogPostCard } from '@/features/blog';
-import type { LanguageCode } from '@/i18n/ui';
-import { useTranslations } from '@/i18n/ui';
+import EditorialEntry from '@/components/EditorialEntry.astro';
+import FilterableList from '@/components/filterable-list/FilterableList.astro';
+import { ui, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { type CollectionEntry as AstroCollectionEntry } from 'astro:content';
-import { EmptyState } from '@/components/empty-state';
+import { getPublishedEntries } from '@/lib/published-content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 type Props = {
-  posts: AstroCollectionEntry<'blog'>[];
   lang: LanguageCode;
 };
 
-const { posts, lang } = Astro.props;
-
-const initialSearchQuery = Astro.url.searchParams.get('q') || '';
-const initialTag = Astro.url.searchParams.get('tag') || '';
-
-const texts = useTranslations(lang, 'blogPage');
-
-// Helper function to transform BlogEntry to PostDataForFilter
-function transformPostForClientFilter(
-  post: AstroCollectionEntry<'blog'>
-): PostDataForFilter {
-  return {
-    id: post.id,
-    slug: post.id ?? '',
-    title: post.data.title,
-    description: post.data.description || '',
-    tags: post.data.tags,
-    body: post.body ?? '',
-    pubDate: post.data.pubDate,
-    // heroImage and readingTimeMinutes are optional in PostDataForFilter
-  };
-}
-const componentTexts = {
-  searchPlaceholder: texts('searchPlaceholder'),
-  filterByTagButtonLabel: texts('filterByTagButtonLabel'),
-  noTagFound: texts('noTagFound'),
-  selectTagCommandPlaceholder: texts('selectTagCommandPlaceholder'),
-  allTagsLabel: texts('allTagsLabel'),
-  noPostsFound: texts('noPostsFound'),
-};
-
-const t = useTranslations(lang, 'blogPage');
-
-const pageTitle = t('pageTitle');
-const pageDescription = t('pageDescription');
-const priorityTags = [
-  'Angular',
-  'RxJS',
-  'Architecture Frontend',
-  'SaaS Engineering',
-] as const;
-const hasPriorityTag = (post: AstroCollectionEntry<'blog'>) => {
-  return post.data.tags?.some((postTag) => {
-    return priorityTags.some((priorityTag) => {
-      return priorityTag.toLowerCase() === postTag.toLowerCase();
-    });
-  });
-};
-const featuredPosts = posts.filter(hasPriorityTag).slice(0, 4);
+const { lang } = Astro.props;
+const copy = ui[lang].blogPage;
+const posts = await getPublishedEntries('blog', lang);
 ---
 
-<BaseLayout {pageTitle} {pageDescription}>
-  <div class="container mx-auto px-4 py-8 md:py-12">
-    <Heading title={t('title')} description={t('description')} />
+<BaseLayout pageTitle={copy.pageTitle} pageDescription={copy.pageDescription}>
+  <section class="py-12 md:py-16">
+    <header class="mb-12 max-w-3xl">
+      <h1 class="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+        {copy.title}
+      </h1>
+      <p class="mt-4 text-muted-foreground">{copy.description}</p>
+    </header>
 
-    <section
-      class="mt-10 rounded-lg border border-primary/20 bg-primary/5 p-6 md:p-8"
-    >
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold tracking-tight">
-          {t('angularArticlesTitle')}
-        </h2>
-        <p class="mt-2 text-sm text-muted-foreground">
-          {t('angularArticlesDescription')}
-        </p>
-      </div>
-      <div class="flex flex-wrap gap-2">
-        {
-          priorityTags.map((tag) => (
-            <a
-              href={`${lang === 'fr' ? '' : '/' + lang}/blog?tag=${encodeURIComponent(tag)}`}
-              class="rounded-full border border-border/60 bg-background/60 px-3 py-1.5 text-sm font-medium text-foreground/90 transition-colors hover:border-primary/40 hover:text-primary"
-            >
-              {tag}
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    {
-      featuredPosts.length > 0 && (
-        <section class="mt-10">
-          <h2 class="mb-6 text-2xl font-bold tracking-tight">
-            {t('featuredArticlesTitle')}
-          </h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredPosts.map((postEntry) => (
-              <BlogPostCard post={postEntry} lang={lang} />
-            ))}
-          </div>
-        </section>
-      )
-    }
-
-    <section class="mt-12">
-      <h2 class="mb-6 text-2xl font-bold tracking-tight">
-        {t('allArticlesTitle')}
-      </h2>
-    </section>
-
-    <FilteredPostsList
-      client:load
-      allPosts={posts.map(transformPostForClientFilter)}
-      texts={componentTexts}
-      initialSearchQuery={initialSearchQuery}
-      initialTag={initialTag}
-    />
-
-    {/* Container for posts and "no posts found" message */}
-    <div
-      id="blog-posts-container"
-      class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8"
+    <FilterableList
+      entries={posts.map((post) => ({
+        id: post.id,
+        searchText: [post.data.title, post.data.description, post.body].join(
+          '\n'
+        ),
+        tags: post.data.tags ?? [],
+      }))}
+      copy={{
+        searchLabel: copy.searchLabel,
+        searchPlaceholder: copy.searchPlaceholder,
+        tagPickerLabel: copy.filterByTagButtonLabel,
+        allTagsLabel: copy.allTagsLabel,
+        tagSearchPlaceholder: copy.selectTagCommandPlaceholder,
+        noTagFound: copy.noTagFound,
+        noResults: copy.noPostsFound,
+      }}
     >
       {
-        posts.length > 0 ? (
-          posts.map((postEntry) => (
-            <div class="blog-post-card-wrapper" data-post-id={postEntry.id}>
-              <BlogPostCard post={postEntry} lang={lang} />
-            </div>
-          ))
-        ) : (
-          <EmptyState
-            title={texts('noPostsFound')}
-            id="no-posts-initial-message"
-            className="hidden"
+        posts.map((post) => (
+          <EditorialEntry
+            filterId={post.id}
+            title={post.data.title}
+            href={getRelativeLocaleUrl(lang, `/blog/${post.id}`)}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            lang={lang}
+            headingLevel={2}
+            details={[
+              `${post.data.readingTimeMinutes} ${copy.readingTimeSuffix}`,
+            ]}
+            tags={post.data.tags}
           />
-        )
+        ))
       }
-    </div>
-    <EmptyState
-      title={texts('noPostsFound')}
-      id="no-posts-filtered-message"
-      className="hidden"
-    />
-
-    <script>
-      import {
-        filteredPostIdsAtom,
-        filtersInitializedAtom,
-      } from '../../../stores/blogFilterStore';
-
-      const postsContainer = document.getElementById('blog-posts-container');
-      const noPostsInitialMessage = document.getElementById(
-        'no-posts-initial-message'
-      );
-      const noPostsFilteredMessage = document.getElementById(
-        'no-posts-filtered-message'
-      );
-      const allPostCardWrappers = document.querySelectorAll(
-        '.blog-post-card-wrapper'
-      );
-
-      function updateVisiblePosts() {
-        if (!postsContainer || !noPostsFilteredMessage) return;
-
-        const currentFilteredIds = filteredPostIdsAtom.get();
-        const isFiltersInitialized = filtersInitializedAtom.get();
-        let visibleCount = 0;
-
-        allPostCardWrappers.forEach((wrapper) => {
-          const postIdAttribute = wrapper.getAttribute('data-post-id');
-          if (postIdAttribute !== null) {
-            // Now postIdAttribute is definitely a string
-            if (currentFilteredIds.includes(postIdAttribute)) {
-              wrapper.classList.remove('hidden');
-              visibleCount++;
-            } else {
-              wrapper.classList.add('hidden');
-            }
-          } else {
-            // If postIdAttribute is null (e.g., element doesn't have the attribute), ensure it's hidden.
-            wrapper.classList.add('hidden');
-          }
-        });
-
-        if (noPostsInitialMessage) {
-          noPostsInitialMessage.classList.add('hidden'); // Hide initial message when posts are filtered
-        }
-
-        if (isFiltersInitialized) {
-          if (visibleCount === 0) {
-            postsContainer.style.display = 'none';
-            noPostsFilteredMessage.classList.remove('hidden');
-          } else {
-            postsContainer.style.display = 'grid';
-            noPostsFilteredMessage.classList.add('hidden');
-          }
-        }
-      }
-
-      // Listen for changes to the filtered post IDs
-      const unsubscribePostIds =
-        filteredPostIdsAtom.subscribe(updateVisiblePosts);
-
-      // Listen for initialization to perform the first update
-      const unsubscribeInitialized = filtersInitializedAtom.subscribe(
-        (isInitialized: boolean) => {
-          if (isInitialized) {
-            updateVisiblePosts();
-            // We can unsubscribe from filtersInitializedAtom after the first initialization if we don't expect it to change again
-            // unsubscribeInitialized();
-          }
-        }
-      );
-
-      // Clean up subscriptions when the component is destroyed (navigation)
-      // Astro doesn't automatically handle this for scripts like frameworks UI do for components.
-      // For a simple app, it's not critical, but it's a good practice.
-      // window.addEventListener('astro:page-load', () => { /* re-attach if necessary */ });
-      // window.addEventListener('astro:before-preparation', () => {
-      //   unsubscribePostIds();
-      //   unsubscribeInitialized();
-      // });
-
-      // Run once at initialization in case the store is already initialized (e.g., if the script loads after the React component)
-      if (filtersInitializedAtom.get()) {
-        updateVisiblePosts();
-      }
-    </script>
-  </div>
+    </FilterableList>
+  </section>
 </BaseLayout>
