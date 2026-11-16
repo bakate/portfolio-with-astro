@@ -74,7 +74,7 @@ const languagesForSelector: Array<LanguageSelectorItem> =
       name="description"
       content={pageDescription || tSite('description')}
     />
-    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    {noIndex ? <meta name="robots" content="noindex, nofollow" /> : null}
     <link rel="canonical" href={Astro.url.href} />
 
     {/* Open Graph / Facebook */}

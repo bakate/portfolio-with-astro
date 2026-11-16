@@ -68,7 +68,7 @@ const externalLinks = [
   )}
 >
   {
-    image && (
+    image ? (
       <a
         href={detailUrl}
         tabindex="-1"
@@ -84,13 +84,13 @@ const externalLinks = [
           quality="mid"
         />
       </a>
-    )
+    ) : null
   }
   <div class="flex flex-1 flex-col gap-3 p-6">
     {
-      project.categoryText && (
+      project.categoryText ? (
         <p class="text-sm text-muted-foreground">{project.categoryText}</p>
-      )
+      ) : null
     }
     <h3 class={cn('font-heading font-semibold tracking-tight', style.title)}>
       <a
@@ -104,7 +104,7 @@ const externalLinks = [
       {project.description}
     </p>
     {
-      project.tags.length > 0 && (
+      project.tags.length > 0 ? (
         <ul class="flex flex-wrap gap-2" aria-label={t('technologies')}>
           {project.tags.slice(0, style.tags).map((tag) => (
             <li>
@@ -112,7 +112,7 @@ const externalLinks = [
             </li>
           ))}
         </ul>
-      )
+      ) : null
     }
     <div class="mt-auto flex flex-wrap gap-3 pt-3">
       <a

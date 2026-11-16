@@ -25,7 +25,7 @@ const copy = t.projectsPage;
   </section>
 
   {
-    archives.length > 0 && (
+    archives.length > 0 ? (
       <section
         id="archives"
         aria-labelledby="archives-title"
@@ -44,6 +44,6 @@ const copy = t.projectsPage;
         </div>
         <ProjectGrid projects={archives} lang={lang} />
       </section>
-    )
+    ) : null
   }
 </div>

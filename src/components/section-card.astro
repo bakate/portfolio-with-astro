@@ -54,16 +54,16 @@ const extraTagsCount = tags ? tags.length - MAX_TAGS : 0;
       {title}
     </CardTitle>
     {
-      categoryText && (
+      categoryText ? (
         <CardDescription className="text-sm text-muted-foreground pt-1">
           {categoryText}
         </CardDescription>
-      )
+      ) : null
     }
   </CardHeader>
   <CardContent className={cn('space-y-4 flex-grow', classNameContent)}>
     {
-      imageUrl && imageAltText && (
+      imageUrl && imageAltText ? (
         <div class="mb-4 h-48 w-full shrink-0 overflow-hidden rounded-md border border-border/50">
           <Image
             src={imageUrl}
@@ -76,24 +76,26 @@ const extraTagsCount = tags ? tags.length - MAX_TAGS : 0;
             quality="medium"
           />
         </div>
-      )
+      ) : null
     }
     <slot />
   </CardContent>
   {
-    tags && tags.length > 0 && (
-      <CardFooter className={cn('flex flex-wrap gap-2 pt-4 mt-auto', classNameFooter)}>
+    tags && tags.length > 0 ? (
+      <CardFooter
+        className={cn('flex flex-wrap gap-2 pt-4 mt-auto', classNameFooter)}
+      >
         {displayedTags.map((tag) => (
           <Badge variant="secondary" key={tag}>
             {tag}
           </Badge>
         ))}
-        {extraTagsCount > 0 && (
+        {extraTagsCount > 0 ? (
           <Badge variant="outline" className="text-muted-foreground">
             +{extraTagsCount}
           </Badge>
-        )}
+        ) : null}
       </CardFooter>
-    )
+    ) : null
   }
 </Card>
