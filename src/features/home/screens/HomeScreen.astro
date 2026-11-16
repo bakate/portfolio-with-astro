@@ -7,6 +7,7 @@ import { ExperienceSummary } from '@/features/experience';
 import { ProjectGrid, getHomePageProjects } from '@/features/projects';
 import { ui, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { analyticsEvents } from '@/lib/analytics';
 import { profile } from '@/lib/profile';
 import heroImage from '@/assets/bakate-portrait.png';
 import { Image } from 'astro:assets';
@@ -69,6 +70,7 @@ const latestEntries = await getLatestContent(lang);
       <div class="flex flex-col sm:flex-row gap-4">
         <a
           href={profile.bookingUrl}
+          data-umami-event={analyticsEvents.bookCall}
           target="_blank"
           rel="noopener noreferrer"
           class={buttonVariants({
@@ -82,6 +84,8 @@ const latestEntries = await getLatestContent(lang);
         <a
           href={profile.cvPathByLanguage[lang]}
           download
+          data-umami-event={analyticsEvents.downloadCv}
+          data-umami-event-language={lang}
           class={buttonVariants({
             variant: 'outline',
             size: 'lg',

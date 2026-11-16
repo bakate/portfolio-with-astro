@@ -1,4 +1,4 @@
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 
 import react from '@astrojs/react';
 
@@ -35,6 +35,17 @@ export default defineConfig({
   redirects: {
     '/projects/bloomflow': '/experience',
     '/en/projects/bloomflow': '/en/experience',
+  },
+
+  env: {
+    schema: {
+      // Umami Cloud website ID. Unset (local, preview, tests): no analytics script.
+      PUBLIC_UMAMI_WEBSITE_ID: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+    },
   },
 
   i18n: {

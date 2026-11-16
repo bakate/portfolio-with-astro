@@ -64,6 +64,27 @@ All commands are run from the root of the project:
 > - **Prerendered pages only, locally:** after `pnpm build`, run `pnpm dlx serve .vercel/output/static`. API routes such as `/api/contact` are not served.
 > - **API routes in development:** `vercel dev` runs the dev server with the API routes; it does not use the production build.
 
+## 📊 Analytics (Umami Cloud)
+
+Page views and three click events are measured with [Umami Cloud](https://cloud.umami.is): no cookies, so no consent banner, and independent of the host.
+
+| Variable                  | Value                                                       |
+| :------------------------ | :---------------------------------------------------------- |
+| `PUBLIC_UMAMI_WEBSITE_ID` | Website ID from Umami Cloud (_Settings → Websites → Edit_). |
+
+The ID is read at build time. **Without it, no Umami script is loaded and nothing is sent**: leave it unset locally, in preview deployments and in tests.
+
+- **Vercel:** _Project → Settings → Environment Variables_, add `PUBLIC_UMAMI_WEBSITE_ID` for the **Production** environment only, then redeploy.
+- **Netlify:** _Site configuration → Environment variables_, add `PUBLIC_UMAMI_WEBSITE_ID` scoped to the **Production** deploy context, then redeploy.
+
+Events (stable names: renaming one splits its history):
+
+| Event               | Sent when                                     | Data       |
+| :------------------ | :-------------------------------------------- | :--------- |
+| `book-call`         | a visitor chooses a "Book a 15-min call" link | none       |
+| `download-cv`       | a visitor downloads the CV                    | `language` |
+| `contact-form-sent` | the contact service accepts a message         | `language` |
+
 ## 🧪 Tests
 
 The only test level is Playwright end-to-end tests in `tests/e2e/`, run against the **built** site. They check what a visitor sees (HTML, links, HTTP responses), never component internals.

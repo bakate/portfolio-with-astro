@@ -23,6 +23,7 @@ import { setGlobalZodErrorMap } from '@/i18n/zodErrorMap';
 import type { LanguageCode } from '@/i18n/ui';
 import { Loader2, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { analyticsEvents, trackEvent } from '@/lib/analytics';
 
 interface ContactFormProps {
   lang: LanguageCode;
@@ -78,6 +79,7 @@ export function ContactForm({
         toast.success(
           result.message || formTranslations.toastSuccessMessageSent
         );
+        trackEvent(analyticsEvents.contactFormSent, { language: lang });
         form.reset();
         if (onSubmitSuccess) {
           onSubmitSuccess();

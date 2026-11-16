@@ -1,0 +1,17 @@
+---
+import { umamiWebsiteId } from '@/lib/analytics';
+---
+
+{
+  /* Umami Cloud: no cookies, so no consent banner. Loaded only when the build has a website ID. */
+}
+{
+  umamiWebsiteId ? (
+    <script
+      is:inline
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id={umamiWebsiteId}
+    />
+  ) : null
+}

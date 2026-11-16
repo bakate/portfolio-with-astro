@@ -6,6 +6,7 @@ import {
   type LanguageCode,
   languages,
 } from '@/i18n/ui';
+import Analytics from '@/components/Analytics.astro';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
 import BottomAppBar from '@/components/BottomAppBar.astro';
@@ -230,6 +231,7 @@ const languagesForSelector: Array<LanguageSelectorItem> =
     </script>
     <Font cssVariable="--font-geist" preload={[{ subset: 'latin' }]} />
     <Font cssVariable="--font-bricolage" preload={[{ subset: 'latin' }]} />
+    <Analytics />
     <ClientRouter />
     <slot name="head" />
   </head>

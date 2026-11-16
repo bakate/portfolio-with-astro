@@ -1,6 +1,7 @@
 ---
 import { buttonVariants } from '@/components/ui/button';
 import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
+import { analyticsEvents } from '@/lib/analytics';
 import { profile } from '@/lib/profile';
 import { ExternalLink, FileDown } from 'lucide-react';
 
@@ -47,6 +48,8 @@ const { lang, copy } = Astro.props;
       <a
         href={profile.cvPathByLanguage[lang]}
         download
+        data-umami-event={analyticsEvents.downloadCv}
+        data-umami-event-language={lang}
         class={buttonVariants({ variant: 'outline', size: 'lg' })}
       >
         <FileDown className="size-4" aria-hidden="true" />
