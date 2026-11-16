@@ -41,6 +41,10 @@ import {
   parentUpTrustedCircle,
 } from '@/assets/projects/parentup';
 import {
+  resumeStudioLanding,
+  resumeStudioProcessingPolicy,
+} from '@/assets/projects/resumestudio';
+import {
   terralHubAboutUs,
   terralHubCompaniesList,
   terralHubCompanyDetails,
@@ -87,7 +91,10 @@ const projectsData: Array<ProjectData> = [
     ],
     category: 'AI Resume Tailoring',
     date: '2026-09-26',
-    galleryImages: [],
+    galleryImages: [
+      { id: 'resumeStudioLanding', src: resumeStudioLanding },
+      { id: 'resumeStudioProcessingPolicy', src: resumeStudioProcessingPolicy },
+    ],
     keyFeatures: [
       { id: 'explainableMatchScore' },
       { id: 'noFabrication' },

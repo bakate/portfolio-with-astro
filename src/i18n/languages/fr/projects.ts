@@ -113,6 +113,38 @@ export const projectsContent = {
         caption: 'Retour et améliorations continues',
       },
     },
+    caseStudy: {
+      context:
+        "Pour des parents séparés, organiser la vie des enfants passe par de nombreux échanges : messages, rendez-vous, documents, et un historique à conserver. Parent Up réunit la messagerie, le calendrier de garde, les dossiers des enfants et le registre des incidents dans une seule application, partagée entre les deux parents et leur cercle de confiance. Conçue et livrée en solo, de l'architecture à la production, chez Teranga Pulse.",
+      problem:
+        "Chaque famille est un espace fermé : ses messages, ses documents et ses événements ne doivent être visibles que de ses membres, avec des droits différents pour un parent et pour un proche. Les deux parents doivent voir la même information au même moment. Et l'application s'adresse à des personnes souvent sous pression : la sécurité ne doit pas alourdir le parcours.",
+      architectureDecisions: [
+        'Un monorepo Turborepo et une application Next.js en TypeScript de bout en bout.',
+        "Convex comme backend temps réel : les deux parents partagent les mêmes événements et messages, en temps réel.",
+        "Les familles modélisées comme des organisations Clerk : l'isolation des données et les permissions reposent sur l'organisation, plutôt que sur un middleware de sécurité écrit à la main.",
+        'Des webhooks signés et idempotents entre Clerk et Convex : un événement reçu deux fois ne produit pas deux effets.',
+        'Une messagerie sécurisée, des documents à accès restreint et une synchronisation avec Google Calendar.',
+        'Un assistant juridique fondé sur le RAG, avec des embeddings, le Vercel AI SDK et OpenAI.',
+        'Des formulaires React Hook Form validés par Zod, des tests Vitest, une CI/CD GitHub Actions et le suivi des erreurs avec Sentry.',
+      ],
+      outcome:
+        "Un MVP livré en solo, de l'architecture à la production : authentification et espaces familiaux, invitation du coparent et du cercle de confiance, calendrier partagé, dossiers des enfants, registre des incidents, messagerie et assistant juridique IA.",
+      learnings:
+        "Confier l'isolation des familles aux organisations Clerk a réduit la complexité du middleware de sécurité et clarifié à qui appartient chaque donnée. Sur un produit où la confiance compte autant, s'appuyer sur un modèle d'accès éprouvé vaut mieux qu'en écrire un.",
+      diagram: `flowchart LR
+  users["Parents et cercle de confiance"]
+  web["Application Next.js<br/>monorepo Turborepo"]
+  clerk["Clerk<br/>une organisation par famille"]
+  convex["Convex<br/>backend temps réel"]
+  gcal["Google Calendar"]
+  ai["Assistant juridique<br/>RAG · Vercel AI SDK · OpenAI"]
+  users --> web
+  web --> clerk
+  web <--> convex
+  clerk -- "webhooks signés, idempotents" --> convex
+  convex --> gcal
+  convex --> ai`,
+    },
     challenges:
       'Structurer un modèle de données multi-tenants (par famille) tout en maintenant une UX fluide pour des utilisateurs sous pression.',
     learnings:
@@ -127,7 +159,51 @@ export const projectsContent = {
     categoryText: 'IA et DDD',
     dateText: 'Depuis septembre 2026',
     imageAltText: "Page d'accueil de Resume Studio",
-    galleryImages: {},
+    galleryImages: {
+      resumeStudioLanding: {
+        alt: "Page d'accueil de Resume Studio",
+        caption: "L'accueil : le CV et l'offre, sans compte",
+      },
+      resumeStudioProcessingPolicy: {
+        alt: 'Politique de traitement de Resume Studio, dépliée',
+        caption:
+          'La politique de traitement versionnée : fournisseur, pays, finalités, données envoyées et conservation',
+      },
+    },
+    caseStudy: {
+      context:
+        "Un candidat sérieux doit adapter son CV à chaque offre. Resume Studio prend le CV et l'offre d'emploi, puis produit une analyse de correspondance explicable et un CV adapté à cette offre. C'est une démo publique, sans compte : les documents restent dans le navigateur du candidat, et sont supprimés à sa visite suivante après 24 heures, ou tout de suite à sa demande.",
+      problem:
+        "Un modèle de langage sait reformuler un CV, mais rien ne l'empêche d'y ajouter une compétence que le candidat n'a jamais eue. Il fallait donc que chaque phrase du CV renvoie à un fait fourni par le candidat, que le score s'explique exigence par exigence, et que le modèle reste remplaçable sans affaiblir ces garanties. Deux contraintes de démo publique s'y ajoutent : le contenu professionnel part chez un fournisseur externe, ce qui demande un consentement explicite, et l'usage gratuit doit rester borné.",
+      architectureDecisions: [
+        "Un langage métier d'abord : le fichier CONTEXT.md définit les termes du domaine (fait du candidat, exigence de l'offre, preuve de correspondance, score), que le code et les tests reprennent mot pour mot.",
+        "Un cœur sans framework, en trois packages : le domaine, l'application (cas d'usage et ports) et le moteur de correspondance. Aucun n'importe React, TanStack ni le SDK d'IA ; l'application web n'est qu'un adaptateur.",
+        "Des règles d'architecture vérifiées par dependency-cruiser : le domaine ne dépend de rien d'extérieur, le moteur ne connaît aucun fournisseur, seuls les adaptateurs serveur atteignent un modèle de langage, et l'interface ne les atteint qu'à travers la racine de composition.",
+        "Un score déterministe : le modèle propose des preuves, mais une preuve ne compte que si elle cite un texte présent à la fois dans l'offre et dans les faits du candidat. Le score se calcule ensuite sans modèle : poids 3, 2 ou 1 selon l'importance de l'exigence, couverture totale, partielle ou nulle.",
+        "Le modèle traité comme une dépendance : une configuration (modèle et réglages exacts) ne sert qu'après une évaluation enregistrée du rappel d'extraction, de la fidélité multilingue, de la latence, du coût et de la sûreté de la provenance.",
+        "Consentement et quota dans le domaine : le candidat accepte une politique de traitement versionnée avant le premier appel au modèle, un seul fournisseur est actif à la fois, et un quota journalier par réseau, sous un plafond global, est remis à zéro à minuit, heure de Paris.",
+      ],
+      outcome:
+        "La démo est en ligne sur Cloudflare Workers. Le passage à DeepSeek comme fournisseur a suivi la même qualification, et ce sont des enregistrements en échec qui ont montré quoi changer : sans raisonnement, l'extraction retrouvait environ 60 % des exigences d'une offre, contre environ 94 % avec un raisonnement faible ; sur une offre en français, le modèle traduisait en anglais les valeurs des exigences dans 6 rejeux sur 15, ce qui aurait bloqué les candidats francophones. Après correction : 0 sur 15. DeepSeek ne sert en production qu'une fois tous les critères franchis.",
+      learnings:
+        "Traiter le modèle d'IA comme une dépendance : on le qualifie par des évaluations enregistrées, comme n'importe quel adaptateur, et changer de modèle ou de réglage oblige à le qualifier de nouveau. Une évaluation en échec est un résultat : c'est elle qui a révélé ce que le premier essai avait manqué.",
+      diagram: `flowchart LR
+  subgraph web["Application web · TanStack Start"]
+    ui["Interface et routes API"]
+    adapters["Adaptateurs serveur<br/>AI SDK"]
+  end
+  subgraph core["Cœur, sans framework"]
+    app["Application<br/>cas d'usage et ports"]
+    domain["Domaine<br/>exigences, couverture, score"]
+    engine["Moteur de correspondance<br/>validation des preuves"]
+  end
+  llm["Modèle qualifié<br/>DeepSeek"]
+  ui --> app
+  adapters -. ports .-> app
+  app --> domain
+  app --> engine
+  adapters --> llm`,
+    },
     keyFeatures: {
       explainableMatchScore: {
         title: 'Score de correspondance explicable',

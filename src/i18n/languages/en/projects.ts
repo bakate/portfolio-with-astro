@@ -114,6 +114,38 @@ export const projectsContent = {
         caption: 'Continuous improvements and reporting',
       },
     },
+    caseStudy: {
+      context:
+        'For separated parents, organising their children’s lives means many exchanges: messages, appointments, documents, and a history to keep. Parent Up brings messaging, the custody calendar, children’s records and the incident log into one app, shared between both parents and their trusted circle. Designed and shipped solo, from architecture to production, at Teranga Pulse.',
+      problem:
+        'Each family is a closed space: its messages, documents and events must be visible to its members only, with different rights for a parent and for a relative. Both parents must see the same information at the same time. And the app serves people who are often under pressure: security must not weigh down the experience.',
+      architectureDecisions: [
+        'A Turborepo monorepo and a Next.js app in TypeScript end to end.',
+        'Convex as the real-time backend: both parents share the same events and messages, in real time.',
+        'Families modelled as Clerk organizations: data isolation and permissions rest on the organization, rather than on hand-written security middleware.',
+        'Signed, idempotent webhooks between Clerk and Convex: an event received twice does not take effect twice.',
+        'Secure messaging, restricted-access documents and Google Calendar sync.',
+        'An AI legal assistant built on RAG, with embeddings, the Vercel AI SDK and OpenAI.',
+        'React Hook Form forms validated with Zod, Vitest tests, GitHub Actions CI/CD and error tracking with Sentry.',
+      ],
+      outcome:
+        'An MVP shipped solo, from architecture to production: authentication and family spaces, inviting the co-parent and the trusted circle, a shared calendar, children’s records, an incident log, messaging and an AI legal assistant.',
+      learnings:
+        'Handing family isolation to Clerk organizations reduced security middleware complexity and made clear who owns each piece of data. On a product where trust matters this much, relying on a proven access model beats writing one.',
+      diagram: `flowchart LR
+  users["Parents and trusted circle"]
+  web["Next.js app<br/>Turborepo monorepo"]
+  clerk["Clerk<br/>one organization per family"]
+  convex["Convex<br/>real-time backend"]
+  gcal["Google Calendar"]
+  ai["AI legal assistant<br/>RAG · Vercel AI SDK · OpenAI"]
+  users --> web
+  web --> clerk
+  web <--> convex
+  clerk -- "signed, idempotent webhooks" --> convex
+  convex --> gcal
+  convex --> ai`,
+    },
     challenges:
       'Architecting a multi-tenant family model while maintaining a seamless UX for users in high-stress situations.',
     learnings:
@@ -128,7 +160,51 @@ export const projectsContent = {
     categoryText: 'AI and DDD',
     dateText: 'Since September 2026',
     imageAltText: 'Resume Studio landing page',
-    galleryImages: {},
+    galleryImages: {
+      resumeStudioLanding: {
+        alt: 'Resume Studio landing page',
+        caption: 'The landing page: the resume and the job posting, no account',
+      },
+      resumeStudioProcessingPolicy: {
+        alt: 'Resume Studio processing policy, expanded',
+        caption:
+          'The versioned processing policy: provider, country, purposes, data sent and retention',
+      },
+    },
+    caseStudy: {
+      context:
+        'A serious candidate ends up tailoring a resume to every job posting. Resume Studio takes the resume and the job posting, then produces an explainable match analysis and a resume tailored to that posting. It is a public demo with no account: documents stay in the candidate’s browser and are deleted on their next visit after 24 hours, or right away on request.',
+      problem:
+        'A language model can rephrase a resume, but nothing stops it from adding a skill the candidate never had. So every line of the resume had to point back to a fact the candidate supplied, the score had to explain itself requirement by requirement, and the model had to stay replaceable without weakening those guarantees. A public demo adds two constraints: professional content goes to an external provider, which calls for explicit consent, and free usage must stay bounded.',
+      architectureDecisions: [
+        'A domain language first: CONTEXT.md defines the domain terms (candidate fact, job requirement, match evidence, score), and the code and tests use them word for word.',
+        'A framework-free core in three packages: the domain, the application (use cases and ports) and the matching engine. None of them imports React, TanStack or the AI SDK; the web app is just an adapter.',
+        'Architecture rules checked by dependency-cruiser: the domain depends on nothing outside it, the matching engine knows no provider, only server adapters reach a language model, and the interface reaches them only through the composition root.',
+        'A deterministic score: the model proposes evidence, but evidence only counts if it cites text found both in the job posting and in the candidate’s facts. The score is then computed without any model: a weight of 3, 2 or 1 by requirement importance, full, partial or no coverage.',
+        'The model treated as a dependency: a configuration (model and exact settings) is used only after a recorded evaluation of extraction recall, multilingual fidelity, latency, cost and provenance safety.',
+        'Consent and quota in the domain: the candidate accepts a versioned processing policy before the first model call, exactly one provider is active at a time, and a daily quota per network, under a global ceiling, resets at midnight Paris time.',
+      ],
+      outcome:
+        'The demo runs on Cloudflare Workers. Moving to DeepSeek as the provider went through the same qualification, and failing recordings showed what to change: without reasoning, extraction found about 60% of a posting’s requirements, against about 94% with low reasoning; on a French posting, the model translated the requirement values into English in 6 replays out of 15, which would have blocked French-speaking candidates. After the fix: 0 out of 15. DeepSeek serves production only once every criterion passed.',
+      learnings:
+        'Treat the AI model as a dependency: qualify it through recorded evaluations, like any adapter, and changing the model or a setting means qualifying it again. A failing evaluation is a result: it is what revealed what the first attempt had missed.',
+      diagram: `flowchart LR
+  subgraph web["Web app · TanStack Start"]
+    ui["Interface and API routes"]
+    adapters["Server adapters<br/>AI SDK"]
+  end
+  subgraph core["Framework-free core"]
+    app["Application<br/>use cases and ports"]
+    domain["Domain<br/>requirements, coverage, score"]
+    engine["Matching engine<br/>evidence validation"]
+  end
+  llm["Qualified model<br/>DeepSeek"]
+  ui --> app
+  adapters -. ports .-> app
+  app --> domain
+  app --> engine
+  adapters --> llm`,
+    },
     keyFeatures: {
       explainableMatchScore: {
         title: 'Explainable match score',
