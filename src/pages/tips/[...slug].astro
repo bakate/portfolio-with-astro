@@ -1,5 +1,5 @@
 ---
-import TipLayout from '@/features/tips/layouts/TipLayout.astro';
+import { TipLayout } from '@/features/tips';
 import { defaultLanguage } from '@/i18n/ui';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
@@ -21,9 +21,13 @@ type Props = {
 };
 
 const { tip } = Astro.props;
-const { Content, headings } = await render(tip);
+const { Content, headings, remarkPluginFrontmatter } = await render(tip);
 ---
 
-<TipLayout tip={tip} headings={headings}>
+<TipLayout
+  tip={tip}
+  headings={headings}
+  readingTimeMinutes={remarkPluginFrontmatter.readingTimeMinutes}
+>
   <Content />
 </TipLayout>

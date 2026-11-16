@@ -11,12 +11,10 @@ import { BlogFilters, type BlogFiltersProps } from './BlogFilters';
 
 export type PostDataForFilter = {
   id: string;
-  slug: string;
   title: string;
   description: string;
   tags?: Array<string>;
   body: string;
-  pubDate: Date;
 };
 
 export type FilteredPostsListProps = {

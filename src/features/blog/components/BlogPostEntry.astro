@@ -1,0 +1,58 @@
+---
+import type { LanguageCode } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/ui';
+import { formatDate } from '@/lib/utils';
+import type { CollectionEntry } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+type Props = {
+  post: CollectionEntry<'blog'>;
+  lang: LanguageCode;
+  /** 2 on the blog list, 3 under a "related posts" heading. */
+  headingLevel: 2 | 3;
+};
+
+const { post, lang, headingLevel } = Astro.props;
+const t = useTranslations(lang, 'blogPost');
+const Title = `h${headingLevel}` as const;
+const {
+  title,
+  description,
+  pubDate,
+  readingTimeMinutes,
+  tags = [],
+} = post.data;
+---
+
+<article
+  class="grid gap-2 border-b border-border py-8 md:grid-cols-[12rem_1fr] md:gap-10"
+>
+  <p class="text-sm text-muted-foreground md:pt-1">
+    <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
+    {
+      readingTimeMinutes != null && (
+        <span class="block">
+          {readingTimeMinutes} {t('readingTimeSuffix')}
+        </span>
+      )
+    }
+  </p>
+  <div>
+    <Title class="font-heading text-xl font-semibold tracking-tight">
+      <a
+        href={getRelativeLocaleUrl(lang, `/blog/${post.id}`)}
+        class="underline-offset-4 hover:text-primary hover:underline"
+      >
+        {title}
+      </a>
+    </Title>
+    <p class="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+      {description}
+    </p>
+    {
+      tags.length > 0 && (
+        <p class="mt-4 text-sm text-muted-foreground">{tags.join(' · ')}</p>
+      )
+    }
+  </div>
+</article>

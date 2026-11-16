@@ -21,13 +21,12 @@ export type TipDataForFilter = {
 
 export type FilteredTipsListProps = {
   allTips: Array<TipDataForFilter>;
-  texts: TipsFiltersProps['texts'] & { 
+  texts: TipsFiltersProps['texts'] & {
     noTipsFound: string;
     difficultyBeginner: string;
     difficultyIntermediate: string;
     difficultyAdvanced: string;
   };
-  lang: string;
   initialSearchQuery?: string;
   initialTag?: string;
   initialDifficulty?: string;
@@ -36,24 +35,31 @@ export type FilteredTipsListProps = {
 export function FilteredTipsList({
   allTips,
   texts,
-  lang,
   initialSearchQuery = '',
   initialTag = '',
   initialDifficulty = '',
 }: FilteredTipsListProps) {
   const [searchQuery, setSearchQuery] = React.useState(initialSearchQuery);
   const [selectedTag, setSelectedTag] = React.useState(initialTag);
-  const [selectedDifficulty, setSelectedDifficulty] = React.useState(initialDifficulty);
+  const [selectedDifficulty, setSelectedDifficulty] =
+    React.useState(initialDifficulty);
 
   React.useEffect(() => {
     // Update URL when filters change
     const params = new URLSearchParams(window.location.search);
-    if (searchQuery) params.set('q', searchQuery); else params.delete('q');
-    if (selectedTag) params.set('tag', selectedTag); else params.delete('tag');
-    if (selectedDifficulty) params.set('diff', selectedDifficulty); else params.delete('diff');
+    if (searchQuery) params.set('q', searchQuery);
+    else params.delete('q');
+    if (selectedTag) params.set('tag', selectedTag);
+    else params.delete('tag');
+    if (selectedDifficulty) params.set('diff', selectedDifficulty);
+    else params.delete('diff');
 
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-    
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${params.toString()}`
+    );
+
     tipsSearchQueryAtom.set(searchQuery);
     tipsSelectedTagAtom.set(selectedTag);
     tipsSelectedDifficultyAtom.set(selectedDifficulty);

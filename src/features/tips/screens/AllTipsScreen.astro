@@ -2,192 +2,107 @@
 import {
   FilteredTipsList,
   type TipDataForFilter,
-} from '@/features/tips/components/FilteredTipsList';
-import Heading from '@/components/Heading.astro';
+} from '../components/FilteredTipsList';
 import { EmptyState } from '@/components/empty-state';
-import TipRow from '@/features/tips/components/TipRow.astro';
-import { useTranslations, type LanguageCode } from '@/i18n/ui';
+import TipEntry from '../components/TipEntry.astro';
+import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-
 import type { CollectionEntry } from 'astro:content';
 
-interface Props {
+/**
+ * Every string of the tips page, keyed like the French copy: passing
+ * `ui[lang].tipsPage` fails to compile when a language misses a key.
+ */
+export type TipsPageCopy = Record<
+  keyof (typeof ui)[typeof defaultLanguage]['tipsPage'],
+  string
+>;
+
+type Difficulty = NonNullable<CollectionEntry<'tips'>['data']['difficulty']>;
+
+type Props = {
+  /** Published tips, newest first. */
   tips: Array<CollectionEntry<'tips'>>;
   lang: LanguageCode;
-}
-
-const { tips, lang } = Astro.props;
-
-const initialSearchQuery = Astro.url.searchParams.get('q') || '';
-const initialTag = Astro.url.searchParams.get('tag') || '';
-const initialDifficulty = Astro.url.searchParams.get('diff') || '';
-
-const texts = useTranslations(lang, 'tipsPage');
-
-function transformTipForClientFilter(
-  tip: CollectionEntry<'tips'>
-): TipDataForFilter {
-  return {
-    id: tip.id,
-    title: tip.data.title,
-    description: tip.data.description || '',
-    tags: tip.data.tags,
-    body: tip.body ?? '',
-    difficulty: tip.data.difficulty,
-  };
-}
-
-const componentTexts = {
-  searchPlaceholder: texts('searchPlaceholder'),
-  filterByTagButtonLabel: texts('filterByTagButtonLabel'),
-  filterByDifficultyLabel: texts('filterByDifficultyLabel'),
-  noTagFound: texts('noTagFound'),
-  selectTagCommandPlaceholder: texts('selectTagCommandPlaceholder'),
-  allTagsLabel: texts('allTagsLabel'),
-  allDifficultiesLabel: texts('allDifficulties'),
-  difficultyBeginner: texts('difficultyBeginner'),
-  difficultyIntermediate: texts('difficultyIntermediate'),
-  difficultyAdvanced: texts('difficultyAdvanced'),
-  noTipsFound: texts('noTipsFound'),
+  copy: TipsPageCopy;
 };
 
-const t = useTranslations(lang, 'tipsPage');
-const featuredTips = tips.filter((tip) => tip.data.featured);
-const regularTips = tips.filter((tip) => !tip.data.featured);
+const { tips, lang, copy } = Astro.props;
+
+const difficultyLabel = {
+  beginner: copy.difficultyBeginner,
+  intermediate: copy.difficultyIntermediate,
+  advanced: copy.difficultyAdvanced,
+} as const satisfies Record<Difficulty, string>;
+
+const toFilterData = (tip: CollectionEntry<'tips'>): TipDataForFilter => ({
+  id: tip.id,
+  title: tip.data.title,
+  description: tip.data.description,
+  tags: tip.data.tags,
+  body: tip.body ?? '',
+  difficulty: tip.data.difficulty,
+});
 ---
 
-<BaseLayout pageTitle={t('metaTitle')} pageDescription={t('metaDescription')}>
-  <div class="container mx-auto px-4 py-8">
-    <Heading title={t('title')} description={t('description')} />
+<BaseLayout pageTitle={copy.metaTitle} pageDescription={copy.metaDescription}>
+  <section class="py-12 md:py-16">
+    <header class="mb-12 max-w-3xl">
+      <h1 class="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+        {copy.title}
+      </h1>
+      <p class="mt-4 text-muted-foreground">{copy.description}</p>
+    </header>
 
     <FilteredTipsList
       client:load
-      allTips={tips.map(transformTipForClientFilter)}
-      texts={componentTexts}
-      lang={lang}
-      initialSearchQuery={initialSearchQuery}
-      initialTag={initialTag}
-      initialDifficulty={initialDifficulty}
+      allTips={tips.map(toFilterData)}
+      texts={{ ...copy, allDifficultiesLabel: copy.allDifficulties }}
     />
 
-    {
-      tips.length === 0 ? (
-        <EmptyState title={t('noTips')} />
-      ) : (
-        <div class="space-y-12">
-          {/* Featured Tips */}
-          {featuredTips.length > 0 && (
-            <section id="featured-tips-section">
-              <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
-                <span class="text-2xl">⭐</span>
-                {t('featuredTips')}
-              </h2>
-              <div class="grid gap-4">
-                {featuredTips.map((tip) => (
-                  <div class="tip-card-wrapper" data-tip-id={tip.id}>
-                    <TipRow tip={tip} lang={lang} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* All Regular Tips */}
-          <section id="all-tips-section">
-            {regularTips.length > 0 && (
-              <h2 class="text-2xl font-semibold mb-6">{t('allTips')}</h2>
-            )}
-
-            <div class="grid gap-4">
-              {regularTips.map((tip) => (
-                <div class="tip-card-wrapper" data-tip-id={tip.id}>
-                  <TipRow tip={tip} lang={lang} />
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Empty State for filtered results */}
-          <EmptyState
-            title={texts('noTipsFound')}
-            id="no-tips-filtered-message"
-            className="hidden"
-          />
-
-          {/* Stats */}
-          <div class="text-center pt-8 border-t border-border/30">
-            <p class="text-sm text-muted-foreground mb-4">
-              {tips.length}{' '}
-              {tips.length > 1 ? t('tipsAvailable') : t('tipAvailable')}
-            </p>
+    <div class="border-t border-border">
+      {
+        tips.map((tip) => (
+          <div class="tip-card-wrapper" data-tip-id={tip.id}>
+            <TipEntry
+              tip={tip}
+              lang={lang}
+              readingTimeSuffix={copy.readingTimeSuffix}
+              difficultyLabel={
+                tip.data.difficulty && difficultyLabel[tip.data.difficulty]
+              }
+            />
           </div>
-        </div>
-      )
-    }
-  </div>
+        ))
+      }
+    </div>
+    <EmptyState
+      title={tips.length > 0 ? copy.noTipsFound : copy.noTips}
+      id="no-tips-filtered-message"
+      className={tips.length > 0 ? 'mt-8 hidden' : 'mt-8'}
+    />
+  </section>
 
   <script>
     import {
       filteredTipsIdsAtom,
       tipsFiltersInitializedAtom,
-    } from '../../../stores/tipsFilterStore';
+    } from '@/stores/tipsFilterStore';
 
-    const noTipsFilteredMessage = document.getElementById(
-      'no-tips-filtered-message'
-    );
-    const allTipCardWrappers = document.querySelectorAll('.tip-card-wrapper');
-    const featuredSection = document.getElementById('featured-tips-section');
-    const allSection = document.getElementById('all-tips-section');
+    const noTipsMessage = document.getElementById('no-tips-filtered-message');
+    const wrappers =
+      document.querySelectorAll<HTMLElement>('.tip-card-wrapper');
 
     function updateVisibleTips() {
-      if (!noTipsFilteredMessage) return;
-
-      const currentFilteredIds = filteredTipsIdsAtom.get();
-      const isFiltersInitialized = tipsFiltersInitializedAtom.get();
-      let visibleCount = 0;
-      let visibleFeaturedCount = 0;
-      let visibleRegularCount = 0;
-
-      allTipCardWrappers.forEach((wrapper) => {
-        const tipId = wrapper.getAttribute('data-tip-id');
-        if (tipId && currentFilteredIds.includes(tipId)) {
-          wrapper.classList.remove('hidden');
-          visibleCount++;
-          if (wrapper.closest('#featured-tips-section')) {
-            visibleFeaturedCount++;
-          } else {
-            visibleRegularCount++;
-          }
-        } else {
-          wrapper.classList.add('hidden');
-        }
+      if (!tipsFiltersInitializedAtom.get()) return;
+      const visibleIds = new Set(filteredTipsIdsAtom.get());
+      wrappers.forEach((wrapper) => {
+        wrapper.hidden = !visibleIds.has(wrapper.dataset.tipId ?? '');
       });
-
-      if (isFiltersInitialized) {
-        // Toggle empty state message
-        if (visibleCount === 0) {
-          noTipsFilteredMessage.classList.remove('hidden');
-        } else {
-          noTipsFilteredMessage.classList.add('hidden');
-        }
-
-        // Hide/Show sections if they are empty
-        if (featuredSection) {
-          featuredSection.style.display =
-            visibleFeaturedCount === 0 ? 'none' : 'block';
-        }
-        if (allSection) {
-          allSection.style.display =
-            visibleRegularCount === 0 ? 'none' : 'block';
-        }
-      }
+      noTipsMessage?.classList.toggle('hidden', visibleIds.size > 0);
     }
 
     filteredTipsIdsAtom.subscribe(updateVisibleTips);
-    tipsFiltersInitializedAtom.subscribe((init) => init && updateVisibleTips());
-
-    if (tipsFiltersInitializedAtom.get()) {
-      updateVisibleTips();
-    }
+    tipsFiltersInitializedAtom.subscribe(updateVisibleTips);
   </script>
 </BaseLayout>

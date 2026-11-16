@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/command';
 import { Check, ChevronsUpDown, BarChart2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsHydrated } from '@/lib/use-is-hydrated';
 
 // Debounce utility
 function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
@@ -49,6 +50,7 @@ export type TipsFiltersProps = {
   currentTag: string;
   currentDifficulty: string;
   texts: {
+    searchLabel: string;
     searchPlaceholder: string;
     filterByTagButtonLabel: string;
     filterByDifficultyLabel: string;
@@ -72,6 +74,7 @@ export function TipsFilters({
 }: TipsFiltersProps) {
   const [internalSearchQuery, setInternalSearchQuery] =
     React.useState(currentSearchQuery);
+  const isHydrated = useIsHydrated();
   const [tagPopoverOpen, setTagPopoverOpen] = React.useState(false);
   const [diffPopoverOpen, setDiffPopoverOpen] = React.useState(false);
 
@@ -102,12 +105,14 @@ export function TipsFilters({
     <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
       <Input
         type="search"
+        aria-label={texts.searchLabel}
+        disabled={!isHydrated}
         placeholder={texts.searchPlaceholder}
         value={internalSearchQuery}
         onChange={handleInternalSearchChange}
         className="w-full md:max-w-xs"
       />
-      
+
       <div className="flex flex-col sm:flex-row w-full md:w-auto gap-2">
         {/* Difficulty Filter */}
         <Popover open={diffPopoverOpen} onOpenChange={setDiffPopoverOpen}>
@@ -116,6 +121,8 @@ export function TipsFilters({
               variant="outline"
               role="combobox"
               aria-expanded={diffPopoverOpen}
+              aria-label={texts.filterByDifficultyLabel}
+              disabled={!isHydrated}
               className="w-full sm:w-[180px] justify-between cursor-pointer"
             >
               <div className="flex items-center gap-2 overflow-hidden">
@@ -140,7 +147,9 @@ export function TipsFilters({
                       key={diff.value}
                       value={diff.value}
                       onSelect={(val) => {
-                        onDifficultyChange(val === currentDifficulty ? '' : val);
+                        onDifficultyChange(
+                          val === currentDifficulty ? '' : val
+                        );
                         setDiffPopoverOpen(false);
                       }}
                       className="cursor-pointer"
@@ -169,6 +178,8 @@ export function TipsFilters({
               variant="outline"
               role="combobox"
               aria-expanded={tagPopoverOpen}
+              aria-label={texts.filterByTagButtonLabel}
+              disabled={!isHydrated}
               className="w-full sm:w-[180px] justify-between cursor-pointer"
             >
               {currentTag && allTags.find((tag) => tag.value === currentTag)

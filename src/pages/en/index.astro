@@ -5,6 +5,7 @@ import {
   getTranslatedProofs,
   type TranslatedProject,
 } from '@/features/projects';
+import { getLatestContent } from '@/features/latest-content';
 import {
   defaultLanguage,
   ui,
@@ -17,7 +18,7 @@ import PersonStructuredData from '@/components/PersonStructuredData.astro';
 const lang =
   (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
 const t = useTranslations(lang, 'homePage');
-const { experience, howIWork } = ui[lang].homePage;
+const { experience, howIWork, latestContent } = ui[lang].homePage;
 
 const pageTitle = t('pageTitle');
 const pageDescription = t('pageDescription');
@@ -38,6 +39,10 @@ const layoutProps = {
   featuredProjectsDescription: t('featuredProjectsDescription'),
   experience,
   howIWork,
+  latestContent: {
+    copy: latestContent,
+    entries: await getLatestContent(lang),
+  },
 };
 ---
 

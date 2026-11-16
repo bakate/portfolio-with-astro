@@ -19,6 +19,11 @@ import HowIWork, {
   type Props as HowIWorkProps,
 } from '../components/HowIWork.astro';
 import type { Proof, TranslatedProject } from '../type';
+import {
+  LatestContent,
+  type LatestContentCopy,
+  type LatestContentEntry,
+} from '@/features/latest-content';
 
 export type Props = {
   lang: LanguageCode;
@@ -40,6 +45,11 @@ export type Props = {
     entries: ReadonlyArray<ExperienceSummaryEntry>;
   };
   howIWork: HowIWorkProps;
+  latestContent: {
+    copy: LatestContentCopy;
+    /** Empty while nothing recent is published: the section is then left out. */
+    entries: ReadonlyArray<LatestContentEntry>;
+  };
 };
 
 const {
@@ -56,6 +66,7 @@ const {
   featuredProjectsDescription,
   experience,
   howIWork,
+  latestContent,
 } = Astro.props;
 ---
 
@@ -147,4 +158,12 @@ const {
 
 <RevealOnScroll>
   <HowIWork {...howIWork} />
+</RevealOnScroll>
+
+<RevealOnScroll>
+  <LatestContent
+    lang={lang}
+    copy={latestContent.copy}
+    entries={latestContent.entries}
+  />
 </RevealOnScroll>

@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/command';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsHydrated } from '@/lib/use-is-hydrated';
 
 function debounce<Arguments extends unknown[]>(
   func: (...args: Arguments) => void,
@@ -48,6 +49,7 @@ export type BlogFiltersProps = {
   currentSearchQuery: string;
   currentTag: string;
   texts: {
+    searchLabel: string;
     searchPlaceholder: string;
     filterByTagButtonLabel: string;
     noTagFound: string;
@@ -68,6 +70,7 @@ export function BlogFilters({
   // currentSearchQuery and currentTag are the initial/active values passed as props
   const [internalSearchQuery, setInternalSearchQuery] =
     React.useState(currentSearchQuery);
+  const isHydrated = useIsHydrated();
   const [internalSelectedTag, setInternalSelectedTag] =
     React.useState(currentTag);
   const [popoverOpen, setPopoverOpen] = React.useState(false);
@@ -117,6 +120,8 @@ export function BlogFilters({
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
       <Input
         type="search"
+        aria-label={texts.searchLabel}
+        disabled={!isHydrated}
         placeholder={texts.searchPlaceholder}
         value={internalSearchQuery}
         onChange={handleInternalSearchChange}
@@ -128,6 +133,8 @@ export function BlogFilters({
             variant="outline"
             role="combobox"
             aria-expanded={popoverOpen}
+            aria-label={texts.filterByTagButtonLabel}
+            disabled={!isHydrated}
             className="w-full sm:w-[200px] justify-between"
           >
             {internalSelectedTag &&
