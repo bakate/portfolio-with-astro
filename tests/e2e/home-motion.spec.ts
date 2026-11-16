@@ -35,8 +35,20 @@ for (const language of Object.values(languages)) {
     await site.visitorAllowsMotion();
     await site.visitorOpens(language.home);
     await site.visitorScrollsToTheBottom();
-    await site.thenAnimationsStartedOnTheWay({ some: true });
+    await site.thenSomeSectionsFadeIn();
     await site.thenFullPageCaptureShowsEverySection(sections);
+  });
+
+  test(`Given a visitor who allows motion and has scrolled to the bottom of the ${language.name} home page, when they reload it, then the sections on screen show their content without fading in`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorAllowsMotion();
+    await site.visitorOpens(language.home);
+    await site.visitorScrollsToTheBottom();
+    await site.visitorReloadsThePage();
+    await site.thenNoSectionAnimates();
   });
 
   test(`Given the ${language.name} home page and a visitor who prefers reduced motion, when they scroll to the bottom, then nothing animates and every section shows its content`, async ({
@@ -47,7 +59,7 @@ for (const language of Object.values(languages)) {
     await site.visitorPrefersReducedMotion();
     await site.visitorOpens(language.home);
     await site.visitorScrollsToTheBottom();
-    await site.thenAnimationsStartedOnTheWay({ some: false });
+    await site.thenNoSectionAnimates();
     await site.thenFullPageCaptureShowsEverySection(sections);
   });
 }

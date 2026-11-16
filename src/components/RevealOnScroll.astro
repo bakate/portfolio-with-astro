@@ -1,9 +1,11 @@
 ---
 /**
- * Fades its content in when the visitor scrolls it into view. The content is
- * fully shown by default: without JavaScript, with reduced motion, or when the
- * page is laid out at once (a full-page capture resizes, it does not scroll),
- * nothing is ever hidden. Only an actual scroll plays the fade.
+ * Fades its content in when the visitor scrolls it up into view. The content
+ * is fully shown by default: without JavaScript, with reduced motion, or when
+ * the page is laid out at once (a full-page capture resizes, it does not
+ * scroll), nothing is ever hidden. A section already on screen when the page
+ * loads, after a reload or a back navigation that restores the scroll, never
+ * fades either.
  */
 ---
 
@@ -12,38 +14,42 @@
 </div>
 
 <script>
-  let stop: (() => void) | undefined;
+  let stopPreviousReveal: (() => void) | undefined;
 
   function revealOnScroll() {
-    stop?.();
+    stopPreviousReveal?.();
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let visitorHasScrolled = false;
     const markScrolled = () => (visitorHasScrolled = true);
     addEventListener('scroll', markScrolled, { once: true, passive: true });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const { isIntersecting, target } of entries) {
-          if (!isIntersecting) continue;
-          observer.unobserve(target);
-          if (!visitorHasScrolled) continue;
-          target.classList.add('reveal-entering');
-          target.addEventListener(
-            'animationend',
-            () => target.classList.remove('reveal-entering'),
-            { once: true }
-          );
+    // The observer's first report describes the page as it loaded.
+    const reported = new WeakSet<Element>();
+
+    const observer = new IntersectionObserver((entries) => {
+      for (const { isIntersecting, target, boundingClientRect } of entries) {
+        const onScreenAtLoad = !reported.has(target) && isIntersecting;
+        reported.add(target);
+        if (!isIntersecting) continue;
+        observer.unobserve(target);
+        const comesUpFromBelow = boundingClientRect.top > 0;
+        if (onScreenAtLoad || !visitorHasScrolled || !comesUpFromBelow) {
+          continue;
         }
-      },
-      // Starts the fade just before the section's top edge comes into view.
-      { rootMargin: '0px 0px 10% 0px' }
-    );
+        target.classList.add('reveal-entering');
+        target.addEventListener(
+          'animationend',
+          () => target.classList.remove('reveal-entering'),
+          { once: true }
+        );
+      }
+    });
     for (const element of document.querySelectorAll('[data-reveal]')) {
       observer.observe(element);
     }
 
-    stop = () => {
+    stopPreviousReveal = () => {
       observer.disconnect();
       removeEventListener('scroll', markScrolled);
     };
