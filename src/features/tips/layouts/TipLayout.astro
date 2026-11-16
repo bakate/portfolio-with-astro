@@ -60,7 +60,7 @@ const editUrl = `https://github.com/bakate/portfolio/edit/main/${tip.filePath}`;
             {formatDate(pubDate, lang)}
           </time>
           {
-            updatedDate && (
+            updatedDate ? (
               <>
                 {' · '}
                 {t('updatedOn')}{' '}
@@ -68,23 +68,23 @@ const editUrl = `https://github.com/bakate/portfolio/edit/main/${tip.filePath}`;
                   {formatDate(updatedDate, lang)}
                 </time>
               </>
-            )
+            ) : null
           }
           {' · '}
           {`${readingTimeMinutes} ${t('readingTimeSuffix')}`}
           {
-            difficulty && (
+            difficulty ? (
               <>
                 {' · '}
                 {t('difficultyLevel')} {difficultyLabel[difficulty]}
               </>
-            )
+            ) : null
           }
         </p>
         {
-          tags.length > 0 && (
+          tags.length > 0 ? (
             <p class="mt-2 text-sm text-muted-foreground">{tags.join(' · ')}</p>
-          )
+          ) : null
         }
       </header>
 

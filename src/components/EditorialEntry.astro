@@ -44,7 +44,7 @@ const Title = `h${headingLevel}` as const;
   class="grid gap-2 border-b border-border py-8 md:grid-cols-[14rem_1fr] md:gap-10"
 >
   <p class="text-sm text-muted-foreground md:pt-1">
-    {label && <span class="font-medium text-primary">{label} · </span>}
+    {label ? <span class="font-medium text-primary">{label} · </span> : null}
     <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
     {details.map((detail) => <span class="block">{detail}</span>)}
   </p>
@@ -61,9 +61,9 @@ const Title = `h${headingLevel}` as const;
       {description}
     </p>
     {
-      tags.length > 0 && (
+      tags.length > 0 ? (
         <p class="mt-4 text-sm text-muted-foreground">{tags.join(' · ')}</p>
-      )
+      ) : null
     }
   </div>
 </article>

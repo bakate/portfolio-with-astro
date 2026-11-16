@@ -16,3 +16,7 @@ A repository script (such as `scripts/check-external-links.mjs`) is tested the s
 - **Its value.** It goes red when the behaviour it names breaks. Expected values are written out (texts, URLs, file names), not worked out as the code does: a test does not import strings or constants from `src/`. Importing a type is fine, for example `satisfies Record<LanguageCode, …>`, which makes the compiler demand a scenario for every locale. A scenario on a file the site serves (a CV, the share image) requests the real file.
 
 This rule overrides any general guideline to share constants between production code and tests.
+
+## Conditional rendering
+
+In `.astro` and `.tsx` markup, render a conditional element with a ternary that ends in `null`: `{tags.length > 0 ? <Tags … /> : null}`, never `{tags.length > 0 && <Tags … />}`. A conditional prop takes `undefined` the same way. `&&` stays for boolean logic.

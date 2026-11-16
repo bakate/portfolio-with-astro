@@ -29,7 +29,7 @@ const kindLabel = {
 ---
 
 {
-  entries.length > 0 && (
+  entries.length > 0 ? (
     <section id="latest" class="py-16 md:py-24">
       <div class="max-w-3xl">
         <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
@@ -71,5 +71,5 @@ const kindLabel = {
         </a>
       </div>
     </section>
-  )
+  ) : null
 }

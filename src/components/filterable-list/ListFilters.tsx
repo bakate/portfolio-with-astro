@@ -128,7 +128,7 @@ export function ListFilters({ entries, copy, difficulty }: Props) {
         className="w-full md:max-w-xs"
       />
       <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
-        {difficulty && (
+        {difficulty ? (
           <Picker
             label={difficulty.label}
             allLabel={difficulty.allLabel}
@@ -137,7 +137,7 @@ export function ListFilters({ entries, copy, difficulty }: Props) {
             onChange={setFilter('difficulty')}
             disabled={!isHydrated}
           />
-        )}
+        ) : null}
         <Picker
           label={copy.tagPickerLabel}
           allLabel={copy.allTagsLabel}
@@ -198,9 +198,9 @@ function Picker({
       </PopoverTrigger>
       <PopoverContent className="w-full p-0 sm:w-[200px]">
         <Command>
-          {search && <CommandInput placeholder={search.placeholder} />}
+          {search ? <CommandInput placeholder={search.placeholder} /> : null}
           <CommandList>
-            {search && <CommandEmpty>{search.empty}</CommandEmpty>}
+            {search ? <CommandEmpty>{search.empty}</CommandEmpty> : null}
             <CommandGroup>
               {choices.map((choice) => (
                 <CommandItem

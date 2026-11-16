@@ -61,7 +61,11 @@ const difficultyLabel = difficultyLabels(copy);
             pubDate={tip.data.pubDate}
             lang={lang}
             headingLevel={2}
-            label={tip.data.difficulty && difficultyLabel[tip.data.difficulty]}
+            label={
+              tip.data.difficulty
+                ? difficultyLabel[tip.data.difficulty]
+                : undefined
+            }
             details={[
               `${tip.data.readingTimeMinutes} ${copy.readingTimeSuffix}`,
             ]}

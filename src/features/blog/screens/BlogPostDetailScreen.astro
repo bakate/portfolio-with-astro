@@ -55,7 +55,7 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
             {formatDate(pubDate, lang)}
           </time>
           {
-            updatedDate && (
+            updatedDate ? (
               <>
                 {' · '}
                 {t('updatedOn')}
@@ -63,18 +63,18 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
                   {formatDate(updatedDate, lang)}
                 </time>
               </>
-            )
+            ) : null
           }
           {' · '}
           {`${post.readingTimeMinutes} ${t('readingTimeSuffix')}`}
         </p>
         {
-          tags.length > 0 && (
+          tags.length > 0 ? (
             <p class="mt-2 text-sm text-muted-foreground">{tags.join(' · ')}</p>
-          )
+          ) : null
         }
         {
-          heroImage && (
+          heroImage ? (
             <Image
               src={heroImage.url}
               alt={heroImage.alt}
@@ -82,7 +82,7 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
               width={768}
               height={432}
             />
-          )
+          ) : null
         }
       </header>
 
@@ -102,7 +102,7 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
       </p>
 
       {
-        relatedPosts.length > 0 && (
+        relatedPosts.length > 0 ? (
           <section class="mt-16">
             <h2 class="font-heading text-2xl font-bold tracking-tight">
               {t('relatedPostsTitle')}
@@ -121,7 +121,7 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
               ))}
             </div>
           </section>
-        )
+        ) : null
       }
     </article>
 
