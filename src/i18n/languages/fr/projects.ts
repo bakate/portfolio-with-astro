@@ -120,7 +120,7 @@ export const projectsContent = {
         "Chaque famille est un espace fermé : ses messages, ses documents et ses événements ne doivent être visibles que de ses membres, avec des droits différents pour un parent et pour un proche. Les deux parents doivent voir la même information au même moment. Et l'application s'adresse à des personnes souvent sous pression : la sécurité ne doit pas alourdir le parcours.",
       architectureDecisions: [
         'Un monorepo Turborepo et une application Next.js en TypeScript de bout en bout.',
-        "Convex comme backend temps réel : les deux parents partagent les mêmes événements et messages, en temps réel.",
+        'Convex comme backend temps réel : les deux parents partagent les mêmes événements et messages, en temps réel.',
         "Les familles modélisées comme des organisations Clerk : l'isolation des données et les permissions reposent sur l'organisation, plutôt que sur un middleware de sécurité écrit à la main.",
         'Des webhooks signés et idempotents entre Clerk et Convex : un événement reçu deux fois ne produit pas deux effets.',
         'Une messagerie sécurisée, des documents à accès restreint et une synchronisation avec Google Calendar.',
@@ -164,6 +164,15 @@ export const projectsContent = {
         alt: "Page d'accueil de Resume Studio",
         caption: "L'accueil : le CV et l'offre, sans compte",
       },
+      resumeStudioIntake: {
+        alt: "Formulaire de Resume Studio : le CV et l'offre d'emploi, par fichier ou texte collé",
+        caption: "Le CV et l'offre, la langue du CV, et le quota du jour",
+      },
+      resumeStudioTailoredResume: {
+        alt: 'Aperçu d’un CV adapté dans Resume Studio',
+        caption:
+          'Le CV adapté, avec le contenu masqué pour tenir sur deux pages et restaurable',
+      },
       resumeStudioProcessingPolicy: {
         alt: 'Politique de traitement de Resume Studio, dépliée',
         caption:
@@ -181,7 +190,7 @@ export const projectsContent = {
         "Des règles d'architecture vérifiées par dependency-cruiser : le domaine ne dépend de rien d'extérieur, le moteur ne connaît aucun fournisseur, seuls les adaptateurs serveur atteignent un modèle de langage, et l'interface ne les atteint qu'à travers la racine de composition.",
         "Un score déterministe : le modèle propose des preuves, mais une preuve ne compte que si elle cite un texte présent à la fois dans l'offre et dans les faits du candidat. Le score se calcule ensuite sans modèle : poids 3, 2 ou 1 selon l'importance de l'exigence, couverture totale, partielle ou nulle.",
         "Le modèle traité comme une dépendance : une configuration (modèle et réglages exacts) ne sert qu'après une évaluation enregistrée du rappel d'extraction, de la fidélité multilingue, de la latence, du coût et de la sûreté de la provenance.",
-        "Consentement et quota dans le domaine : le candidat accepte une politique de traitement versionnée avant le premier appel au modèle, un seul fournisseur est actif à la fois, et un quota journalier par réseau, sous un plafond global, est remis à zéro à minuit, heure de Paris.",
+        'Consentement et quota dans le domaine : le candidat accepte une politique de traitement versionnée avant le premier appel au modèle, un seul fournisseur est actif à la fois, et un quota journalier par réseau, sous un plafond global, est remis à zéro à minuit, heure de Paris.',
       ],
       outcome:
         "La démo est en ligne sur Cloudflare Workers. Le passage à DeepSeek comme fournisseur a suivi la même qualification, et ce sont des enregistrements en échec qui ont montré quoi changer : sans raisonnement, l'extraction retrouvait environ 60 % des exigences d'une offre, contre environ 94 % avec un raisonnement faible ; sur une offre en français, le modèle traduisait en anglais les valeurs des exigences dans 6 rejeux sur 15, ce qui aurait bloqué les candidats francophones. Après correction : 0 sur 15. DeepSeek ne sert en production qu'une fois tous les critères franchis.",

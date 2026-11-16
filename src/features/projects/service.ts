@@ -41,8 +41,10 @@ import {
   parentUpTrustedCircle,
 } from '@/assets/projects/parentup';
 import {
+  resumeStudioIntake,
   resumeStudioLanding,
   resumeStudioProcessingPolicy,
+  resumeStudioTailoredResume,
 } from '@/assets/projects/resumestudio';
 import {
   terralHubAboutUs,
@@ -93,6 +95,8 @@ const projectsData: Array<ProjectData> = [
     date: '2026-09-26',
     galleryImages: [
       { id: 'resumeStudioLanding', src: resumeStudioLanding },
+      { id: 'resumeStudioIntake', src: resumeStudioIntake },
+      { id: 'resumeStudioTailoredResume', src: resumeStudioTailoredResume },
       { id: 'resumeStudioProcessingPolicy', src: resumeStudioProcessingPolicy },
     ],
     keyFeatures: [

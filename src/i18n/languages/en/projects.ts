@@ -165,6 +165,16 @@ export const projectsContent = {
         alt: 'Resume Studio landing page',
         caption: 'The landing page: the resume and the job posting, no account',
       },
+      resumeStudioIntake: {
+        alt: 'Resume Studio form: the resume and the job posting, as a file or pasted text',
+        caption:
+          'The resume and the job posting, the resume language, and today’s quota',
+      },
+      resumeStudioTailoredResume: {
+        alt: 'Preview of a tailored resume in Resume Studio',
+        caption:
+          'The tailored resume, with content hidden to fit two pages and restorable',
+      },
       resumeStudioProcessingPolicy: {
         alt: 'Resume Studio processing policy, expanded',
         caption:
