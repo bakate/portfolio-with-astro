@@ -1,19 +1,18 @@
 ---
 import TableOfContents from '@/components/TableOfContents.astro';
-import { useTranslations } from '@/i18n/ui';
+import { ui, useTranslations } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { formatDate } from '@/lib/utils';
 import type { CollectionEntry } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { ArrowLeft } from 'lucide-react';
+import { difficultyLabels } from '../difficulty';
 
 type Props = {
   tip: CollectionEntry<'tips'>;
   headings: Array<{ depth: number; text: string; slug: string }>;
   readingTimeMinutes: number;
 };
-
-type Difficulty = NonNullable<CollectionEntry<'tips'>['data']['difficulty']>;
 
 const { tip, headings, readingTimeMinutes } = Astro.props;
 const {
@@ -27,11 +26,7 @@ const {
 } = tip.data;
 const t = useTranslations(lang, 'tipsPage');
 
-const difficultyLabel = {
-  beginner: t('difficultyBeginner'),
-  intermediate: t('difficultyIntermediate'),
-  advanced: t('difficultyAdvanced'),
-} as const satisfies Record<Difficulty, string>;
+const difficultyLabel = difficultyLabels(ui[lang].tipsPage);
 
 const editUrl = `https://github.com/bakate/portfolio/edit/main/${tip.filePath}`;
 ---

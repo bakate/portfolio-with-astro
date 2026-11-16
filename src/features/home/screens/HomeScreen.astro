@@ -1,0 +1,130 @@
+---
+import Heading from '@/components/Heading.astro';
+import PersonStructuredData from '@/components/PersonStructuredData.astro';
+import RevealOnScroll from '@/components/RevealOnScroll.astro';
+import { buttonVariants } from '@/components/ui/button';
+import { ExperienceSummary } from '@/features/experience';
+import { ProjectGrid, getHomePageProjects } from '@/features/projects';
+import { ui, type LanguageCode } from '@/i18n/ui';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/lib/profile';
+import heroImage from '@/assets/bakate-portrait.png';
+import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Calendar, FileDown } from 'lucide-react';
+import HowIWork from '../components/HowIWork.astro';
+import LatestContent from '../components/LatestContent.astro';
+import ProofSection from '../components/ProofSection.astro';
+import { getLatestContent } from '../latest-content';
+import { getTranslatedProofs } from '../proofs';
+
+export type Props = {
+  lang: LanguageCode;
+};
+
+const { lang } = Astro.props;
+const copy = ui[lang].homePage;
+const { experience, howIWork, latestContent } = copy;
+const featuredProjects = getHomePageProjects(lang);
+const proofs = getTranslatedProofs(lang);
+const latestEntries = await getLatestContent(lang);
+---
+
+<BaseLayout pageTitle={copy.pageTitle} pageDescription={copy.pageDescription}>
+  <PersonStructuredData slot="head" />
+
+  <section id="hero" class="pt-12 pb-4 md:pt-20 md:pb-8">
+    <div class="max-w-3xl">
+      <p
+        class="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1 text-sm text-muted-foreground mb-8"
+      >
+        <span class="size-2 rounded-full bg-green-500" aria-hidden="true"
+        ></span>
+        {copy.heroAvailability}
+      </p>
+      <div class="flex items-center gap-4 sm:gap-6 mb-6">
+        <Image
+          src={heroImage}
+          alt={copy.heroImageAlt}
+          width={224}
+          height={224}
+          loading="eager"
+          quality="high"
+          class="size-20 sm:size-24 md:size-28 shrink-0 rounded-md border border-border object-cover"
+        />
+        <div class="min-w-0">
+          <h1
+            class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-2"
+          >
+            {profile.displayName}
+          </h1>
+          <p class="text-lg md:text-2xl font-medium text-foreground/90">
+            {profile.jobTitle}
+          </p>
+        </div>
+      </div>
+      <p class="text-lg text-muted-foreground mb-10 leading-relaxed">
+        {copy.heroPitch}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a
+          href={profile.bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class={buttonVariants({
+            variant: 'default',
+            size: 'lg',
+          })}
+        >
+          <Calendar className="mr-2 size-5" />
+          {copy.heroBookCallButton}
+        </a>
+        <a
+          href={profile.cvPathByLanguage[lang]}
+          download
+          class={buttonVariants({
+            variant: 'outline',
+            size: 'lg',
+          })}
+        >
+          <FileDown className="mr-2 size-5" />
+          {copy.heroDownloadCvButton}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <RevealOnScroll>
+    <ProofSection title={copy.proofTitle} proofs={proofs} />
+  </RevealOnScroll>
+
+  <RevealOnScroll>
+    <ExperienceSummary
+      title={experience.title}
+      description={experience.description}
+      cta={experience.cta}
+      ctaHref={getRelativeLocaleUrl(lang, '/experience')}
+      entries={experience.entries}
+    />
+  </RevealOnScroll>
+
+  <RevealOnScroll>
+    <section id="projects" class="py-16 md:py-24">
+      <Heading
+        title={copy.featuredProjectsTitle}
+        description={copy.featuredProjectsDescription}
+        className="mb-12"
+      />
+
+      <ProjectGrid projects={featuredProjects} lang={lang} />
+    </section>
+  </RevealOnScroll>
+
+  <RevealOnScroll>
+    <HowIWork {...howIWork} />
+  </RevealOnScroll>
+
+  <RevealOnScroll>
+    <LatestContent lang={lang} copy={latestContent} entries={latestEntries} />
+  </RevealOnScroll>
+</BaseLayout>

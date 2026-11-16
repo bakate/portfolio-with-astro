@@ -1,9 +1,8 @@
 ---
-import { AllTipsScreen, getPublishedTips } from '@/features/tips';
-import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
+import { AllTipsScreen } from '@/features/tips';
+import { defaultLanguage, type LanguageCode } from '@/i18n/ui';
 
 const lang = (Astro.currentLocale ?? defaultLanguage) as LanguageCode;
-const tips = await getPublishedTips(lang);
 ---
 
-<AllTipsScreen tips={tips} lang={lang} copy={ui[lang].tipsPage} />
+<AllTipsScreen lang={lang} />

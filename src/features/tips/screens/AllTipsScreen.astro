@@ -1,48 +1,20 @@
 ---
-import {
-  FilteredTipsList,
-  type TipDataForFilter,
-} from '../components/FilteredTipsList';
-import { EmptyState } from '@/components/empty-state';
-import TipEntry from '../components/TipEntry.astro';
-import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
+import EditorialEntry from '@/components/EditorialEntry.astro';
+import FilterableList from '@/components/filterable-list/FilterableList.astro';
+import { ui, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import type { CollectionEntry } from 'astro:content';
-
-/**
- * Every string of the tips page, keyed like the French copy: passing
- * `ui[lang].tipsPage` fails to compile when a language misses a key.
- */
-export type TipsPageCopy = Record<
-  keyof (typeof ui)[typeof defaultLanguage]['tipsPage'],
-  string
->;
-
-type Difficulty = NonNullable<CollectionEntry<'tips'>['data']['difficulty']>;
+import { getPublishedEntries } from '@/lib/published-content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { difficultyLabels } from '../difficulty';
 
 type Props = {
-  /** Published tips, newest first. */
-  tips: Array<CollectionEntry<'tips'>>;
   lang: LanguageCode;
-  copy: TipsPageCopy;
 };
 
-const { tips, lang, copy } = Astro.props;
-
-const difficultyLabel = {
-  beginner: copy.difficultyBeginner,
-  intermediate: copy.difficultyIntermediate,
-  advanced: copy.difficultyAdvanced,
-} as const satisfies Record<Difficulty, string>;
-
-const toFilterData = (tip: CollectionEntry<'tips'>): TipDataForFilter => ({
-  id: tip.id,
-  title: tip.data.title,
-  description: tip.data.description,
-  tags: tip.data.tags,
-  body: tip.body ?? '',
-  difficulty: tip.data.difficulty,
-});
+const { lang } = Astro.props;
+const copy = ui[lang].tipsPage;
+const tips = await getPublishedEntries('tips', lang);
+const difficultyLabel = difficultyLabels(copy);
 ---
 
 <BaseLayout pageTitle={copy.metaTitle} pageDescription={copy.metaDescription}>
@@ -54,55 +26,49 @@ const toFilterData = (tip: CollectionEntry<'tips'>): TipDataForFilter => ({
       <p class="mt-4 text-muted-foreground">{copy.description}</p>
     </header>
 
-    <FilteredTipsList
-      client:load
-      allTips={tips.map(toFilterData)}
-      texts={{ ...copy, allDifficultiesLabel: copy.allDifficulties }}
-    />
-
-    <div class="border-t border-border">
+    <FilterableList
+      entries={tips.map((tip) => ({
+        id: tip.id,
+        searchText: [tip.data.title, tip.data.description, tip.body].join('\n'),
+        tags: tip.data.tags ?? [],
+        difficulty: tip.data.difficulty,
+      }))}
+      copy={{
+        searchLabel: copy.searchLabel,
+        searchPlaceholder: copy.searchPlaceholder,
+        tagPickerLabel: copy.filterByTagButtonLabel,
+        allTagsLabel: copy.allTagsLabel,
+        tagSearchPlaceholder: copy.selectTagCommandPlaceholder,
+        noTagFound: copy.noTagFound,
+        noResults: copy.noTipsFound,
+      }}
+      difficulty={{
+        label: copy.filterByDifficultyLabel,
+        allLabel: copy.allDifficulties,
+        options: Object.entries(difficultyLabel).map(([value, label]) => ({
+          value,
+          label,
+        })),
+      }}
+    >
       {
         tips.map((tip) => (
-          <div class="tip-card-wrapper" data-tip-id={tip.id}>
-            <TipEntry
-              tip={tip}
-              lang={lang}
-              readingTimeSuffix={copy.readingTimeSuffix}
-              difficultyLabel={
-                tip.data.difficulty && difficultyLabel[tip.data.difficulty]
-              }
-            />
-          </div>
+          <EditorialEntry
+            filterId={tip.id}
+            title={tip.data.title}
+            href={getRelativeLocaleUrl(lang, `/tips/${tip.id}`)}
+            description={tip.data.description}
+            pubDate={tip.data.pubDate}
+            lang={lang}
+            headingLevel={2}
+            label={tip.data.difficulty && difficultyLabel[tip.data.difficulty]}
+            details={[
+              `${tip.data.readingTimeMinutes} ${copy.readingTimeSuffix}`,
+            ]}
+            tags={tip.data.tags}
+          />
         ))
       }
-    </div>
-    <EmptyState
-      title={tips.length > 0 ? copy.noTipsFound : copy.noTips}
-      id="no-tips-filtered-message"
-      className={tips.length > 0 ? 'mt-8 hidden' : 'mt-8'}
-    />
+    </FilterableList>
   </section>
-
-  <script>
-    import {
-      filteredTipsIdsAtom,
-      tipsFiltersInitializedAtom,
-    } from '@/stores/tipsFilterStore';
-
-    const noTipsMessage = document.getElementById('no-tips-filtered-message');
-    const wrappers =
-      document.querySelectorAll<HTMLElement>('.tip-card-wrapper');
-
-    function updateVisibleTips() {
-      if (!tipsFiltersInitializedAtom.get()) return;
-      const visibleIds = new Set(filteredTipsIdsAtom.get());
-      wrappers.forEach((wrapper) => {
-        wrapper.hidden = !visibleIds.has(wrapper.dataset.tipId ?? '');
-      });
-      noTipsMessage?.classList.toggle('hidden', visibleIds.size > 0);
-    }
-
-    filteredTipsIdsAtom.subscribe(updateVisibleTips);
-    tipsFiltersInitializedAtom.subscribe(updateVisibleTips);
-  </script>
 </BaseLayout>

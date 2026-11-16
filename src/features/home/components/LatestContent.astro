@@ -1,9 +1,9 @@
 ---
 import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
-import { formatDate } from '@/lib/utils';
+import EditorialEntry from '@/components/EditorialEntry.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { ArrowRight } from 'lucide-react';
-import type { LatestContentEntry, LatestContentKind } from '../service';
+import type { LatestContentEntry, LatestContentKind } from '../latest-content';
 
 /**
  * Every string of the section, keyed like the French copy: passing
@@ -40,29 +40,16 @@ const kindLabel = {
 
       <ol class="mt-12 border-t border-border">
         {entries.map((entry) => (
-          <li class="grid gap-2 border-b border-border py-8 md:grid-cols-[14rem_1fr] md:gap-10">
-            <p class="text-sm text-muted-foreground md:pt-1">
-              <span class="font-medium text-primary">
-                {kindLabel[entry.kind]}
-              </span>{' '}
-              ·{' '}
-              <time datetime={entry.pubDate.toISOString()}>
-                {formatDate(entry.pubDate, lang)}
-              </time>
-            </p>
-            <article>
-              <h3 class="font-heading text-xl font-semibold tracking-tight">
-                <a
-                  href={entry.href}
-                  class="underline-offset-4 hover:text-primary hover:underline"
-                >
-                  {entry.title}
-                </a>
-              </h3>
-              <p class="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
-                {entry.description}
-              </p>
-            </article>
+          <li>
+            <EditorialEntry
+              title={entry.title}
+              href={entry.href}
+              description={entry.description}
+              pubDate={entry.pubDate}
+              lang={lang}
+              headingLevel={3}
+              label={kindLabel[entry.kind]}
+            />
           </li>
         ))}
       </ol>

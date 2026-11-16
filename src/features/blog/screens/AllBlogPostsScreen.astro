@@ -1,39 +1,18 @@
 ---
-import {
-  FilteredPostsList,
-  type PostDataForFilter,
-} from '../components/FilteredPostsList';
-import BlogPostEntry from '../components/BlogPostEntry.astro';
-import type { defaultLanguage, LanguageCode, ui } from '@/i18n/ui';
+import EditorialEntry from '@/components/EditorialEntry.astro';
+import FilterableList from '@/components/filterable-list/FilterableList.astro';
+import { ui, type LanguageCode } from '@/i18n/ui';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import type { CollectionEntry } from 'astro:content';
-import { EmptyState } from '@/components/empty-state';
-
-/**
- * Every string of the blog page, keyed like the French copy: passing
- * `ui[lang].blogPage` fails to compile when a language misses a key.
- */
-export type BlogPageCopy = Record<
-  keyof (typeof ui)[typeof defaultLanguage]['blogPage'],
-  string
->;
+import { getPublishedEntries } from '@/lib/published-content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 type Props = {
-  /** Published articles, newest first. */
-  posts: Array<CollectionEntry<'blog'>>;
   lang: LanguageCode;
-  copy: BlogPageCopy;
 };
 
-const { posts, lang, copy } = Astro.props;
-
-const toFilterData = (post: CollectionEntry<'blog'>): PostDataForFilter => ({
-  id: post.id,
-  title: post.data.title,
-  description: post.data.description,
-  tags: post.data.tags,
-  body: post.body ?? '',
-});
+const { lang } = Astro.props;
+const copy = ui[lang].blogPage;
+const posts = await getPublishedEntries('blog', lang);
 ---
 
 <BaseLayout pageTitle={copy.pageTitle} pageDescription={copy.pageDescription}>
@@ -45,49 +24,41 @@ const toFilterData = (post: CollectionEntry<'blog'>): PostDataForFilter => ({
       <p class="mt-4 text-muted-foreground">{copy.description}</p>
     </header>
 
-    <FilteredPostsList
-      client:load
-      allPosts={posts.map(toFilterData)}
-      texts={copy}
-    />
-
-    <div id="blog-posts-container" class="border-t border-border">
+    <FilterableList
+      entries={posts.map((post) => ({
+        id: post.id,
+        searchText: [post.data.title, post.data.description, post.body].join(
+          '\n'
+        ),
+        tags: post.data.tags ?? [],
+      }))}
+      copy={{
+        searchLabel: copy.searchLabel,
+        searchPlaceholder: copy.searchPlaceholder,
+        tagPickerLabel: copy.filterByTagButtonLabel,
+        allTagsLabel: copy.allTagsLabel,
+        tagSearchPlaceholder: copy.selectTagCommandPlaceholder,
+        noTagFound: copy.noTagFound,
+        noResults: copy.noPostsFound,
+      }}
+    >
       {
         posts.map((post) => (
-          <div class="blog-post-card-wrapper" data-post-id={post.id}>
-            <BlogPostEntry post={post} lang={lang} headingLevel={2} />
-          </div>
+          <EditorialEntry
+            filterId={post.id}
+            title={post.data.title}
+            href={getRelativeLocaleUrl(lang, `/blog/${post.id}`)}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            lang={lang}
+            headingLevel={2}
+            details={[
+              `${post.data.readingTimeMinutes} ${copy.readingTimeSuffix}`,
+            ]}
+            tags={post.data.tags}
+          />
         ))
       }
-    </div>
-    <EmptyState
-      title={copy.noPostsFound}
-      id="no-posts-filtered-message"
-      className={posts.length > 0 ? 'mt-8 hidden' : 'mt-8'}
-    />
+    </FilterableList>
   </section>
-
-  <script>
-    import {
-      filteredPostIdsAtom,
-      filtersInitializedAtom,
-    } from '@/stores/blogFilterStore';
-
-    const noPostsMessage = document.getElementById('no-posts-filtered-message');
-    const wrappers = document.querySelectorAll<HTMLElement>(
-      '.blog-post-card-wrapper'
-    );
-
-    function updateVisiblePosts() {
-      if (!filtersInitializedAtom.get()) return;
-      const visibleIds = new Set(filteredPostIdsAtom.get());
-      wrappers.forEach((wrapper) => {
-        wrapper.hidden = !visibleIds.has(wrapper.dataset.postId ?? '');
-      });
-      noPostsMessage?.classList.toggle('hidden', visibleIds.size > 0);
-    }
-
-    filteredPostIdsAtom.subscribe(updateVisiblePosts);
-    filtersInitializedAtom.subscribe(updateVisiblePosts);
-  </script>
 </BaseLayout>

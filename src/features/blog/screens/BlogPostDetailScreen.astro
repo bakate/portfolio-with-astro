@@ -8,7 +8,7 @@ import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { ArrowLeft } from 'lucide-react';
-import BlogPostEntry from '../components/BlogPostEntry.astro';
+import EditorialEntry from '@/components/EditorialEntry.astro';
 
 type Props = {
   post: CollectionEntry<'blog'>['data'] & { readingTimeMinutes: number };
@@ -109,10 +109,14 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
             </h2>
             <div class="mt-8 border-t border-border">
               {relatedPosts.map((relatedPost) => (
-                <BlogPostEntry
-                  post={relatedPost}
+                <EditorialEntry
+                  title={relatedPost.data.title}
+                  href={getRelativeLocaleUrl(lang, `/blog/${relatedPost.id}`)}
+                  description={relatedPost.data.description}
+                  pubDate={relatedPost.data.pubDate}
                   lang={lang}
                   headingLevel={3}
+                  tags={relatedPost.data.tags}
                 />
               ))}
             </div>

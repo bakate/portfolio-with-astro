@@ -100,9 +100,3 @@ export type TranslatedProject = ProjectData & {
   learnings?: string; // Key learnings from the project (translated)
   // technologiesUsed.name will be translated if needed, or could be kept as is if they are proper names
 };
-
-/** A measured outcome shown under the hero: the figure, then what it measures. */
-export type Proof = {
-  figure: string;
-  context: string;
-};

@@ -196,6 +196,7 @@ export const uiLabels = {
     title: 'Blog : architecture, tests et TypeScript',
     description:
       "Ce que j'apprends en construisant des produits SaaS : un domaine métier isolé et testé, TypeScript du front au back, et l'IA là où elle sert vraiment.",
+    readingTimeSuffix: 'min de lecture',
     searchLabel: 'Rechercher un article',
     searchPlaceholder: 'Rechercher des articles...',
     filterByTagButtonLabel: 'Filtrer par tag',
@@ -303,7 +304,6 @@ export const uiLabels = {
     title: 'Astuces',
     description:
       'Des notes courtes et concrètes : TypeScript, Go, outillage et architecture.',
-    noTips: 'Aucune astuce à afficher pour le moment.',
     readTip: "Lire l'astuce",
     backToList: 'Retour à la liste des astuces',
     publishedOn: 'Publié le :',

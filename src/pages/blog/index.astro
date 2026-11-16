@@ -1,9 +1,8 @@
 ---
-import { AllBlogPostsScreen, getPublishedPosts } from '@/features/blog';
-import { defaultLanguage, ui, type LanguageCode } from '@/i18n/ui';
+import { AllBlogPostsScreen } from '@/features/blog';
+import { defaultLanguage, type LanguageCode } from '@/i18n/ui';
 
 const lang = (Astro.currentLocale ?? defaultLanguage) as LanguageCode;
-const posts = await getPublishedPosts(lang);
 ---
 
-<AllBlogPostsScreen posts={posts} lang={lang} copy={ui[lang].blogPage} />
+<AllBlogPostsScreen lang={lang} />

@@ -196,6 +196,7 @@ export const uiLabels = {
     title: 'Blog: architecture, testing and TypeScript',
     description:
       'What I learn building SaaS products: an isolated, tested business domain, TypeScript from front to back, and AI where it actually helps.',
+    readingTimeSuffix: 'min read',
     searchLabel: 'Search articles',
     searchPlaceholder: 'Search articles...',
     filterByTagButtonLabel: 'Filter by tag',
@@ -300,7 +301,6 @@ export const uiLabels = {
     title: 'Tips',
     description:
       'Short, practical notes: TypeScript, Go, tooling and architecture.',
-    noTips: 'No tips to display at the moment.',
     readTip: 'Read tip',
     backToList: 'Back to the tips',
     publishedOn: 'Published on:',

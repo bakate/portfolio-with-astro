@@ -1,52 +1,8 @@
 ---
-import {
-  PortfolioScreen,
-  getHomePageProjects,
-  getTranslatedProofs,
-  type TranslatedProject,
-} from '@/features/projects';
-import { getLatestContent } from '@/features/latest-content';
-import {
-  defaultLanguage,
-  ui,
-  useTranslations,
-  type LanguageCode,
-} from '@/i18n/ui';
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import PersonStructuredData from '@/components/PersonStructuredData.astro';
+import { HomeScreen } from '@/features/home';
+import { type LanguageCode } from '@/i18n/ui';
 
-const lang =
-  (Astro.currentLocale as LanguageCode | undefined) ?? defaultLanguage;
-const t = useTranslations(lang, 'homePage');
-const { experience, howIWork, latestContent } = ui[lang].homePage;
-
-const pageTitle = t('pageTitle');
-const pageDescription = t('pageDescription');
-
-const featuredProjects: Array<TranslatedProject> = getHomePageProjects(lang);
-
-const layoutProps = {
-  lang,
-  featuredProjects,
-  heroPitch: t('heroPitch'),
-  heroAvailability: t('heroAvailability'),
-  heroBookCallButton: t('heroBookCallButton'),
-  heroDownloadCvButton: t('heroDownloadCvButton'),
-  heroImageAlt: t('heroImageAlt'),
-  proofTitle: t('proofTitle'),
-  proofs: getTranslatedProofs(lang),
-  featuredProjectsTitle: t('featuredProjectsTitle'),
-  featuredProjectsDescription: t('featuredProjectsDescription'),
-  experience,
-  howIWork,
-  latestContent: {
-    copy: latestContent,
-    entries: await getLatestContent(lang),
-  },
-};
+const lang = (Astro.currentLocale ?? 'en') as LanguageCode;
 ---
 
-<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
-  <PersonStructuredData slot="head" />
-  <PortfolioScreen {...layoutProps} />
-</BaseLayout>
+<HomeScreen lang={lang} />

@@ -1,0 +1,39 @@
+---
+import { ListFilters } from './ListFilters';
+import type { DifficultyFilter, FilterableEntry, FilterCopy } from './types';
+
+/**
+ * A server-rendered list with a search box and pickers above it. Every entry
+ * stays visible without JavaScript; once the filters hydrate, they hide the
+ * entries that do not match (each entry carries `data-entry-id`, see
+ * EditorialEntry's `filterId`) and say so when none is left. The search and
+ * picks are kept in the address (`?q=`, `?tag=`, `?diff=`), so a filtered list
+ * can be shared or reloaded.
+ */
+export type Props = {
+  entries: ReadonlyArray<FilterableEntry>;
+  copy: FilterCopy;
+  difficulty?: DifficultyFilter;
+};
+
+const { entries, copy, difficulty } = Astro.props;
+---
+
+<div data-filterable-list>
+  <ListFilters
+    client:load
+    entries={entries}
+    copy={copy}
+    difficulty={difficulty}
+  />
+  <div class="border-t border-border">
+    <slot />
+  </div>
+  <p
+    data-filter-empty
+    hidden={entries.length > 0}
+    class="mt-8 rounded-md border border-dashed border-border p-8 text-center text-muted-foreground"
+  >
+    {copy.noResults}
+  </p>
+</div>

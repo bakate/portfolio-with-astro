@@ -87,6 +87,15 @@ for (const language of Object.values(languages)) {
     await site.thenListedEntriesAre([language.typeofNull]);
   });
 
+  test(`Given a shared link to the ${language.name} blog searched for "typeof", when a visitor opens it, then only the typeof null article is listed`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(`${language.blog.path}?q=typeof`);
+    await site.thenListedEntriesAre([language.typeofNull]);
+  });
+
   test(`Given the ${language.name} blog, when a visitor picks the "objects" tag, then only the property order article is listed`, async ({
     page,
     request,

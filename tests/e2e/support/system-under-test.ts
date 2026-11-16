@@ -4,7 +4,7 @@ import {
   type Locator,
   type Page,
 } from '@playwright/test';
-import type { Proof } from '@/features/projects';
+import type { Proof } from '@/features/home';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 

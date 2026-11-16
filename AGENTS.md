@@ -28,7 +28,7 @@ French is the default locale, served without prefix; English lives under `/en`. 
 ## Code layout
 
 - Feature modules in `src/features/<feature>/` (`screens/`, `components/`, `service.ts`, `index.ts` as public API). Pages import from the feature's `index.ts`.
-- Shared UI in `src/components/` (shadcn primitives in `src/components/ui/`), helpers in `src/lib/`, nanostores in `src/stores/`.
+- Shared UI in `src/components/` (shadcn primitives in `src/components/ui/`), helpers in `src/lib/`. A list with search and pickers is a `FilterableList` (`src/components/filterable-list/`).
 - Import via the `@/` alias for `src/`.
 - Interactive parts are React islands; everything else stays static `.astro`.
 

@@ -1,5 +1,4 @@
-import { getPublishedPosts } from '@/features/blog/service';
-import { getPublishedTips } from '@/features/tips/service';
+import { getPublishedEntries } from '@/lib/published-content';
 import type { LanguageCode } from '@/i18n/ui';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
@@ -28,8 +27,8 @@ export async function getLatestContent(
   lang: LanguageCode
 ): Promise<Array<LatestContentEntry>> {
   const [posts, tips] = await Promise.all([
-    getPublishedPosts(lang),
-    getPublishedTips(lang),
+    getPublishedEntries('blog', lang),
+    getPublishedEntries('tips', lang),
   ]);
 
   const entries: Array<LatestContentEntry> = [
