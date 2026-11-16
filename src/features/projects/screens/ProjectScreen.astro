@@ -12,6 +12,7 @@ import {
   Lightbulb,
   ArrowLeft,
 } from 'lucide-react';
+import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
 import ProjectGallery from '../components/ProjectGallery';
 import type { TranslatedProject } from '../type';
 
@@ -22,6 +23,8 @@ export type Props = {
 };
 
 const { project, t, lang } = Astro.props;
+const { caseStudy } = project;
+const detail = t.projectDetailPage;
 ---
 
 <div class="py-12 md:py-16">
@@ -82,7 +85,7 @@ const { project, t, lang } = Astro.props;
 
     <!-- Detailed Description -->
     {
-      project.detailedDescription && (
+      !caseStudy && project.detailedDescription && (
         <section class="mb-8">
           <h2>{t.projectDetailPage?.aboutTitle ?? 'About this project'}</h2>
           <p>{project.detailedDescription}</p>
@@ -115,6 +118,43 @@ const { project, t, lang } = Astro.props;
     }
 
     {
+      caseStudy && (
+        <>
+          <section id="context" class="mb-8">
+            <h2>{detail.contextTitle}</h2>
+            <p>{caseStudy.context}</p>
+          </section>
+          <section id="problem" class="mb-8">
+            <h2>{detail.problemTitle}</h2>
+            <p>{caseStudy.problem}</p>
+          </section>
+          <section id="architecture" class="mb-8">
+            <h2>{detail.architectureTitle}</h2>
+            <ul>
+              {caseStudy.architectureDecisions.map((decision) => (
+                <li>{decision}</li>
+              ))}
+            </ul>
+            {caseStudy.diagram && (
+              <ArchitectureDiagram
+                source={caseStudy.diagram}
+                name={detail.diagramName.replace('{project}', project.title)}
+              />
+            )}
+          </section>
+          <section id="outcome" class="mb-8">
+            <h2>{detail.outcomeTitle}</h2>
+            <p>{caseStudy.outcome}</p>
+          </section>
+          <section id="learnings" class="mb-12">
+            <h2>{detail.caseStudyLearningsTitle}</h2>
+            <p>{caseStudy.learnings}</p>
+          </section>
+        </>
+      )
+    }
+
+    {
       project.video && (
         <section class="mb-12">
           <h2>{t.projectDetailPage.videoTitle}</h2>
@@ -134,20 +174,23 @@ const { project, t, lang } = Astro.props;
     {
       project.galleryImagesTranslated &&
         project.galleryImagesTranslated.length > 0 && (
-          <ProjectGallery
-            client:visible
-            images={project.galleryImagesTranslated.map((image) => ({
-              src: image.src.src,
-              alt: image.alt,
-              caption: image.caption,
-              id: image.id,
-            }))}
-          />
+          <section id="gallery" class="mb-12">
+            <h2>{detail.galleryTitle}</h2>
+            <ProjectGallery
+              client:visible
+              images={project.galleryImagesTranslated.map((image) => ({
+                src: image.src.src,
+                alt: image.alt,
+                caption: image.caption,
+                id: image.id,
+              }))}
+            />
+          </section>
         )
     }
 
     {
-      (project.challenges || project.learnings) && (
+      !caseStudy && (project.challenges || project.learnings) && (
         <div class="not-prose grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 mt-12">
           {project.challenges && (
             <section class="rounded-lg border border-border bg-secondary/20 p-6 flex flex-col">

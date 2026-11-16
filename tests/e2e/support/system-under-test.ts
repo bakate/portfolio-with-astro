@@ -603,6 +603,97 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       await expect(hero.getByRole('img', { name: alt })).toBeVisible();
     },
 
+    /** The system setting a first-time visitor's theme follows. */
+    async visitorPrefersTheme(colorScheme: 'light' | 'dark') {
+      await page.emulateMedia({ colorScheme });
+    },
+
+    /** Presses the theme button on screen (header or bottom bar). */
+    async visitorSwitchesTheme() {
+      await page
+        .getByRole('button', { name: 'Toggle theme' })
+        .filter({ visible: true })
+        .first()
+        .click();
+    },
+
+    /**
+     * The diagram is an image of the architecture section, and every label in
+     * it stands out from the page background (WCAG AA, 4.5:1), whichever theme
+     * is on screen. Polled, since the diagram is drawn after load.
+     */
+    async thenArchitectureDiagramIsLegible(name: string) {
+      const diagram = page
+        .locator('#architecture')
+        .getByRole('img', { name, exact: true });
+      await expect(diagram).toBeVisible();
+      await expect
+        .poll(
+          () =>
+            diagram.evaluate((svg) => {
+              const toRgb = (color: string) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = canvas.height = 1;
+                const context = canvas.getContext('2d')!;
+                context.fillStyle = color;
+                context.fillRect(0, 0, 1, 1);
+                const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data;
+                return { r, g, b, a };
+              };
+              const luminance = ({
+                r,
+                g,
+                b,
+              }: {
+                r: number;
+                g: number;
+                b: number;
+              }) => {
+                const [lr, lg, lb] = [r, g, b].map((channel) => {
+                  const c = channel / 255;
+                  return c <= 0.03928
+                    ? c / 12.92
+                    : ((c + 0.055) / 1.055) ** 2.4;
+                });
+                return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
+              };
+              let painted: Element | null = document.body;
+              let background = toRgb('transparent');
+              while (painted && background.a === 0) {
+                background = toRgb(getComputedStyle(painted).backgroundColor);
+                painted = painted.parentElement;
+              }
+              const labels = [...svg.querySelectorAll('*')].filter((element) =>
+                [...element.childNodes].some(
+                  (node) =>
+                    node.nodeType === Node.TEXT_NODE &&
+                    (node.textContent ?? '').trim() !== ''
+                )
+              );
+              if (labels.length === 0) return 0;
+              const ratios = labels.map((label) => {
+                const style = getComputedStyle(label);
+                const ink = toRgb(
+                  label instanceof SVGElement ? style.fill : style.color
+                );
+                const [light, dark] = [
+                  luminance(ink),
+                  luminance(background),
+                ].sort((a, b) => b - a);
+                return (light + 0.05) / (dark + 0.05);
+              });
+              return Math.min(...ratios);
+            }),
+          { message: `lowest contrast of a label in "${name}"` }
+        )
+        .toBeGreaterThanOrEqual(4.5);
+    },
+
+    async thenPageShowsNoVideo() {
+      await expect(page.locator('main')).toBeVisible();
+      await expect(page.locator('main video')).toHaveCount(0);
+    },
+
     async visitorUsesAScreenWide(width: number) {
       await page.setViewportSize({ width, height: 800 });
     },

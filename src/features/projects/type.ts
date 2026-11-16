@@ -32,7 +32,7 @@ export type ProjectVideo = {
 export type CaseStudy = {
   context: string;
   problem: string;
-  architectureDecisions: Array<string>;
+  architectureDecisions: ReadonlyArray<string>;
   outcome: string;
   learnings: string;
   /** Mermaid source of the architecture diagram. */

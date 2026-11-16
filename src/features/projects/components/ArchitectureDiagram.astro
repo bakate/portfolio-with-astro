@@ -1,0 +1,99 @@
+---
+export type Props = {
+  /** Mermaid source of the diagram. */
+  source: string;
+  /** Accessible name of the drawn diagram, also its caption. */
+  name: string;
+};
+
+const { source, name } = Astro.props;
+---
+
+<figure class="not-prose my-8" data-architecture-diagram data-name={name}>
+  <!-- Without JavaScript, the Mermaid source stays readable as text. -->
+  <pre
+    class="overflow-x-auto rounded-md border border-border p-4 text-sm"
+    data-diagram-source>{source}</pre>
+  <div class="flex justify-center overflow-x-auto" data-diagram-canvas></div>
+  <figcaption class="mt-3 text-center text-sm text-muted-foreground">
+    {name}
+  </figcaption>
+</figure>
+
+<script>
+  /** Resolves any CSS colour (oklch included) to a hex Mermaid understands. */
+  function toHex(color: string): string {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const context = canvas.getContext('2d')!;
+    context.fillStyle = color;
+    context.fillRect(0, 0, 1, 1);
+    const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+    return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+  }
+
+  /** The site's own tokens, read from whichever theme is on screen. */
+  function themeVariables() {
+    const style = getComputedStyle(document.documentElement);
+    const token = (name: string) => toHex(style.getPropertyValue(name).trim());
+    const background = token('--background');
+    const foreground = token('--foreground');
+    const border = token('--border');
+    const accent = token('--primary');
+    return {
+      background,
+      primaryColor: background,
+      primaryTextColor: foreground,
+      primaryBorderColor: accent,
+      secondaryColor: background,
+      tertiaryColor: background,
+      lineColor: token('--muted-foreground'),
+      textColor: foreground,
+      clusterBkg: background,
+      clusterBorder: border,
+      titleColor: foreground,
+      edgeLabelBackground: background,
+      fontFamily: 'inherit',
+    };
+  }
+
+  /** Each draw takes a number; a draw outrun by a newer one stops writing. */
+  let latestDrawRequest = 0;
+
+  async function drawDiagrams() {
+    const figures = document.querySelectorAll<HTMLElement>(
+      '[data-architecture-diagram]'
+    );
+    if (figures.length === 0) return;
+    const run = ++latestDrawRequest;
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: themeVariables(),
+      securityLevel: 'strict',
+    });
+    for (const [index, figure] of figures.entries()) {
+      const source = figure.querySelector('[data-diagram-source]');
+      const canvas = figure.querySelector('[data-diagram-canvas]');
+      if (!source || !canvas) continue;
+      const { svg } = await mermaid.render(
+        `architecture-diagram-${index}-${run}`,
+        source.textContent ?? ''
+      );
+      if (run !== latestDrawRequest) return;
+      canvas.innerHTML = svg;
+      const drawn = canvas.querySelector('svg');
+      drawn?.setAttribute('role', 'img');
+      drawn?.setAttribute('aria-label', figure.dataset.name ?? '');
+      source.setAttribute('hidden', '');
+    }
+  }
+
+  // Redraw with the other palette when the visitor switches theme.
+  new MutationObserver(() => void drawDiagrams()).observe(
+    document.documentElement,
+    { attributes: true, attributeFilter: ['class'] }
+  );
+  document.addEventListener('astro:page-load', () => void drawDiagrams());
+</script>

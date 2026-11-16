@@ -261,6 +261,12 @@ export const uiLabels = {
     visitProjectButton: 'Visit Project',
     viewCodeButton: 'View Code',
     videoTitle: 'Video walkthrough',
+    contextTitle: 'Context',
+    problemTitle: 'Problem',
+    architectureTitle: 'Architecture decisions',
+    outcomeTitle: 'Outcome',
+    caseStudyLearningsTitle: 'Learnings',
+    diagramName: '{project} architecture',
   },
   projectsPage: {
     title: 'Projects',
