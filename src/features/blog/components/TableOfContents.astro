@@ -42,7 +42,7 @@ const componentTitle = t('title');
                 {item.text}
               </a>
             </Button>
-            {item.subItems && item.subItems.length > 0 && (
+            {item.subItems && item.subItems.length > 0 ? (
               <ul class="list-disc">
                 {item.subItems.map((subItem) => (
                   <li class="mb-1">
@@ -52,7 +52,7 @@ const componentTitle = t('title');
                   </li>
                 ))}
               </ul>
-            )}
+            ) : null}
           </li>
         ))
       }

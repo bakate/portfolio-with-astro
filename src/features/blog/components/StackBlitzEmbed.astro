@@ -64,11 +64,11 @@ const stackBlitzUrl = `https://stackblitz.com/edit/${projectId}?${params.toStrin
   <Card client:visible>
     {/* client:visible est important car Card est un composant React */}
     {
-      cardTitle && (
+      cardTitle ? (
         <CardHeader>
           <CardTitle>{cardTitle}</CardTitle>
         </CardHeader>
-      )
+      ) : null
     }
     <CardContent>
       <iframe

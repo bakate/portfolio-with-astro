@@ -35,7 +35,7 @@ const {
   >
     {title}
   </h1>
-  {showDivider && <Separator className="max-w-48 mx-auto" />}
+  {showDivider ? <Separator className="max-w-48 mx-auto" /> : null}
   {
     description ? (
       <p
