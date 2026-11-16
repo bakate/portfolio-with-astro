@@ -1,5 +1,6 @@
 ---
 import Heading from '@/components/Heading.astro';
+import RevealOnScroll from '@/components/RevealOnScroll.astro';
 import { buttonVariants } from '@/components/ui/button';
 import type { LanguageCode } from '@/i18n/ui';
 import { profile } from '@/lib/profile';
@@ -118,25 +119,32 @@ const {
   </div>
 </section>
 
-<ProofSection title={proofTitle} proofs={proofs} />
+<RevealOnScroll>
+  <ProofSection title={proofTitle} proofs={proofs} />
+</RevealOnScroll>
 
-<ExperienceSummary
-  title={experience.title}
-  description={experience.description}
-  cta={experience.cta}
-  ctaHref={getRelativeLocaleUrl(lang, '/experience')}
-  entries={experience.entries}
-/>
-
-{/* Featured Projects Section */}
-<section id="projects" class="py-16 md:py-24">
-  <Heading
-    title={featuredProjectsTitle}
-    description={featuredProjectsDescription}
-    className="mb-12"
+<RevealOnScroll>
+  <ExperienceSummary
+    title={experience.title}
+    description={experience.description}
+    cta={experience.cta}
+    ctaHref={getRelativeLocaleUrl(lang, '/experience')}
+    entries={experience.entries}
   />
+</RevealOnScroll>
 
-  <ProjectGrid projects={featuredProjects} lang={lang} />
-</section>
+<RevealOnScroll>
+  <section id="projects" class="py-16 md:py-24">
+    <Heading
+      title={featuredProjectsTitle}
+      description={featuredProjectsDescription}
+      className="mb-12"
+    />
 
-<HowIWork {...howIWork} />
+    <ProjectGrid projects={featuredProjects} lang={lang} />
+  </section>
+</RevealOnScroll>
+
+<RevealOnScroll>
+  <HowIWork {...howIWork} />
+</RevealOnScroll>

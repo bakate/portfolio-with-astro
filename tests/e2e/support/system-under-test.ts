@@ -8,6 +8,9 @@ import type { Proof } from '@/features/projects';
 
 type Fixtures = { page: Page; request: APIRequestContext };
 
+/** The page as `watchSectionsThatAnimate` leaves it. */
+type WatchedWindow = Window & { sectionsThatAnimated?: Set<string> };
+
 const hrefsIn = (html: string): Array<string> =>
   [...html.matchAll(/href="([^"]+)"/g)].map(([, href]) => href);
 
@@ -29,6 +32,55 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
   const crawled = new Map<string, string>();
   const hero = page.locator('#hero');
   const proof = page.locator('#proof');
+
+  /**
+   * From the page's first frame, records every section the visitor sees on
+   * screen while it is not fully opaque, however that is achieved.
+   */
+  async function watchSectionsThatAnimate() {
+    await page.addInitScript(() => {
+      const animated = new Set<string>();
+      (window as WatchedWindow).sectionsThatAnimated = animated;
+      const opacityOf = (element: Element | null): number =>
+        element
+          ? Number(getComputedStyle(element).opacity) *
+            opacityOf(element.parentElement)
+          : 1;
+      const isOnScreen = (element: Element) => {
+        const { top, bottom } = element.getBoundingClientRect();
+        return bottom > 0 && top < innerHeight;
+      };
+      const watch = () => {
+        for (const section of document.querySelectorAll('main section[id]')) {
+          if (isOnScreen(section) && opacityOf(section) < 1) {
+            animated.add(section.id);
+          }
+        }
+        requestAnimationFrame(watch);
+      };
+      requestAnimationFrame(watch);
+    });
+  }
+
+  /** Fails when nothing was watched, so an unmeasured page never passes. */
+  async function sectionsThatAnimated() {
+    const animated = await page.evaluate(() => {
+      const watched = (window as WatchedWindow).sectionsThatAnimated;
+      return watched ? [...watched] : null;
+    });
+    expect(animated, 'animations are watched').not.toBeNull();
+    return animated;
+  }
+
+  /** Lets a fade that is about to start, start, and be seen. */
+  async function settleAnimations() {
+    await page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve))
+        )
+    );
+  }
 
   async function boxOf(locator: Locator) {
     const box = await locator.boundingBox();
@@ -109,6 +161,44 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
     async visitorOpens(path: string) {
       const response = await page.goto(path);
       expect(response?.status(), path).toBe(200);
+    },
+
+    async visitorPrefersReducedMotion() {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await watchSectionsThatAnimate();
+    },
+
+    async visitorAllowsMotion() {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await watchSectionsThatAnimate();
+    },
+
+    /** Wheels down to the bottom of the page, the way a visitor reads it. */
+    async visitorScrollsToTheBottom() {
+      await page.mouse.move(1, 1);
+      const atTheBottom = () =>
+        page.evaluate(
+          () =>
+            Math.ceil(window.scrollY + window.innerHeight) >=
+            document.documentElement.scrollHeight
+        );
+      while (!(await atTheBottom())) {
+        const before = await page.evaluate(() => window.scrollY);
+        await page.mouse.wheel(0, 400);
+        await expect
+          .poll(() => page.evaluate(() => window.scrollY))
+          .toBeGreaterThan(before);
+      }
+      await settleAnimations();
+    },
+
+    /** The browser brings the visitor back where they had scrolled to. */
+    async visitorReloadsThePage() {
+      await page.reload();
+      await expect
+        .poll(() => page.evaluate(() => window.scrollY), 'scroll restored')
+        .toBeGreaterThan(0);
+      await settleAnimations();
     },
 
     async visitorOpensMissingPage(path: string) {
@@ -557,6 +647,69 @@ export function createSystemUnderTest({ page, request }: Fixtures) {
       ).toBeLessThan(section.x + section.width * 0.75);
       expect(photo.width, 'compact photo').toBeLessThan(section.width / 4);
       expect(sharesRows(photo, name), 'photo shares the title rows').toBe(true);
+    },
+
+    async thenSomeSectionsFadeIn() {
+      expect(await sectionsThatAnimated(), 'sections faded in').not.toEqual([]);
+    },
+
+    async thenNoSectionAnimates() {
+      expect(await sectionsThatAnimated(), 'sections animated').toEqual([]);
+    },
+
+    /**
+     * Captures the whole page at once, without scrolling, as a link preview or
+     * an audit tool does, then reads the capture's pixels band by band: each
+     * section's band must hold more than one colour, i.e. not be blank.
+     */
+    async thenFullPageCaptureShowsEverySection(anchors: ReadonlyArray<string>) {
+      for (const anchor of anchors) {
+        await expect(page.locator(`#${anchor}`), `#${anchor}`).toHaveCount(1);
+      }
+      const capture = (await page.screenshot({ fullPage: true })).toString(
+        'base64'
+      );
+      const blank = await page.evaluate(
+        async ({ capture, anchors }) => {
+          const image = new Image();
+          image.src = `data:image/png;base64,${capture}`;
+          await image.decode();
+          const scale = image.width / document.documentElement.clientWidth;
+          const context = new OffscreenCanvas(
+            image.width,
+            image.height
+          ).getContext('2d')!;
+          context.drawImage(image, 0, 0);
+
+          const pixelsOf = (anchor: string) => {
+            const box = document
+              .getElementById(anchor)!
+              .getBoundingClientRect();
+            return context.getImageData(
+              Math.floor((box.left + window.scrollX) * scale),
+              Math.floor((box.top + window.scrollY) * scale),
+              Math.max(1, Math.floor(box.width * scale)),
+              Math.max(1, Math.floor(box.height * scale))
+            ).data;
+          };
+          const isSingleColour = (data: Uint8ClampedArray) => {
+            for (let i = 4; i < data.length; i += 4) {
+              if (
+                data[i] !== data[0] ||
+                data[i + 1] !== data[1] ||
+                data[i + 2] !== data[2]
+              ) {
+                return false;
+              }
+            }
+            return true;
+          };
+
+          return anchors.filter((anchor) => isSingleColour(pixelsOf(anchor)));
+        },
+        { capture, anchors }
+      );
+      expect(blank, 'sections blank in the full-page capture').toEqual([]);
     },
 
     async thenPageHasButton(name: string) {
