@@ -45,6 +45,7 @@ const { Content, headings, remarkPluginFrontmatter } = await render(post);
 ---
 
 <BlogPostDetailScreen
+  id={post.id}
   post={{
     ...post.data,
     readingTimeMinutes: remarkPluginFrontmatter.readingTimeMinutes,

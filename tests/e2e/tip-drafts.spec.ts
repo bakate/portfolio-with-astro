@@ -10,8 +10,8 @@ const languages = {
     tips: '/tips',
     draft: {
       address: '/tips/fr/go-ports-adaptateurs-sans-implements',
-      title:
-        'Go vu par un dev TypeScript : des ports et adaptateurs sans implements',
+      title: 'Des ports et adaptateurs sans implements',
+      series: ['Série · Go vu par un dev Node.js', 'Partie 1 sur 1'],
     },
     published: '/tips/fr/premiere-astuce-vite',
   },
@@ -20,8 +20,8 @@ const languages = {
     tips: '/en/tips',
     draft: {
       address: '/en/tips/en/go-ports-and-adapters-without-implements',
-      title:
-        'Go Through a TypeScript Dev’s Eyes: Ports and Adapters Without implements',
+      title: 'Ports and Adapters Without implements',
+      series: ['Series · Go Through a Node.js Dev’s Eyes', 'Part 1 of 1'],
     },
     published: '/en/tips/en/first-vite-tip',
   },
@@ -30,7 +30,11 @@ const languages = {
   {
     name: string;
     tips: string;
-    draft: { address: string; title: string };
+    draft: {
+      address: string;
+      title: string;
+      series: ReadonlyArray<string>;
+    };
     published: string;
   }
 >;
@@ -44,6 +48,15 @@ for (const language of Object.values(languages)) {
     await site.visitorOpens(language.draft.address);
     await site.thenPageHeadingIs(language.draft.title);
     await site.thenSearchEnginesAreAskedNotToIndexThePage();
+  });
+
+  test(`Given ${language.name} draft tip opening a series, when a visitor opens it, then the page names the series and the tip's place in it`, async ({
+    page,
+    request,
+  }) => {
+    const site = createSystemUnderTest({ page, request });
+    await site.visitorOpens(language.draft.address);
+    await site.thenPageShows(language.draft.series);
   });
 
   test(`Given ${language.name} draft tip, when a visitor browses the tips, then the draft is not listed`, async ({
