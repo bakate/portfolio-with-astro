@@ -19,6 +19,8 @@ const blogCollection = defineCollection({
       image: z.string().optional(),
       tags: z.array(z.string()).optional(),
       relatedPosts: z.array(reference('blog')),
+      // Entries sharing a series name (blog and tips alike) read as one series, ordered by pubDate.
+      series: z.string().optional(),
       readingTimeMinutes: z.number().optional(), // Added by remark plugin
       isDraft: z.boolean(),
       lang: z.enum(['fr', 'en']).optional().default('fr'),
@@ -48,6 +50,7 @@ const tipsCollection = defineCollection({
       lang: z.enum(['fr', 'en']).optional().default('fr'),
       readingTimeMinutes: z.number().optional(), // Added by remark plugin
       relatedTips: z.array(reference('tips')).optional(),
+      series: z.string().optional(),
       featured: z.boolean().optional(),
       difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
     }),

@@ -205,6 +205,16 @@ export const uiLabels = {
     allTagsLabel: 'All tags',
     noPostsFound: 'No posts found.',
   },
+  series: {
+    label: 'Series',
+    part: 'Part',
+    of: 'of',
+    navigation: 'Other parts of the series',
+    previous: 'Previous part',
+    next: 'Next part',
+    article: 'Article',
+    tip: 'Tip',
+  },
   blogPost: {
     publishedOn: 'Published on: ',
     updatedOn: 'Updated on: ',

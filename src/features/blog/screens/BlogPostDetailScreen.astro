@@ -1,4 +1,5 @@
 ---
+import SeriesNav from '@/components/SeriesNav.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
 import type { LanguageCode } from '@/i18n/ui';
 import { useTranslations } from '@/i18n/ui';
@@ -11,6 +12,7 @@ import { ArrowLeft } from 'lucide-react';
 import EditorialEntry from '@/components/EditorialEntry.astro';
 
 type Props = {
+  id: string;
   post: CollectionEntry<'blog'>['data'] & { readingTimeMinutes: number };
   lang: LanguageCode;
   headings: Array<{ depth: number; text: string; slug: string }>;
@@ -18,12 +20,21 @@ type Props = {
   filePath: string;
 };
 
-const { post, lang, headings, relatedPosts, filePath } = Astro.props;
+const { id, post, lang, headings, relatedPosts, filePath } = Astro.props;
 
 const editUrl = `https://github.com/bakate/portfolio/edit/main/${filePath}`;
 const t = useTranslations(lang, 'blogPost');
+const tSeries = useTranslations(lang, 'series');
 const blogHref = getRelativeLocaleUrl(lang, '/blog');
-const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  series,
+  tags = [],
+} = post;
 ---
 
 <BaseLayout
@@ -74,6 +85,13 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
           ) : null
         }
         {
+          series ? (
+            <p class="mt-2 text-sm font-medium text-primary">
+              {tSeries('label')} · {series}
+            </p>
+          ) : null
+        }
+        {
           heroImage ? (
             <Image
               src={heroImage.url}
@@ -89,6 +107,16 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = post;
       <div class="prose prose-lg max-w-none dark:prose-invert">
         <slot />
       </div>
+
+      {
+        series ? (
+          <SeriesNav
+            series={series}
+            lang={lang}
+            current={{ kind: 'blog', id }}
+          />
+        ) : null
+      }
 
       <p class="mt-16 border-t border-border pt-8 text-sm">
         <a

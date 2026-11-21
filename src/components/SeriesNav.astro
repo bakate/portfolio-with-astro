@@ -1,0 +1,90 @@
+---
+import { useTranslations, type LanguageCode } from '@/i18n/ui';
+import { getSeriesPosition, type SeriesKind } from '@/lib/series';
+
+type Props = {
+  series: string;
+  lang: LanguageCode;
+  current: { kind: SeriesKind; id: string };
+};
+
+const { series, lang, current } = Astro.props;
+const position = await getSeriesPosition(series, lang, current);
+const t = useTranslations(lang, 'series');
+const { name, parts, currentIndex } = position;
+const kindLabel = {
+  blog: t('article'),
+  tips: t('tip'),
+} as const satisfies Record<SeriesKind, string>;
+const previous = currentIndex > 0 ? parts[currentIndex - 1] : undefined;
+const next =
+  currentIndex >= 0 && currentIndex < parts.length - 1
+    ? parts[currentIndex + 1]
+    : undefined;
+---
+
+<nav
+  aria-label={`${t('label')} · ${name}`}
+  class="mt-16 border-t border-border pt-8"
+>
+  <p class="text-sm font-medium text-primary">
+    {t('label')} · {name}
+  </p>
+  <p class="mt-1 text-sm text-muted-foreground">
+    {`${t('part')} ${currentIndex + 1} ${t('of')} ${parts.length}`}
+  </p>
+
+  {
+    parts.length > 1 ? (
+      <ol class="mt-6 space-y-2 text-sm" aria-label={t('navigation')}>
+        {parts.map((part, index) => (
+          <li class="flex gap-3">
+            <span class="w-6 shrink-0 text-muted-foreground tabular-nums">
+              {index + 1}.
+            </span>
+            {part.isCurrent ? (
+              <span aria-current="page" class="font-medium">
+                {part.title}
+              </span>
+            ) : (
+              <a
+                href={part.href}
+                class="underline-offset-4 hover:text-primary hover:underline"
+              >
+                {part.title}
+              </a>
+            )}
+            <span class="text-muted-foreground">· {kindLabel[part.kind]}</span>
+          </li>
+        ))}
+      </ol>
+    ) : null
+  }
+
+  {
+    previous || next ? (
+      <div class="mt-8 flex flex-wrap justify-between gap-4 text-sm">
+        {previous ? (
+          <a
+            href={previous.href}
+            rel="prev"
+            class="text-primary underline-offset-4 hover:underline"
+          >
+            ← {t('previous')} : {previous.title}
+          </a>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <a
+            href={next.href}
+            rel="next"
+            class="text-right text-primary underline-offset-4 hover:underline"
+          >
+            {t('next')} : {next.title} →
+          </a>
+        ) : null}
+      </div>
+    ) : null
+  }
+</nav>
